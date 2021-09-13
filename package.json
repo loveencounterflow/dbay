@@ -26,12 +26,7 @@
   "homepage": "https://github.com/loveencounterflow/dbay#readme",
   "dependencies": {
     "cnd": "9.2.2",
-    "csv-parser": "^3.0.0",
     "guy": "^2.0.0",
-    "intertype": "7.6.7",
-    "letsfreezethat": "^3.1.0",
-    "mysql-tokenizer": "^1.0.7",
-    "n-readlines": "^1.0.1",
-    "tempy": "^1.0.1"
+    "intertype": "7.6.7"
   }
 }
