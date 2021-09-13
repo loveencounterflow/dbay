@@ -1,16 +1,16 @@
 {
-  "name": "icql-dba",
+  "name": "dbay",
   "version": "10.1.0",
-  "description": "An SQLite DB Adapter built with BetterSQLite3",
+  "description": "In-Process, In-Memory & File-Based Relational Data Processing with SQLite, BetterSQLite3",
   "main": "lib/main.js",
   "scripts": {
     "build": "coffee --map -o lib -c src",
-    "test": "echo see 'https://github.com/loveencounterflow/hengist/tree/master/dev/datom'",
+    "test": "echo see 'https://github.com/loveencounterflow/hengist/tree/master/dev/dbay'",
     "preinstall": "./build-sqlite3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/loveencounterflow/icql-dba.git"
+    "url": "git+https://github.com/loveencounterflow/dbay.git"
   },
   "keywords": [
     "sql",
@@ -21,9 +21,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/loveencounterflow/icql-dba/issues"
+    "url": "https://github.com/loveencounterflow/dbay/issues"
   },
-  "homepage": "https://github.com/loveencounterflow/icql-dba#readme",
+  "homepage": "https://github.com/loveencounterflow/dbay#readme",
   "dependencies": {
     "cnd": "9.2.2",
     "csv-parser": "^3.0.0",
