@@ -56,6 +56,8 @@
     dbay2 = new Dba dbay1.cfg
     ```
 
+### All Parameters in Systematic Order
+
 **Note** in the below tables, `in.*` parameters are those passed in when calling `new Dbay { ... }`; `out.*`
 parameters are those to be found under `dbay.cfg.*` in the newly constructed instance. Observe that
 
@@ -63,6 +65,7 @@ parameters are those to be found under `dbay.cfg.*` in the newly constructed ins
 * where `out.*` parameters are shown with `null` values they will be missing from `dbay.cfg`. This omission
   of `null` values is deemed advantageous for the human reader who will have less text to process when
   printing `dbay.cfg` for introspection, and fewer combinations of values have to be pondered.
+* For combinations that are unacceptable (cause errors), `out.*` parameters are left unspecified.
 
 In addition to the `out.*` parameters listed, `dbay.cfg.url` will be set whenever `dbnick` is set. This URL
 will be of the form
@@ -71,9 +74,6 @@ will be of the form
   this example).
 
 
-### All Parameters in Systematic Order
-
-For combinations that are unacceptable (cause errors), `out.*` parameters are left unspecified.
 
 |  nr |  in.ram |   in.path   | in.dbnick  | out.ram |   out.path  |      out.dbnick      | out.persistency | out.error | same as  |
 | --- | ------- | ----------- | ---------- | ------- | ----------- | -------------------- | --------------- | --------- | -------- |
