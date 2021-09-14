@@ -69,8 +69,8 @@ class @Dbay
       self.cfg.url      = url
     else
       self.cfg.url      = null
-    for k, v of self.cfg
-      self.cfg[ k ] = null unless v?
+    # self.cfg = guy.obj.nullify_undefined self.cfg
+    self.cfg = guy.obj.omit_nullish self.cfg
     return self.cfg
 
   #---------------------------------------------------------------------------------------------------------
