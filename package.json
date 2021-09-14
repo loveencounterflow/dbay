@@ -27,7 +27,7 @@
   "dependencies": {
     "better-sqlite3": "^7.4.3",
     "cnd": "9.2.2",
-    "guy": "2.1.0",
+    "guy": "^2.2.0",
     "intertype": "7.6.7"
   }
 }
