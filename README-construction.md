@@ -40,11 +40,21 @@
   * **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to.
     * When `path` is given but `ram` is not set (or `null` or `undefined`), `ram` will assume the value
       `false`.
-    * When `path` is given and `ram` is `false`, a file DB will be opened from or created at the location
-      given. This DB will have Continuous Persistency, i.e. operate in the normal DB mode where all changes
-      are reflected on disk and thus made durable with a high degree of safety against data losses.
-    * When `ram` is given and `ram` is `false`, a file DB will be opened from or created at the location
-      given.
+    * When `path` is given
+      * and `ram` is **`false`**, a file DB will be opened from or created at the location given. This DB
+        will have Continuous Persistency, i.e. operate in the normal DB mode where all changes are reflected
+        on disk and thus made durable with a high degree of safety against data losses. Otherwise,
+      * when `ram` is `true`, a RAM DB will be opened.
+
+  * **`cfg.dbnick`** (`?URL-safe word`): name given to a RAM DB. It will be used to construct a URL that
+    will be passed to SQLite. There's little use in passing in `dbnick` explicitly; if one wishes to
+    construct multiple `Dbay()` objects to the same RAM DB, one can always use the `cfg` object of the first
+    instance:
+
+    ```coffee
+    dbay1 = new Dba { ram: true, }
+    dbay2 = new Dba dbay1.cfg
+    ```
 
 **Note** in the below tables, `in.*` parameters are those passed in when calling `new Dbay { ... }`; `out.*`
 parameters are those to be found under `dbay.cfg.*` in the newly constructed instance. Observe that
