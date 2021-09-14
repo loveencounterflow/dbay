@@ -1,14 +1,15 @@
+
+## DBay Object Construction
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [DBay Object Construction](#dbay-object-construction)
-  - [All Parameters in Systematic Order](#all-parameters-in-systematic-order)
+- [All Parameters in Systematic Order](#all-parameters-in-systematic-order)
+- [Valid Parameter Combinations](#valid-parameter-combinations)
+- [Parameters that Cause Errors](#parameters-that-cause-errors)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-
-## DBay Object Construction
 
 * In order to construct (instantiate) a DBay object, you can call the constructor without any arguments:
 
@@ -35,6 +36,11 @@
       `dbay.save()` any number of times to write changes to disk. DB contents will be lost should the
       process terminate after changes to the DB but before `dbay.save()` terminates. This mode of operation
       is called 'Eventual Persistency'.
+
+  * **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to.
+    * When `path` is given but `ram` is not set (or `null` or `undefined`), `ram` will assume the value
+      `false`.
+    * When `path` is given and `ram` is `false`
 
 **Note** in the below tables, `in.*` parameters are those passed in when calling `new Dbay { ... }`; `out.*`
 parameters are those to be found under `dbay.cfg.*` in the newly constructed instance. Observe that
@@ -70,27 +76,9 @@ For combinations that are unacceptable (cause errors), `out.*` parameters are le
 |  11 |         | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_icql_6200294332'` | eventual        | ———       | ———      |
 |  12 |         |             | `'dbnick'` | ———     | ———         | ———                  | none            | **E01**   | 4, 8, 12 |
 
------------------------
-
-The same as the above, but grouped:
-
-* **A: Parameters that Cause Errors**
-
-|    nr    |          in.ram         |     in.path     |   in.dbnick    |                out.error                 |
-| -------- | ----------------------- | --------------- | -------------- | ---------------------------------------- |
-| 4, 8, 12 | `null`, `false`, `true` | **`'db/path'`** | **`'dbnick'`** | **E01 cannot give both `path` and `dbnick`** |
 
 
-|  nr  |  in.ram |  in.path   |     in.dbnick      |            out.error            |
-| ---- | ------- | ---------- | ------------------ | ------------------------------- |
-| 5, 6 | `false` | **`null`** | `null`, `'dbnick'` | **E02 missing argument `path`** |
-
-|    nr    |          in.ram         |     in.path     |     in.dbnick      |                  out.error                   |
-|----------|-------------------------|-----------------|--------------------|----------------------------------------------|
-| 4, 8, 12 | `null`, `false`, `true` | **`'db/path'`** | **`'dbnick'`**     | **E01 cannot give both `path` and `dbnick`** |
-| 5, 6     | `false`                 | **`null`**      | `null`, `'dbnick'` | **E02 missing argument `path`**              |
-
-* **B: Valid Parameter Combinations**
+### Valid Parameter Combinations
 
 |   nr  |      in.ram     |   in.path   | in.dbnick  | out.ram |   out.path  |      out.dbnick      | out.persistency |
 | ----- | --------------- | ----------- | ---------- | ------- | ----------- | -------------------- | --------------- |
@@ -98,6 +86,22 @@ The same as the above, but grouped:
 | 2, 10 | `null`, `true`  | `null`      | `'dbnick'` | `true`  | `null`      | `'dbnick'`           | none            |
 | 11    | `true`          | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_icql_6200294332'` | eventual        |
 | 3, 7  | `null`, `false` | `'db/path'` | `null`     | `false` | `'db/path'` | `null`               | continuous      |
+
+
+### Parameters that Cause Errors
+
+* When a `path` is given, `dbnick` must not be set. In the future, we may allow this `dbnick` to be used when
+  `dbay.transfer_to_ram()` is called.
+* When `ram` is explicitly `false`, then `path` must be set.
+
+|    nr    |          in.ram         |     in.path     |     in.dbnick      |                  out.error                   |
+|----------|-------------------------|-----------------|--------------------|----------------------------------------------|
+| 4, 8, 12 | `null`, `false`, `true` | **`'db/path'`** | **`'dbnick'`**     | **E01 cannot give both `path` and `dbnick`** |
+| 5, 6     | `false`                 | **`null`**      | `null`, `'dbnick'` | **E02 missing argument `path`**              |
+
+
+
+
 
 
 
