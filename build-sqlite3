@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+home="$(realpath "$(realpath "${BASH_SOURCE[0]}" | xargs dirname)"/.)"
+echo "home is $home"
+# cd "$home"
+
+
 # Below lines copied and adjusted from https://github.com/JoshuaWise/better-sqlite3, filee
 # `/deps/download.sh`:
 
@@ -44,9 +49,11 @@ HAVE_UINT32_T=1
 SQLITE_MAX_ATTACHED=125
 "
 
-export CFLAGS=`echo $(echo "$DEFINES" | sed -e "/^\s*$/d" -e "s/^/-D/")`
+CFLAGS=`echo $(echo "$DEFINES" | sed -e "/^\s*$/d" -e "s/^/-D/")`
+export CFLAGS
 
 echo "$CFLAGS"
 
-npm install better-sqlite3@'^7.4.3' --no-save --build-from-source --sqlite3="$(pwd)/sqlite-snapshot-202107191400"
+npm install better-sqlite3@'^7.4.3' --no-save --build-from-source --sqlite3="$home/sqlite-snapshot-202107191400"
+# npm install better-sqlite3@'^7.4.3' --no-save --build-from-source --sqlite3="$(pwd)/sqlite-snapshot-202107191400"
 
