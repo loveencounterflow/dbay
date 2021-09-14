@@ -134,7 +134,8 @@ class @Dbay
     connections to the same RAM DB can be opened. When `dbnick` is not given, a random dbnick like
     `_icql_6200294332` will be chosen (prefix `_icql_`, suffix ten decimal digits). For testing, setting
     class property `@_rnd_int_cfg` can be used to obtain repeatable series of random names. ###
-    dbnick ?= "_icql_#{@_rnd_int 1_000_000_000, 9_999_999_999}"
+    n10     = @_rnd_int 1_000_000_000, 9_999_999_999
+    dbnick ?= "_#{n10}"
     url     = "file:#{dbnick}?mode=memory&cache=shared"
     return { url, dbnick, }
 
