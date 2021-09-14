@@ -15,10 +15,10 @@
 
   ```coffee
   { Dbay }  = require 'dbay'
-  dbay      = new Dbay()
+  db        = new Dbay()
   ```
 
-  The `dbay` object will then have a property `dbay.sqlt` that is a `better-sqlite3` connection to an
+  The `db` object will then have a property `db.sqlt` that is a `better-sqlite3` connection to an
   in-memory DB (a RAM DB in our terminology).
 
 * You can also call the constructor with a configuration object that may have one or more of the following
@@ -33,8 +33,8 @@
     * When **`cfg.dbnick`** (but not **`cfg.path`**) is given, a
     * When **`cfg.path`** is given, an SQLite DB file will be (created if non-existant and) opened; then,
       the DB will be mirrored to RAM so now you have a RAM DB associated with a disk location. You can use
-      `dbay.save()` any number of times to write changes to disk. DB contents will be lost should the
-      process terminate after changes to the DB but before `dbay.save()` terminates. This mode of operation
+      `db.save()` any number of times to write changes to disk. DB contents will be lost should the
+      process terminate after changes to the DB but before `db.save()` terminates. This mode of operation
       is called 'Eventual Persistency'.
 
   * **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to.
@@ -52,22 +52,22 @@
     instance:
 
     ```coffee
-    dbay1 = new Dba { ram: true, }
-    dbay2 = new Dba dbay1.cfg
+    db1 = new Dbay { ram: true, }
+    db2 = new Dbay db1.cfg
     ```
 
 ### All Parameters in Systematic Order
 
 **Note** in the below tables, `in.*` parameters are those passed in when calling `new Dbay { ... }`; `out.*`
-parameters are those to be found under `dbay.cfg.*` in the newly constructed instance. Observe that
+parameters are those to be found under `db.cfg.*` in the newly constructed instance. Observe that
 
 * where `in.*` parameters are shown with `null` values here they can also be `undefined` or missing;
-* where `out.*` parameters are shown with `null` values they will be missing from `dbay.cfg`. This omission
+* where `out.*` parameters are shown with `null` values they will be missing from `db.cfg`. This omission
   of `null` values is deemed advantageous for the human reader who will have less text to process when
-  printing `dbay.cfg` for introspection, and fewer combinations of values have to be pondered.
+  printing `db.cfg` for introspection, and fewer combinations of values have to be pondered.
 * For combinations that are unacceptable (cause errors), `out.*` parameters are left unspecified.
 
-In addition to the `out.*` parameters listed, `dbay.cfg.url` will be set whenever `dbnick` is set. This URL
+In addition to the `out.*` parameters listed, `db.cfg.url` will be set whenever `dbnick` is set. This URL
 will be of the form
 * `file:_icql_6200294332?mode=memory&cache=shared` when generated, or
 * `file:your_db_name_here?mode=memory&cache=shared` where `dbnick` is given (as `'your_db_name_here'` in
@@ -105,7 +105,7 @@ will be of the form
 ### Parameters that Cause Errors
 
 * When a `path` is given, `dbnick` must not be set. In the future, we may allow this `dbnick` to be used when
-  `dbay.transfer_to_ram()` is called.
+  `db.transfer_to_ram()` is called.
 * When `ram` is explicitly `false`, then `path` must be set.
 
 |    nr    |          in.ram         |     in.path     |     in.dbnick      |                  out.error                   |
