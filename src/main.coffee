@@ -23,6 +23,7 @@ types                     = new ( require 'intertype' ).Intertype
 SQL                       = String.raw
 guy                       = require 'guy'
 E                         = require './errors'
+new_bsqlt3_connection     = require 'better-sqlite3'
 
 #-----------------------------------------------------------------------------------------------------------
 types.declare 'dbay_urlsafe_word', tests:
@@ -43,15 +44,21 @@ class @Dbay
   @C: guy.lft.freeze
     defaults:
       constructor_cfg:
-        _temp_prefix: '_dba_temp_'
+        # _temp_prefix: '_dba_temp_'
         readonly:     false
         create:       true
-        overwrite:    false
         timeout:      5000
         #...................................................................................................
+        overwrite:    false
         ram:          null
         path:         null
         dbnick:       null
+
+  #---------------------------------------------------------------------------------------------------------
+  @cast_sqlt_cfg: ( self ) ->
+    R                = guy.obj.pluck_with_fallback self.cfg, null, 'readonly', 'timeout'
+    R.fileMustExist  = not self.cfg.create; delete self.cfg.create
+    return R
 
   #---------------------------------------------------------------------------------------------------------
   @cast_constructor_cfg: ( self ) ->
@@ -70,22 +77,30 @@ class @Dbay
     else
       self.cfg.url      = null
     # self.cfg = guy.obj.nullify_undefined self.cfg
-    self.cfg = guy.obj.omit_nullish self.cfg
-    return self.cfg
+    self.sqlt_cfg = guy.lft.freeze guy.obj.omit_nullish @cast_sqlt_cfg self
+    self.cfg      = guy.lft.freeze guy.obj.omit_nullish self.cfg
+    return null
 
   #---------------------------------------------------------------------------------------------------------
   @declare_types: ( self ) ->
     # debug '^133^', self.cfg, Object.isFrozen self.cfg
-    self.cfg = @cast_constructor_cfg self
+    @cast_constructor_cfg self
     self.types.validate.constructor_cfg self.cfg
     # guy.props.def self, 'dba', { enumerable: false, value: self.cfg.dba, }
     return null
+
+  #---------------------------------------------------------------------------------------------------------
+  _new_bsqlt3_connection: ->
+    path_or_url = if @cfg.ram then @cfg.url else @cfg.path
+    return new_bsqlt3_connection path_or_url, @sqlt_cfg
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( cfg ) ->
     # super()
     @_initialize_prng()
     guy.cfg.configure_with_types @, cfg, types
+    @sqlt1 = @_new_bsqlt3_connection()
+    @sqlt2 = @_new_bsqlt3_connection()
     # @_compile_sql()
     # @_create_sql_functions()
     # @_create_db_structure()
