@@ -21,8 +21,8 @@ types                     = new ( require 'intertype' ).Intertype
   validate
   validate_list_of }      = types.export()
 SQL                       = String.raw
-guy                       = require '../../../apps/guy'
-# E                         = require './errors'
+guy                       = require 'guy'
+E                         = require './errors'
 
 types.declare 'dba_urlsafe_word', tests:
   "@isa.nonempty_text x":                 ( x ) -> @isa.nonempty_text x
