@@ -7,7 +7,7 @@
 
 - [All Parameters in Systematic Order](#all-parameters-in-systematic-order)
 - [Valid Parameter Combinations](#valid-parameter-combinations)
-- [Parameters that Cause Errors](#parameters-that-cause-errors)
+- [Faulty Parameter Combinations](#faulty-parameter-combinations)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -69,40 +69,51 @@ parameters are those to be found under `db.cfg.*` in the newly constructed insta
 
 In addition to the `out.*` parameters listed, `db.cfg.url` will be set whenever `dbnick` is set. This URL
 will be of the form
-* `file:_icql_6200294332?mode=memory&cache=shared` when generated, or
+* `file:_6200294332?mode=memory&cache=shared` when generated, or
 * `file:your_db_name_here?mode=memory&cache=shared` where `dbnick` is given (as `'your_db_name_here'` in
   this example).
 
 
 
-|  nr |  in.ram |   in.path   | in.dbnick  | out.ram |   out.path  |      out.dbnick      | out.persistency | out.error | same as  |
-| --- | ------- | ----------- | ---------- | ------- | ----------- | -------------------- | --------------- | --------- | -------- |
-|   1 | `null`  | `null`      | `null`     | `true`  | `null`      | `'_icql_6200294332'` | none            | ———       | 1, 9     |
-|   2 |         |             | `'dbnick'` | `true`  | `null`      | `'dbnick'`           | none            | ———       | 2, 10    |
-|   3 |         | `'db/path'` | `null`     | `false` | `'db/path'` | `null`               | continuous      | ———       | 3, 7     |
-|   4 |         |             | `'dbnick'` | ———     | ———         | ———                  | ———             | **E01**   | 4, 8, 12 |
-|   5 | `false` | `null`      | `null`     | ———     | ———         | ———                  | ———             | **E02**   | 5, 6     |
-|   6 |         |             | `'dbnick'` | ———     | ———         | ———                  | ———             | **E02**   | 5, 6     |
-|   7 |         | `'db/path'` | `null`     | `false` | `'db/path'` | `null`               | continuous      | ———       | 3, 7     |
-|   8 |         |             | `'dbnick'` | ———     | ———         | ———                  | ———             | **E01**   | 4, 8, 12 |
-|   9 | `true`  | `null`      | `null`     | `true`  | `null`      | `'_icql_6200294332'` | none            | ———       | 1, 9     |
-|  10 |         |             | `'dbnick'` | `true`  | `null`      | `'dbnick'`           | none            | ———       | 2, 10    |
-|  11 |         | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_icql_6200294332'` | eventual        | ———       | ———      |
-|  12 |         |             | `'dbnick'` | ———     | ———         | ———                  | none            | **E01**   | 4, 8, 12 |
+| nr |  in.ram |   in.path   | in.dbnick  | out.ram |   out.path  |    out.dbnick   | out.persistency | out.error | same as  |
+|----|---------|-------------|------------|---------|-------------|-----------------|-----------------|-----------|----------|
+|  1 | `null`  | `null`      | `null`     | `true`  | `null`      | `'_6200294332'` | none            | ———       | 1, 9     |
+|  2 |         |             | `'dbnick'` | `true`  | `null`      | `'dbnick'`      | none            | ———       | 2, 10    |
+|  3 |         | `'db/path'` | `null`     | `false` | `'db/path'` | `null`          | continuous      | ———       | 3, 7     |
+|  4 |         |             | `'dbnick'` | ———     | ———         | ———             | ———             | **E01**   | 4, 8, 12 |
+|  5 | `false` | `null`      | `null`     | ———     | ———         | ———             | ———             | **E02**   | 5, 6     |
+|  6 |         |             | `'dbnick'` | ———     | ———         | ———             | ———             | **E02**   | 5, 6     |
+|  7 |         | `'db/path'` | `null`     | `false` | `'db/path'` | `null`          | continuous      | ———       | 3, 7     |
+|  8 |         |             | `'dbnick'` | ———     | ———         | ———             | ———             | **E01**   | 4, 8, 12 |
+|  9 | `true`  | `null`      | `null`     | `true`  | `null`      | `'_6200294332'` | none            | ———       | 1, 9     |
+| 10 |         |             | `'dbnick'` | `true`  | `null`      | `'dbnick'`      | none            | ———       | 2, 10    |
+| 11 |         | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_6200294332'` | eventual        | ———       | ———      |
+| 12 |         |             | `'dbnick'` | ———     | ———         | ———             | none            | **E01**   | 4, 8, 12 |
 
 
 
 ### Valid Parameter Combinations
 
-|   nr  |      in.ram     |   in.path   | in.dbnick  | out.ram |   out.path  |      out.dbnick      | out.persistency |
-| ----- | --------------- | ----------- | ---------- | ------- | ----------- | -------------------- | --------------- |
-| 1, 9  | `null`, `true`  | `null`      | `null`     | `true`  | `null`      | `'_icql_6200294332'` | none            |
-| 2, 10 | `null`, `true`  | `null`      | `'dbnick'` | `true`  | `null`      | `'dbnick'`           | none            |
-| 11    | `true`          | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_icql_6200294332'` | eventual        |
-| 3, 7  | `null`, `false` | `'db/path'` | `null`     | `false` | `'db/path'` | `null`               | continuous      |
+|   nr  |      in.ram     |   in.path   | in.dbnick  | out.ram |   out.path  |    out.dbnick   | out.persistency |
+|-------|-----------------|-------------|------------|---------|-------------|-----------------|-----------------|
+| 1, 9  | `null`, `true`  | `null`      | `null`     | `true`  | `null`      | `'_6200294332'` | none            |
+| 2, 10 | `null`, `true`  | `null`      | `'dbnick'` | `true`  | `null`      | `'dbnick'`      | none            |
+| 11    | `true`          | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_6200294332'` | eventual        |
+| 3, 7  | `null`, `false` | `'db/path'` | `null`     | `false` | `'db/path'` | `null`          | continuous      |
+
+Resulting shapes of `db.cfg` when the above `in.*` parameters are applied; observe that additional
+properties may be present:
+
+|   nr  |                                                                                                 |
+|-------|-------------------------------------------------------------------------------------------------|
+| 1, 9  | `{ ram: true, dbnick: '_6200294332', url: 'file:_6200294332?mode=memory&cache=shared' }`        |
+| 2, 10 | `{ ram: true, dbnick: 'dbnick', url: 'file:dbnick?mode=memory&cache=shared' }`                  |
+| 11    | `{ ram: true, dbnick: 'dbnick', url: 'file:dbnick?mode=memory&cache=shared', path: 'db/path' }` |
+| 3, 7  | `{ ram: false, path: 'db/path' }`                                                               |
+|       |                                                                                                 |
 
 
-### Parameters that Cause Errors
+### Faulty Parameter Combinations
 
 * When a `path` is given, `dbnick` must not be set. In the future, we may allow this `dbnick` to be used when
   `db.transfer_to_ram()` is called.
