@@ -55,10 +55,10 @@ class @Dbay
     # debug '^344476^', self
     # debug '^344476^', self.cfg
     if ( self.cfg.ram is false ) and ( not self.cfg.path? )
-      throw new E.Dba_cfg_error '^dba@1^', "missing argument `path`, got #{rpr self.cfg}"
+      throw new E.Dbay_cfg_error '^dba@1^', "missing argument `path`, got #{rpr self.cfg}"
     self.cfg.ram ?= not self.cfg.path?
     if ( not self.cfg.ram ) and self.cfg.path? and self.cfg.dbnick?
-      throw new E.Dba_cfg_error '^dba@1^', "only RAM DB can have both `path` and `dbnick`, got #{rpr self.cfg}"
+      throw new E.Dbay_cfg_error '^dba@1^', "only RAM DB can have both `path` and `dbnick`, got #{rpr self.cfg}"
     if self.cfg.ram
       { dbnick
         url    }        = self._get_connection_url self.cfg.dbnick ? null
