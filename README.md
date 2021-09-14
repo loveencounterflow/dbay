@@ -28,6 +28,9 @@ DBay provides
 * being based on [`better-sqlite3`](https://github.com/JoshuaWise/better-sqlite3),
 * it works (almost) exclusively in a synchronous fashion.
 
+## Documentation
+
+* [`Dbay` object construction](./README-construction.md)
 
 ## To Do
 
