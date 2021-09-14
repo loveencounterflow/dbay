@@ -36,4 +36,4 @@ DBay provides
 ## To Do
 
 * **[–]** port foundational code from hengist &c
-
+* **[–]** at construction time, allow `dbnick` when `path` is given and `ram` is `false`
