@@ -7,6 +7,7 @@
 
 - [Under Construction](#under-construction)
 - [Introduction](#introduction)
+- [Documentation](#documentation)
 - [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
