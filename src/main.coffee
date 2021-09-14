@@ -24,14 +24,17 @@ SQL                       = String.raw
 guy                       = require 'guy'
 E                         = require './errors'
 
+#-----------------------------------------------------------------------------------------------------------
 types.declare 'dba_urlsafe_word', tests:
   "@isa.nonempty_text x":                 ( x ) -> @isa.nonempty_text x
   "/^[a-zA-Z0-9_]+$/.test x":             ( x ) -> /^[a-zA-Z0-9_]+$/.test x
+
+#-----------------------------------------------------------------------------------------------------------
 types.declare 'constructor_cfg', tests:
   "@isa.object x":                            ( x ) -> @isa.object x
   "@isa_optional.boolean x.ram":              ( x ) -> @isa_optional.boolean x.ram
   "@isa_optional.nonempty_text x.url":        ( x ) -> @isa_optional.nonempty_text x.url
-  "@isa_optional.dba_urlsafe_word x.dbnick":  ( x ) -> @isa_optional.dba_urlsafe_word x.dbnick
+  "@isa_optional.nonempty_text x.path":       ( x ) -> @isa_optional.nonempty_text x.path
   "@isa_optional.dba_urlsafe_word x.dbnick":  ( x ) -> @isa_optional.dba_urlsafe_word x.dbnick
 
 class @Dbay
