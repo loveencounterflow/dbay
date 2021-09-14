@@ -46,12 +46,14 @@ class @Dbay
         overwrite:    false
         timeout:      5000
         #...................................................................................................
-        path:       null
-        dbnick:     null
         ram:          null
+        path:         null
+        dbnick:       null
 
   #---------------------------------------------------------------------------------------------------------
   @cast_constructor_cfg: ( self ) ->
+    # debug '^344476^', self
+    # debug '^344476^', self.cfg
     if ( self.cfg.ram is false ) and ( not self.cfg.path? )
       throw new E.Dba_cfg_error '^dba@1^', "missing argument `path`, got #{rpr self.cfg}"
     self.cfg.ram ?= not self.cfg.path?
@@ -59,7 +61,7 @@ class @Dbay
       throw new E.Dba_cfg_error '^dba@1^', "only RAM DB can have both `path` and `dbnick`, got #{rpr self.cfg}"
     if self.cfg.ram
       { dbnick
-        url    }        = _xxx_dba._get_connection_url self.cfg.dbnick ? null
+        url    }        = self._get_connection_url self.cfg.dbnick ? null
       self.cfg.dbnick  ?= dbnick
       self.cfg.url      = url
     else
