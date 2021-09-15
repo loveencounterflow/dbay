@@ -9,6 +9,8 @@
 - [Introduction](#introduction)
 - [Documentation](#documentation)
 - [Note on Package Structure](#note-on-package-structure)
+  - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
+- [Use npm, Not pnpm](#use-npm-not-pnpm)
 - [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -36,11 +38,19 @@ DBay provides
 
 ## Note on Package Structure
 
+### `better-sqlite3` an 'Unsaved' Dependency
+
 Since DBay depends on [`better-sqlite3`](https://github.com/JoshuaWise/better-sqlite3) with a
 [custom-configured build of the SQLite C
 engine](https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/compilation.md), it is (for whatever
 reason) important that **`better-sqlite3` must not be listed under `package.json#dependencies`**; otherwise,
-compilation will not work properly.
+compilation will not work properly. The [build script](./build-sqlite3) will run `npm install
+better-sqlite3@'^7.4.3'` but with an added `--no-save` flag.
+
+## Use npm, Not pnpm
+
+Also, at the time of this writing (2021-09), while the project compiles fine using npm v7.21.1 (on NodeJS
+v16.9.1 on Linux Mint), but it fails using pnpm v6.14.6 for unknown reasons. Yarn has not been tried.
 
 ## To Do
 
