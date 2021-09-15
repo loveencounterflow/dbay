@@ -50,7 +50,12 @@ better-sqlite3@'^7.4.3'` but with an added `--no-save` flag.
 ## Use npm, Not pnpm
 
 Also, at the time of this writing (2021-09), while the project compiles fine using npm v7.21.1 (on NodeJS
-v16.9.1 on Linux Mint), but it fails using pnpm v6.14.6 for unknown reasons. Yarn has not been tried.
+v16.9.1 on Linux Mint), but it fails using pnpm v6.14.6 with `Unknown options: 'build-from-source',
+'sqlite3'`. Yarn has not been tried.
+
+**Note**—*These considerations only concern those who wish to fork/clone DBay to work on the code. Those who
+just want to use DBay as a dependency of their project can both either run `npm install dbay` or `pnpm add
+dbay`, both package managers work fine.*
 
 ## To Do
 
