@@ -8,6 +8,7 @@
 - [Under Construction](#under-construction)
 - [Introduction](#introduction)
 - [Documentation](#documentation)
+- [Note on Package Structure](#note-on-package-structure)
 - [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -32,6 +33,14 @@ DBay provides
 ## Documentation
 
 * [`Dbay` object construction](./README-construction.md)
+
+## Note on Package Structure
+
+Since DBay depends on [`better-sqlite3`](https://github.com/JoshuaWise/better-sqlite3) with a
+[custom-configured build of the SQLite C
+engine](https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/compilation.md), it is (for whatever
+reason) important that **`better-sqlite3` must not be listed under `package.json#dependencies`**; otherwise,
+compilation will not work properly.
 
 ## To Do
 
