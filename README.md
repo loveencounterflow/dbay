@@ -61,3 +61,23 @@ dbay`, both package managers work fine.*
 
 * **[–]** port foundational code from hengist &c
 * **[–]** at construction time, allow `dbnick` when `path` is given and `ram` is `false`
+* **[–]** to solve the table-UDF-with-DB-access conundrum, consider
+  * **[–]** https://github.com/mapnik/mapnik/issues/797, where connection parameters are discussed (see also
+    https://www.sqlite.org/c3ref/open.html);
+  * **[–]** mirroring a given DB into a second (RAM or file) location, taking care to replay any goings-on
+    on both instances. This is probably unattractive from a performance POV.
+  * **[–]** using [NodeJS worker threads](https://nodejs.org/api/worker_threads.html) to perform updates;
+    maybe one could even continuously mirror a RAM DB on disk to get a near-synchronous copy, obliviating
+    the necessity to explicitly call `db.save()`.
+  * **[–]** implementing **macros** so one could write eg `select * from foo( x ) as d;` to get `select *
+    from ( select a, b, c from blah order by 1 ) as d` (i.e. inline expansion)
+  * **[–]** Obeserve that, seemingly, only *table-valued* UDFs hang while with shared-cache we already *can*
+    issue `select`s from inside UDFs, so maybe there's a teeny, fixable difference between how both are
+    implemented that leads to the undesirable behavior
+
+
+
+
+
+
+
