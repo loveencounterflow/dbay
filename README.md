@@ -68,7 +68,8 @@ dbay`, both package managers work fine.*
     on both instances. This is probably unattractive from a performance POV.
   * **[–]** using [NodeJS worker threads](https://nodejs.org/api/worker_threads.html) to perform updates;
     maybe one could even continuously mirror a RAM DB on disk to get a near-synchronous copy, obliviating
-    the necessity to explicitly call `db.save()`.
+    the necessity to explicitly call `db.save()`. See
+    https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/threads.md
   * **[–]** implementing **macros** so one could write eg `select * from foo( x ) as d;` to get `select *
     from ( select a, b, c from blah order by 1 ) as d` (i.e. inline expansion)
   * **[–]** Obeserve that, seemingly, only *table-valued* UDFs hang while with shared-cache we already *can*
