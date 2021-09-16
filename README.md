@@ -62,8 +62,8 @@ dbay`, both package managers work fine.*
 * **[–]** port foundational code from hengist &c
 * **[–]** at construction time, allow `dbnick` when `path` is given and `ram` is `false`
 * **[–]** to solve the table-UDF-with-DB-access conundrum, consider
-  * **[–]** https://github.com/mapnik/mapnik/issues/797, where connection parameters are discussed (see also
-    https://www.sqlite.org/c3ref/open.html);
+  * <del>**[+]** https://github.com/mapnik/mapnik/issues/797, where connection parameters are discussed (see also
+    https://www.sqlite.org/c3ref/open.html);</del> <ins>nothing of interested AFAICS</ins>
   * **[–]** mirroring a given DB into a second (RAM or file) location, taking care to replay any goings-on
     on both instances. This is probably unattractive from a performance POV.
   * **[–]** using [NodeJS worker threads](https://nodejs.org/api/worker_threads.html) to perform updates;
