@@ -27,6 +27,7 @@
   "dependencies": {
     "cnd": "9.2.2",
     "guy": "^2.2.0",
-    "intertype": "7.6.7"
+    "intertype": "7.6.7",
+    "temp": "^0.9.4"
   }
 }
