@@ -34,7 +34,8 @@ DBay provides
 
 ## Documentation
 
-* [`Dbay` object construction](./README-construction.md)
+* **[`Dbay` object construction](./README-construction.md)**
+* **[Benchmarks](./README-benchmarks.md)**
 
 ## Note on Package Structure
 
@@ -75,7 +76,10 @@ dbay`, both package managers work fine.*
   * **[–]** Obeserve that, seemingly, only *table-valued* UDFs hang while with shared-cache we already *can*
     issue `select`s from inside UDFs, so maybe there's a teeny, fixable difference between how both are
     implemented that leads to the undesirable behavior
-
+* **[–]** let users choose between SQLite-only RAM DBs and `tmpfs`-based in-memory DBs (b/c the latter allow
+  `pragma journal_mode = WAL` for better concurrent access). Cons include: `tmpfs`-based RAM DBs necessitate
+  mounting a RAM disk which needs `sudo` rights, so might as well just instruct users to mount RAM disk,
+  then use that path? Still, it would be preferrable to have some automatic copy-to-durable in place.
 
 
 
