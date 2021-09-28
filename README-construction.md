@@ -5,58 +5,66 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [All Parameters in Systematic Order](#all-parameters-in-systematic-order)
-- [Valid Parameter Combinations](#valid-parameter-combinations)
-- [Faulty Parameter Combinations](#faulty-parameter-combinations)
+- [Using Defaults](#using-defaults)
+- [Using Parameters](#using-parameters)
+  - [All Parameters in Systematic Order](#all-parameters-in-systematic-order)
+  - [Valid Parameter Combinations](#valid-parameter-combinations)
+  - [Invalid Parameter Combinations](#invalid-parameter-combinations)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-* In order to construct (instantiate) a DBay object, you can call the constructor without any arguments:
+### Using Defaults
+
+In order to construct (instantiate) a DBay object, you can call the constructor without any arguments:
+
+```coffee
+{ Dbay }  = require 'dbay'
+db        = new Dbay()
+```
+
+The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
+connections to the same in-memory DB (a RAM DB in our terminology). This is achieved by passing an URL like
+`file:_6200294332?mode=memory&cache=shared` to `better-sqlite3` where the name (`_6200294332`) is a random
+10-digit number.
+
+### Using Parameters
+
+You can also call the constructor with a configuration object that may have one or more of the following
+fields:
+
+* **`cfg.ram`** (`?boolean`): Specifies whether a RAM DB is to be opened. All DBay in-memory DBs are named
+  so several connections to the same RAM DB can be opened (this is necessitated by a <del>shortcome</del>
+  <ins>feature</ins> of `better-sqlite3` that prohibits any reads against the DB from within User-Defined
+  Functions).
+
+  * When neither **`cfg.path`** nor **`cfg.dbnick`** are given, an empty RAM DB will be opened.
+  * When **`cfg.dbnick`** (but not **`cfg.path`**) is given, a
+  * When **`cfg.path`** is given, an SQLite DB file will be (created if non-existant and) opened; then,
+    the DB will be mirrored to RAM so now you have a RAM DB associated with a disk location. You can use
+    `db.save()` any number of times to write changes to disk. DB contents will be lost should the
+    process terminate after changes to the DB but before `db.save()` terminates. This mode of operation
+    is called 'Eventual Persistency'.
+
+* **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to.
+  * When `path` is given but `ram` is not set (or `null` or `undefined`), `ram` will assume the value
+    `false`.
+  * When `path` is given
+    * and `ram` is **`false`**, a file DB will be opened from or created at the location given. This DB
+      will have Continuous Persistency, i.e. operate in the normal DB mode where all changes are reflected
+      on disk and thus made durable with a high degree of safety against data losses. Otherwise,
+    * when `ram` is `true`, a RAM DB will be opened.
+
+* **`cfg.dbnick`** (`?URL-safe word`): name given to a RAM DB. It will be used to construct a URL that
+  will be passed to SQLite. There's little use in passing in `dbnick` explicitly; if one wishes to
+  construct multiple `Dbay()` objects to the same RAM DB, one can always use the `cfg` object of the first
+  instance:
 
   ```coffee
-  { Dbay }  = require 'dbay'
-  db        = new Dbay()
+  db1 = new Dbay { ram: true, }
+  db2 = new Dbay db1.cfg
   ```
 
-  The `db` object will then have a property `db.sqlt` that is a `better-sqlite3` connection to an
-  in-memory DB (a RAM DB in our terminology).
-
-* You can also call the constructor with a configuration object that may have one or more of the following
-  fields:
-
-  * **`cfg.ram`** (`?boolean`): Specifies whether a RAM DB is to be opened. All DBay in-memory DBs are named
-    so several connections to the same RAM DB can be opened (this is necessitated by a <del>shortcome</del>
-    <ins>feature</ins> of `better-sqlite3` that prohibits any reads against the DB from within User-Defined
-    Functions).
-
-    * When neither **`cfg.path`** nor **`cfg.dbnick`** are given, an empty RAM DB will be opened.
-    * When **`cfg.dbnick`** (but not **`cfg.path`**) is given, a
-    * When **`cfg.path`** is given, an SQLite DB file will be (created if non-existant and) opened; then,
-      the DB will be mirrored to RAM so now you have a RAM DB associated with a disk location. You can use
-      `db.save()` any number of times to write changes to disk. DB contents will be lost should the
-      process terminate after changes to the DB but before `db.save()` terminates. This mode of operation
-      is called 'Eventual Persistency'.
-
-  * **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to.
-    * When `path` is given but `ram` is not set (or `null` or `undefined`), `ram` will assume the value
-      `false`.
-    * When `path` is given
-      * and `ram` is **`false`**, a file DB will be opened from or created at the location given. This DB
-        will have Continuous Persistency, i.e. operate in the normal DB mode where all changes are reflected
-        on disk and thus made durable with a high degree of safety against data losses. Otherwise,
-      * when `ram` is `true`, a RAM DB will be opened.
-
-  * **`cfg.dbnick`** (`?URL-safe word`): name given to a RAM DB. It will be used to construct a URL that
-    will be passed to SQLite. There's little use in passing in `dbnick` explicitly; if one wishes to
-    construct multiple `Dbay()` objects to the same RAM DB, one can always use the `cfg` object of the first
-    instance:
-
-    ```coffee
-    db1 = new Dbay { ram: true, }
-    db2 = new Dbay db1.cfg
-    ```
-
-### All Parameters in Systematic Order
+#### All Parameters in Systematic Order
 
 **Note** in the below tables, `in.*` parameters are those passed in when calling `new Dbay { ... }`; `out.*`
 parameters are those to be found under `db.cfg.*` in the newly constructed instance. Observe that
@@ -92,7 +100,7 @@ will be of the form
 
 
 
-### Valid Parameter Combinations
+#### Valid Parameter Combinations
 
 |   nr  |      in.ram     |   in.path   | in.dbnick  | out.ram |   out.path  |    out.dbnick   | out.persistency |
 |-------|-----------------|-------------|------------|---------|-------------|-----------------|-----------------|
@@ -113,7 +121,7 @@ properties may be present:
 |       |                                                                                                 |
 
 
-### Faulty Parameter Combinations
+#### Invalid Parameter Combinations
 
 * When a `path` is given, `dbnick` must not be set. In the future, we may allow this `dbnick` to be used when
   `db.transfer_to_ram()` is called.
