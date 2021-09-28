@@ -15,6 +15,7 @@ whisper                   = CND.get_logger 'whisper',   badge
 echo                      = CND.echo.bind CND
 #...........................................................................................................
 PATH                      = require 'path'
+FS                        = require 'fs'
 types                     = new ( require 'intertype' ).Intertype
 { isa
   type_of
@@ -24,63 +25,25 @@ SQL                       = String.raw
 guy                       = require 'guy'
 E                         = require './errors'
 new_bsqlt3_connection     = require 'better-sqlite3'
+H                         = require './helpers'
 
-#-----------------------------------------------------------------------------------------------------------
-types.declare 'dbay_urlsafe_word', tests:
-  "@isa.nonempty_text x":                 ( x ) -> @isa.nonempty_text x
-  "/^[a-zA-Z0-9_]+$/.test x":             ( x ) -> /^[a-zA-Z0-9_]+$/.test x
 
 #-----------------------------------------------------------------------------------------------------------
 types.declare 'constructor_cfg', tests:
   "@isa.object x":                            ( x ) -> @isa.object x
-  "@isa_optional.boolean x.ram":              ( x ) -> @isa_optional.boolean x.ram
-  "@isa_optional.nonempty_text x.url":        ( x ) -> @isa_optional.nonempty_text x.url
+  "@isa_optional.nonempty_text x.location":   ( x ) -> @isa_optional.nonempty_text x.location
+  "@isa_optional.nonempty_text x.name":       ( x ) -> @isa_optional.nonempty_text x.name
   "@isa_optional.nonempty_text x.path":       ( x ) -> @isa_optional.nonempty_text x.path
-  "@isa_optional.dbay_urlsafe_word x.dbnick": ( x ) -> @isa_optional.dbay_urlsafe_word x.dbnick
-
-
-#===========================================================================================================
-class @Dbay_rnd
-
-  #=========================================================================================================
-  # RANDOM NUMBER GENERATION
-  # seedable for testing purposes
-  #---------------------------------------------------------------------------------------------------------
-  ### To obtain a class with a seedable PRNG that emits repeatable sequences, define class property
-  `@_rnd_int_cfg: { seed, delta, }` where both seed and delta can be arbitrary finite numbers. **NOTE**
-  very small `delta` values (like 1e-10) may cause adjacent numbers to be close together or even repeat. To
-  use default values for both parameters, set `@_rnd_int_cfg: true`.###
-  @_rnd_int_cfg: null
-  _initialize_prng: ->
-    clasz = @constructor
-    if clasz._rnd_int_cfg?
-      seed      = clasz._rnd_int_cfg?.seed  ? 12.34
-      delta     = clasz._rnd_int_cfg?.delta ? 1
-      guy.props.def @, '_rnd_int', { enumerable: false, value: ( CND.get_rnd_int seed, delta ), }
-    else
-      guy.props.def @, '_rnd_int', { enumerable: false, value: ( CND.random_integer.bind CND ), }
-    return null
-
-  #---------------------------------------------------------------------------------------------------------
-  _get_connection_url: ( dbnick = null ) ->
-    ### TAINT rename `dbnick` to `dbnick` ###
-    ### Given an optional `dbnick`, return an object with the `dbnick` and the `url` for a new SQLite
-    connection. The url will look like `'file:your_name_here?mode=memory&cache=shared` so multiple
-    connections to the same RAM DB can be opened. When `dbnick` is not given, a random dbnick like
-    `_icql_6200294332` will be chosen (prefix `_icql_`, suffix ten decimal digits). For testing, setting
-    class property `@_rnd_int_cfg` can be used to obtain repeatable series of random names. ###
-    n10     = @_rnd_int 1_000_000_000, 9_999_999_999
-    dbnick ?= "_#{n10}"
-    url     = "file:#{dbnick}?mode=memory&cache=shared"
-    return { url, dbnick, }
+  "@isa_optional.boolean x.temporary":        ( x ) -> @isa_optional.boolean x.temporary
 
 
 
 #===========================================================================================================
-class @Dbay extends @Dbay_rnd
+class @Dbay extends H.Dbay_rnd
 
   #---------------------------------------------------------------------------------------------------------
   @C: guy.lft.freeze
+    autolocation: H.autolocation
     defaults:
       constructor_cfg:
         # _temp_prefix: '_dba_temp_'
@@ -89,9 +52,7 @@ class @Dbay extends @Dbay_rnd
         timeout:      5000
         #...................................................................................................
         overwrite:    false
-        ram:          null
         path:         null
-        dbnick:       null
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( self ) ->
@@ -101,31 +62,33 @@ class @Dbay extends @Dbay_rnd
 
   #---------------------------------------------------------------------------------------------------------
   @cast_constructor_cfg: ( self ) ->
-    # debug '^344476^', self
     # debug '^344476^', self.cfg
-    if ( self.cfg.ram is false ) and ( not self.cfg.path? )
-      throw new E.Dbay_cfg_error '^dba@1^', "missing argument `path`, got #{rpr self.cfg}"
-    self.cfg.ram ?= not self.cfg.path?
-    if ( not self.cfg.ram ) and self.cfg.path? and self.cfg.dbnick?
-      throw new E.Dbay_cfg_error '^dba@1^', "only RAM DB can have both `path` and `dbnick`, got #{rpr self.cfg}"
-    if self.cfg.ram
-      { dbnick
-        url    }        = self._get_connection_url self.cfg.dbnick ? null
-      self.cfg.dbnick  ?= dbnick
-      self.cfg.url      = url
+    clasz           = self.constructor
+    cfg             = self.cfg
+    #.......................................................................................................
+    if cfg.path?
+      cfg.temporary  ?= false
+      cfg.path        = PATH.resolve cfg.path
     else
-      self.cfg.url      = null
-    # self.cfg = guy.obj.nullify_undefined self.cfg
-    self.sqlt_cfg = guy.lft.freeze guy.obj.omit_nullish @cast_sqlt_cfg self
-    self.cfg      = guy.lft.freeze guy.obj.omit_nullish self.cfg
+      cfg.temporary  ?= true
+      filename        = self._get_random_filename()
+      cfg.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
+    if cfg.temporary
+      guy.process.on_exit ->
+        try
+          FS.unlinkSync cfg.path
+        catch error
+          warn '^dbay@1^', error.message unless error.code is 'ENOENT'
+        return null
+    self.sqlt_cfg   = guy.lft.freeze guy.obj.omit_nullish @cast_sqlt_cfg self
+    self.cfg        = guy.lft.freeze guy.obj.omit_nullish cfg
     return null
 
   #---------------------------------------------------------------------------------------------------------
   @declare_types: ( self ) ->
-    # debug '^133^', self.cfg, Object.isFrozen self.cfg
     @cast_constructor_cfg self
-    self.types.validate.constructor_cfg self.cfg
-    # guy.props.def self, 'dba', { enumerable: false, value: self.cfg.dba, }
+    # self.types.validate.constructor_cfg self.cfg
+    # # guy.props.def self, 'dba', { enumerable: false, value: self.cfg.dba, }
     return null
 
   #---------------------------------------------------------------------------------------------------------
@@ -136,10 +99,14 @@ class @Dbay extends @Dbay_rnd
   #---------------------------------------------------------------------------------------------------------
   constructor: ( cfg ) ->
     super()
-    @_initialize_prng()
+    cfg             = { cfg..., }
+    # @_signature     = H.get_cfg_signature cfg
     guy.cfg.configure_with_types @, cfg, types
-    guy.props.def @, 'sqlt1', { enumerable: false, value: @_new_bsqlt3_connection(), }
-    guy.props.def @, 'sqlt2', { enumerable: false, value: @_new_bsqlt3_connection(), }
+    debug '^344476^', @cfg
+    unless @constructor._skip_sqlt
+      guy.props.def @, 'sqlt1', { enumerable: false, value: @_new_bsqlt3_connection(), }
+      guy.props.def @, 'sqlt2', { enumerable: false, value: @_new_bsqlt3_connection(), }
+    # delete @_signature
     # @_compile_sql()
     # @_create_sql_functions()
     # @_create_db_structure()

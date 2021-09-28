@@ -25,6 +25,8 @@ class @Dbay_error extends Error
 #-----------------------------------------------------------------------------------------------------------
 class @Dbay_cfg_error                 extends @Dbay_error
   constructor: ( ref, message )     -> super ref, message
+class @Dbay_internal_error            extends @Dbay_error
+  constructor: ( ref, message )     -> super ref, message
 class @Dbay_schema_exists             extends @Dbay_error
   constructor: ( ref, schema )      -> super ref, "schema #{rpr schema} already exists"
 class @Dbay_schema_unknown            extends @Dbay_error
