@@ -35,25 +35,19 @@ In either case, a file with a random name will be created in that location.
 
 ### Randomly Chosen Filename
 
-Format `dbay-XXXXXXX-XXXXX-XXXXXXX.XXXX.sqlite`
+Format `dbay-NNNNNNNNNN.sqlite`, where `N` is a digit `[0-9]`.
 
 ### Using Parameters
 
 You can also call the constructor with a configuration object that may have one or more of the following
 fields:
 
-* **`cfg.location`** (`?non-empty text`): specifies a directory to use; by default, this will be the
-  ['automatic location'](#automatic-location). It is an error to use `cfg.location` and `cfg.path` together.
-  When not specified, `cfg.location` will be derived from `cfg.path`.
-
-* **`cfg.name`** (`?non-empty text`): file name for a DB to be constructed in the directory indicated by
-  `cfg.location`. It is an error to use `cfg.name` and `cfg.path` together. When not specified, `cfg.name`
-  will be derived from `cfg.path`. The default will be a [randomly chosen
-  filename](#randomly-chosen-filename).
-
 * **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to; if the path given
-  is relative, it will be resolved in reference to the current directory (`process.cwd()`). It is an error
-  to use `cfg.path` and `cfg.location` or `cfg.name` together. When not specified, `cfg.path` will be either
-  derived from `cfg.name` and/or `cfg.path`;
+  is relative, it will be resolved in reference to the current directory (`process.cwd()`). When not
+  specified, `cfg.path` will be derived from [`Dbay.C.autolocation`](#automatic-location) and a [randomly
+  chosen filename](#randomly-chosen-filename).
+
+
+
 
 
