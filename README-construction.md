@@ -6,6 +6,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Using Defaults](#using-defaults)
+- [Automatic Location](#automatic-location)
 - [Using Parameters](#using-parameters)
   - [All Parameters in Systematic Order](#all-parameters-in-systematic-order)
   - [Valid Parameter Combinations](#valid-parameter-combinations)
@@ -23,39 +24,29 @@ db        = new Dbay()
 ```
 
 The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
-connections to the same in-memory DB (a RAM DB in our terminology). This is achieved by passing an URL like
-`file:_6200294332?mode=memory&cache=shared` to `better-sqlite3` where the name (`_6200294332`) is a random
-10-digit number.
+connections to the same temporary DB in the ['automatic location']().
+
+### Automatic Location
+
+The so-called 'automatic location' is either
+
+* the directory `/dev/shm` on Linux systems that support **SH**ared **M**emory (a.k.a a RAM disk)
+* the OS's temporary directory as announced by `os.tmpdir()`
+
+In either case, a file with a random name will be created in that location.
 
 ### Using Parameters
 
 You can also call the constructor with a configuration object that may have one or more of the following
 fields:
 
-* **`cfg.ram`** (`?boolean`): Specifies whether a RAM DB is to be opened. All DBay in-memory DBs are named
-  so several connections to the same RAM DB can be opened (this is necessitated by a <del>shortcome</del>
-  <ins>feature</ins> of `better-sqlite3` that prohibits any reads against the DB from within User-Defined
-  Functions).
+* **`cfg.location`** (`?non-empty text`): specifies a directory to use; by default, this will be the ['automatic location']().
 
-  * When neither **`cfg.path`** nor **`cfg.dbnick`** are given, an empty RAM DB will be opened.
-  * When **`cfg.dbnick`** (but not **`cfg.path`**) is given, a
-  * When **`cfg.path`** is given, an SQLite DB file will be (created if non-existant and) opened; then,
-    the DB will be mirrored to RAM so now you have a RAM DB associated with a disk location. You can use
-    `db.save()` any number of times to write changes to disk. DB contents will be lost should the
-    process terminate after changes to the DB but before `db.save()` terminates. This mode of operation
-    is called 'Eventual Persistency'.
+* **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to. In case this
+  points to a directory, in which case `cfg.name` must also be given.
 
-* **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to.
-  * When `path` is given but `ram` is not set (or `null` or `undefined`), `ram` will assume the value
-    `false`.
-  * When `path` is given
-    * and `ram` is **`false`**, a file DB will be opened from or created at the location given. This DB
-      will have Continuous Persistency, i.e. operate in the normal DB mode where all changes are reflected
-      on disk and thus made durable with a high degree of safety against data losses. Otherwise,
-    * when `ram` is `true`, a RAM DB will be opened.
-
-* **`cfg.dbnick`** (`?URL-safe word`): name given to a RAM DB. It will be used to construct a URL that
-  will be passed to SQLite. There's little use in passing in `dbnick` explicitly; if one wishes to
+* **`cfg.name`** (`?URL-safe word`): file name for a DB to be constructed in the ['automatic location'](). It will be used to construct a URL that
+  will be passed to SQLite. There's little use in passing in `name` explicitly; if one wishes to
   construct multiple `Dbay()` objects to the same RAM DB, one can always use the `cfg` object of the first
   instance:
 
@@ -75,37 +66,37 @@ parameters are those to be found under `db.cfg.*` in the newly constructed insta
   printing `db.cfg` for introspection, and fewer combinations of values have to be pondered.
 * For combinations that are unacceptable (cause errors), `out.*` parameters are left unspecified.
 
-In addition to the `out.*` parameters listed, `db.cfg.url` will be set whenever `dbnick` is set. This URL
+In addition to the `out.*` parameters listed, `db.cfg.url` will be set whenever `name` is set. This URL
 will be of the form
 * `file:_6200294332?mode=memory&cache=shared` when generated, or
-* `file:your_db_name_here?mode=memory&cache=shared` where `dbnick` is given (as `'your_db_name_here'` in
+* `file:your_db_name_here?mode=memory&cache=shared` where `name` is given (as `'your_db_name_here'` in
   this example).
 
 
 
-| nr |  in.ram |   in.path   | in.dbnick  | out.ram |   out.path  |    out.dbnick   | out.persistency | out.error | same as  |
+| nr |  in.ram |   in.path   | in.name  | out.ram |   out.path  |    out.name   | out.persistency | out.error | same as  |
 |----|---------|-------------|------------|---------|-------------|-----------------|-----------------|-----------|----------|
 |  1 | `null`  | `null`      | `null`     | `true`  | `null`      | `'_6200294332'` | none            | ———       | 1, 9     |
-|  2 |         |             | `'dbnick'` | `true`  | `null`      | `'dbnick'`      | none            | ———       | 2, 10    |
+|  2 |         |             | `'name'` | `true`  | `null`      | `'name'`      | none            | ———       | 2, 10    |
 |  3 |         | `'db/path'` | `null`     | `false` | `'db/path'` | `null`          | continuous      | ———       | 3, 7     |
-|  4 |         |             | `'dbnick'` | ———     | ———         | ———             | ———             | **E01**   | 4, 8, 12 |
+|  4 |         |             | `'name'` | ———     | ———         | ———             | ———             | **E01**   | 4, 8, 12 |
 |  5 | `false` | `null`      | `null`     | ———     | ———         | ———             | ———             | **E02**   | 5, 6     |
-|  6 |         |             | `'dbnick'` | ———     | ———         | ———             | ———             | **E02**   | 5, 6     |
+|  6 |         |             | `'name'` | ———     | ———         | ———             | ———             | **E02**   | 5, 6     |
 |  7 |         | `'db/path'` | `null`     | `false` | `'db/path'` | `null`          | continuous      | ———       | 3, 7     |
-|  8 |         |             | `'dbnick'` | ———     | ———         | ———             | ———             | **E01**   | 4, 8, 12 |
+|  8 |         |             | `'name'` | ———     | ———         | ———             | ———             | **E01**   | 4, 8, 12 |
 |  9 | `true`  | `null`      | `null`     | `true`  | `null`      | `'_6200294332'` | none            | ———       | 1, 9     |
-| 10 |         |             | `'dbnick'` | `true`  | `null`      | `'dbnick'`      | none            | ———       | 2, 10    |
+| 10 |         |             | `'name'` | `true`  | `null`      | `'name'`      | none            | ———       | 2, 10    |
 | 11 |         | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_6200294332'` | eventual        | ———       | ———      |
-| 12 |         |             | `'dbnick'` | ———     | ———         | ———             | none            | **E01**   | 4, 8, 12 |
+| 12 |         |             | `'name'` | ———     | ———         | ———             | none            | **E01**   | 4, 8, 12 |
 
 
 
 #### Valid Parameter Combinations
 
-|   nr  |      in.ram     |   in.path   | in.dbnick  | out.ram |   out.path  |    out.dbnick   | out.persistency |
+|   nr  |      in.ram     |   in.path   | in.name  | out.ram |   out.path  |    out.name   | out.persistency |
 |-------|-----------------|-------------|------------|---------|-------------|-----------------|-----------------|
 | 1, 9  | `null`, `true`  | `null`      | `null`     | `true`  | `null`      | `'_6200294332'` | none            |
-| 2, 10 | `null`, `true`  | `null`      | `'dbnick'` | `true`  | `null`      | `'dbnick'`      | none            |
+| 2, 10 | `null`, `true`  | `null`      | `'name'` | `true`  | `null`      | `'name'`      | none            |
 | 11    | `true`          | `'db/path'` | `null`     | `true`  | `'db/path'` | `'_6200294332'` | eventual        |
 | 3, 7  | `null`, `false` | `'db/path'` | `null`     | `false` | `'db/path'` | `null`          | continuous      |
 
@@ -114,23 +105,23 @@ properties may be present:
 
 |   nr  |                                                                                                 |
 |-------|-------------------------------------------------------------------------------------------------|
-| 1, 9  | `{ ram: true, dbnick: '_6200294332', url: 'file:_6200294332?mode=memory&cache=shared' }`        |
-| 2, 10 | `{ ram: true, dbnick: 'dbnick', url: 'file:dbnick?mode=memory&cache=shared' }`                  |
-| 11    | `{ ram: true, dbnick: 'dbnick', url: 'file:dbnick?mode=memory&cache=shared', path: 'db/path' }` |
+| 1, 9  | `{ ram: true, name: '_6200294332', url: 'file:_6200294332?mode=memory&cache=shared' }`        |
+| 2, 10 | `{ ram: true, name: 'name', url: 'file:name?mode=memory&cache=shared' }`                  |
+| 11    | `{ ram: true, name: 'name', url: 'file:name?mode=memory&cache=shared', path: 'db/path' }` |
 | 3, 7  | `{ ram: false, path: 'db/path' }`                                                               |
 |       |                                                                                                 |
 
 
 #### Invalid Parameter Combinations
 
-* When a `path` is given, `dbnick` must not be set. In the future, we may allow this `dbnick` to be used when
+* When a `path` is given, `name` must not be set. In the future, we may allow this `name` to be used when
   `db.transfer_to_ram()` is called.
 * When `ram` is explicitly `false`, then `path` must be set.
 
-|    nr    |          in.ram         |     in.path     |     in.dbnick      |                  out.error                   |
+|    nr    |          in.ram         |     in.path     |     in.name      |                  out.error                   |
 |----------|-------------------------|-----------------|--------------------|----------------------------------------------|
-| 4, 8, 12 | `null`, `false`, `true` | **`'db/path'`** | **`'dbnick'`**     | **E01 cannot give both `path` and `dbnick`** |
-| 5, 6     | `false`                 | **`null`**      | `null`, `'dbnick'` | **E02 missing argument `path`**              |
+| 4, 8, 12 | `null`, `false`, `true` | **`'db/path'`** | **`'name'`**     | **E01 cannot give both `path` and `name`** |
+| 5, 6     | `false`                 | **`null`**      | `null`, `'name'` | **E02 missing argument `path`**              |
 
 
 
