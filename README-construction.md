@@ -47,7 +47,8 @@ fields:
   specified, `cfg.path` will be derived from [`Dbay.C.autolocation`](#automatic-location) and a [randomly
   chosen filename](#randomly-chosen-filename).
 
-
+* **`cfg.temporary`** (`?boolean`): Specifies whether DB file is to be removed when process exits. By
+  default `false` if `cfg.path` is given, and `true` otherwise (when a random filename is chosen).
 
 
 
