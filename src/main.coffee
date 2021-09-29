@@ -23,10 +23,10 @@ types                     = new ( require 'intertype' ).Intertype
   validate_list_of }      = types.export()
 SQL                       = String.raw
 guy                       = require 'guy'
-E                         = require './errors'
 new_bsqlt3_connection     = require 'better-sqlite3'
-H                         = require './helpers'
 #...........................................................................................................
+E                         = require './errors'
+H                         = require './helpers'
 { Dbay_random }           = require './random-mixin'
 { Dbay_query }            = require './query-mixin'
 
