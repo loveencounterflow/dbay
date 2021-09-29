@@ -61,61 +61,72 @@ class @Dbay extends H.Dbay_rnd
 
   #---------------------------------------------------------------------------------------------------------
   @cast_constructor_cfg: ( self ) ->
-    # debug '^344476^', self.cfg
     clasz           = self.constructor
-    cfg             = self.cfg
+    R               = self.cfg
     #.......................................................................................................
-    if cfg.path?
-      cfg.temporary  ?= false
-      cfg.path        = PATH.resolve cfg.path
+    if R.path?
+      R.temporary  ?= false
+      R.path        = PATH.resolve R.path
     else
-      cfg.temporary  ?= true
+      R.temporary  ?= true
       filename        = self._get_random_filename()
-      cfg.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
-    if cfg.temporary
-      guy.process.on_exit ->
-        try
-          FS.unlinkSync cfg.path
-        catch error
-          warn '^dbay@1^', error.message unless error.code is 'ENOENT'
-        return null
-    self.sqlt_cfg   = guy.lft.freeze guy.obj.omit_nullish @cast_sqlt_cfg self
-    self.cfg        = guy.lft.freeze guy.obj.omit_nullish cfg
-    return null
+      R.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
+    return R
 
   #---------------------------------------------------------------------------------------------------------
   @declare_types: ( self ) ->
-    @cast_constructor_cfg self
-    # self.types.validate.constructor_cfg self.cfg
-    # # guy.props.def self, 'dba', { enumerable: false, value: self.cfg.dba, }
     ### called from constructor via `guy.cfg.configure_with_types()` ###
+    self.cfg        = @cast_constructor_cfg self
+    self.sqlt_cfg   = @cast_sqlt_cfg        self
+    self.cfg        = guy.lft.freeze guy.obj.omit_nullish self.cfg
+    self.sqlt_cfg   = guy.lft.freeze guy.obj.omit_nullish self.sqlt_cfg
+    self.types.validate.constructor_cfg self.cfg
     return null
-
-  #---------------------------------------------------------------------------------------------------------
-  _new_bsqlt3_connection: ->
-    path_or_url = if @cfg.ram then @cfg.url else @cfg.path
-    return new_bsqlt3_connection path_or_url, @sqlt_cfg
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( cfg ) ->
     super()
-    cfg             = { cfg..., }
-    # @_signature     = H.get_cfg_signature cfg
     guy.cfg.configure_with_types @, cfg, types
-    debug '^344476^', @cfg
+    @_register_schema 'main', @cfg.path, @cfg.temporary
+    #.......................................................................................................
     unless @constructor._skip_sqlt
       guy.props.def @, 'sqlt1', { enumerable: false, value: @_new_bsqlt3_connection(), }
       guy.props.def @, 'sqlt2', { enumerable: false, value: @_new_bsqlt3_connection(), }
-    # delete @_signature
     # @_compile_sql()
     # @_create_sql_functions()
     # @_create_db_structure()
+    guy.process.on_exit => @destroy()
     return undefined
 
+  #---------------------------------------------------------------------------------------------------------
+  _new_bsqlt3_connection: ->
+    throw new Error '^4348539^'
+    path_or_url = if @cfg.ram then @cfg.url else @cfg.path
+    return new_bsqlt3_connection path_or_url, @sqlt_cfg
+
+  #---------------------------------------------------------------------------------------------------------
+  _register_schema: ( schema, path, temporary ) ->
     ### Register a schema and descriptional properties, especially whether DB file is to be removed on
     process exit. ###
+    guy.props.def @, '_dbs', { enumerable: false, value: {}, } unless @_dbs?
+    @_dbs[ schema ] = { path, temporary, }
+    return null
+
+  #=========================================================================================================
+  # CLEANUP ON DEMAND, ON PROCESS EXIT
+  #---------------------------------------------------------------------------------------------------------
+  _unlink_file: ( path ) ->
     ### Given a `path`, unlink the associated file; in case no file is found, ignore silently. If an error
     occurs, just print a warning. To be used in an exit handler, so no error handling makes sense here. ###
+    try FS.unlinkSync path catch error
+      warn '^dbay@1^', error.message unless error.code is 'ENOENT'
+    return null
+
+  #---------------------------------------------------------------------------------------------------------
+  destroy: ->
     ### To be called on progress exit or explicitly by client code. Removes all DB files marked 'temporary'
     in `@_dbs`. ###
+    @_unlink_file d.path if d.temporary for schema, d of @_dbs
+    return null
+
 
