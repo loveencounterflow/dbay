@@ -89,7 +89,7 @@ What's more, benchmarks indicate that **what is slowing down work with an SQLite
 system access *per se*, it's the implicit transactions that wrap each and every statement** in a pair of
 `begin transaction`, `commit` statements. **Curiously, slowdown-by-transaction is much more pronounced with
 RAM disks as opposed to SSD access**, as shown by the paltry `bsqlt_tmpfs 8.9%` result. I have no
-explanation for that performance cliff other than that maybe SSD access is better 'hidden' across hardware
+explanation for that performance cliff other than that maybe disk writes are better managed between hardware
 components and threads when using SSDs.
 
 
