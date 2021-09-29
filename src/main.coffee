@@ -56,6 +56,7 @@ class @Dbay extends H.Dbay_rnd
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( self ) ->
+    ### Produce a configuration object for `better-sqlite3` from `self.cfg`. ###
     R                = guy.obj.pluck_with_fallback self.cfg, null, 'readonly', 'timeout'
     R.fileMustExist  = not self.cfg.create; delete self.cfg.create
     return R
@@ -89,6 +90,7 @@ class @Dbay extends H.Dbay_rnd
     @cast_constructor_cfg self
     # self.types.validate.constructor_cfg self.cfg
     # # guy.props.def self, 'dba', { enumerable: false, value: self.cfg.dba, }
+    ### called from constructor via `guy.cfg.configure_with_types()` ###
     return null
 
   #---------------------------------------------------------------------------------------------------------
@@ -112,4 +114,10 @@ class @Dbay extends H.Dbay_rnd
     # @_create_db_structure()
     return undefined
 
+    ### Register a schema and descriptional properties, especially whether DB file is to be removed on
+    process exit. ###
+    ### Given a `path`, unlink the associated file; in case no file is found, ignore silently. If an error
+    occurs, just print a warning. To be used in an exit handler, so no error handling makes sense here. ###
+    ### To be called on progress exit or explicitly by client code. Removes all DB files marked 'temporary'
+    in `@_dbs`. ###
 
