@@ -9,6 +9,7 @@ badge                     = 'DBAY/MIXIN/QUERY'
 debug                     = CND.get_logger 'debug',     badge
 #...........................................................................................................
 guy                       = require 'guy'
+E                         = require './errors'
 
 
 #===========================================================================================================
@@ -40,10 +41,11 @@ guy                       = require 'guy'
   #   return statement.run P...
 
   #---------------------------------------------------------------------------------------------------------
-  execute: ( sql ) ->
-    throw new E.Dba_argument_not_allowed '^dba@308^', "extra", rpr x if ( x = arguments[ 1 ] )?
+  execute: ( sql, P... ) ->
+    throw new E.Dbay_argument_not_allowed '^dba@308^', "extra", rpr P if P.length > 0
     # @_echo 'execute', sql
-    return @sqlt1.exec sql
+    @sqlt1.exec sql
+    return null
 
   #---------------------------------------------------------------------------------------------------------
   prepare: ( sql  ) ->
