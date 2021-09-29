@@ -36,6 +36,7 @@ DBay provides
 
 * **[`Dbay` object construction](./README-construction.md)**
 * **[Benchmarks](./README-benchmarks.md)**
+* **[Executing SQL and Queries](./README-query.md)**
 
 ## Note on Package Structure
 
