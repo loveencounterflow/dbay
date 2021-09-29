@@ -29,16 +29,8 @@ E                         = require './errors'
   #---------------------------------------------------------------------------------------------------------
   query: ( sql, P... ) ->
     # @_echo 'query', sql
-    statement = ( @_statements[ sql ] ?= @sqlt.prepare sql )
-    returns_data  = statement.reader
-    debug '^0048560^', returns_data
-    # return statement.iterate P...
-
-  # #---------------------------------------------------------------------------------------------------------
-  # run: ( sql, P... ) ->
-  #   @_echo 'run', sql
-  #   statement = ( @_statements[ sql ] ?= @sqlt.prepare sql )
-  #   return statement.run P...
+    statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
 
   #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
