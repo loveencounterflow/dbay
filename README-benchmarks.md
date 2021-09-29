@@ -71,7 +71,7 @@ obtain an in-memory DB?—Other than "That's the accumulated results of over 20 
 probably no very good answer.
 
 However, after much experimenting, benchmarking and feture-testing, I feel confident to state that **you
-should probably forget about using SQLite in-memory DBs as outlined in point **(3)**, above. The only
+should probably forget about using SQLite in-memory DBs as outlined in point (3)**, above. The only
 exception to the rule would be when you wanted top performance (and who wouldn't), not worry about explicit
 transactions, do not need data durability (i.e. when the DB may become disposable on process exit), and do
 not plan on having to use more than a single connection (meaning you can not query data in that DB from
