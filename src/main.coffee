@@ -31,10 +31,8 @@ H                         = require './helpers'
 #-----------------------------------------------------------------------------------------------------------
 types.declare 'constructor_cfg', tests:
   "@isa.object x":                            ( x ) -> @isa.object x
-  "@isa_optional.nonempty_text x.location":   ( x ) -> @isa_optional.nonempty_text x.location
-  "@isa_optional.nonempty_text x.name":       ( x ) -> @isa_optional.nonempty_text x.name
-  "@isa_optional.nonempty_text x.path":       ( x ) -> @isa_optional.nonempty_text x.path
-  "@isa_optional.boolean x.temporary":        ( x ) -> @isa_optional.boolean x.temporary
+  "@isa.nonempty_text x.path":                ( x ) -> @isa.nonempty_text x.path
+  "@isa.boolean x.temporary":                 ( x ) -> @isa.boolean x.temporary
 
 
 
