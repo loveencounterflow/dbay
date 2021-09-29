@@ -14,6 +14,7 @@
 - [Upper League](#upper-league)
 - [Also-Rans](#also-rans)
 - [Deplorables](#deplorables)
+- [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -80,7 +81,17 @@ within UDFs). In that case, feel free to pass in an empty string or `':memory:'`
 **Always just use ordinary file system paths**. If you're on Linux, consider to use `/dev/shm` which is a
 read-to-use `tmpfs`, or use something like `sudo mount -t tmpfs -o size=512m none /mnt/ramdisk` to obtain a
 new RAM disk. On Linux systems that have a directory called `/dev/shm`, DBay will use that location to open
-DB files when no explicit `path` is passed in, and fall back to `/tmp` when `/dev/shm` is not found.
+DB files when no explicit `path` is passed in, and fall back to `/tmp` when `/dev/shm` is not found. You'll
+get to use [WAL mode](https://sqlite.org/wal.html) which is great because together with multiple connections
+it enables user-defined functions that can concurrently query rows from the same DB they deliver values to.
+
+What's more, benchmarks indicate that **what is slowing down work with an SQLite DB is not so much file
+system access *per se*, it's the implicit transactions that wrap each and every statement** in a pair of
+`begin transaction`, `commit` statements. **Curiously, slowdown-by-transaction is much more pronounced with
+RAM disks as opposed to SSD access**, as shown by the paltry `bsqlt_tmpfs 8.9%` result. I have no
+explanation for that performance cliff other than that maybe SSD access is better 'hidden' across hardware
+components and threads when using SSDs.
+
 
 ### Top Runners
 
@@ -123,8 +134,9 @@ briancpg_tx              1,730 Hz ≙ 1 ÷ 26.0        3.8 % │▌            �
 ```
 
 
+### To Do
 
-
+* explain different benchmarks scenarios
 
 
 
