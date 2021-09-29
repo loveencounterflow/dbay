@@ -100,9 +100,7 @@ class @Dbay extends H.Dbay_rnd
 
   #---------------------------------------------------------------------------------------------------------
   _new_bsqlt3_connection: ->
-    throw new Error '^4348539^'
-    path_or_url = if @cfg.ram then @cfg.url else @cfg.path
-    return new_bsqlt3_connection path_or_url, @sqlt_cfg
+    return new_bsqlt3_connection @cfg.path, @sqlt_cfg
 
   #---------------------------------------------------------------------------------------------------------
   _register_schema: ( schema, path, temporary ) ->
