@@ -116,18 +116,13 @@ class @Dbay extends Dbay_query Dbay_random()
   #=========================================================================================================
   # CLEANUP ON DEMAND, ON PROCESS EXIT
   #---------------------------------------------------------------------------------------------------------
-  _unlink_file: ( path ) ->
-    ### Given a `path`, unlink the associated file; in case no file is found, ignore silently. If an error
-    occurs, just print a warning. To be used in an exit handler, so no error handling makes sense here. ###
-    try FS.unlinkSync path catch error
-      warn '^dbay@1^', error.message unless error.code is 'ENOENT'
-    return null
-
-  #---------------------------------------------------------------------------------------------------------
   destroy: ->
     ### To be called on progress exit or explicitly by client code. Removes all DB files marked 'temporary'
     in `@_dbs`. ###
-    @_unlink_file d.path if d.temporary for schema, d of @_dbs
+    try @sqlt1.close() catch error then warn '^dbay@1^', error.message
+    try @sqlt2.close() catch error then warn '^dbay@1^', error.message
+    for schema, d of @_dbs
+      H.unlink_file d.path if d.temporary
     return null
 
 
