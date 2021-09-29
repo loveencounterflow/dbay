@@ -42,32 +42,45 @@ There are, confusingly, several 'operational modes' to run SQLite:
 
 * **(1)** The **classical way** is of course to pass in a file system path that SQLite will use to open an
   existing or create a new database file.
-* **(2)** There are three competing, *almost* equivalent ways to obtain an in-memory DB:
-  * **(2.1)** One can pass in the special string [`':memory:'` to obtain an in-memory
-    DB](https://www.sqlite.org/inmemorydb.html),
-  * **(2.2)** or an empty string `''` that opens [a temporary
-    DB](https://www.sqlite.org/inmemorydb.html#temp_db) (which is almost but not 100% the same thing as an
-    in-memory DB).
-  * **(2.3)** Another (in theory preferable) way to open a DB that resides in RAM is using [a connection URL
-    like with `file:xxx?mode=memory&cache=shared`](https://www.sqlite.org/sharedcache.html#inmemsharedcache)
-    instead of a plain filename; since such in-memory are identified via a name, several connections to the
+* **(2)** One can **open a DB situated on a RAM disk** (read: Linux `ramfs` or `tmpfs`; also **`sh`**ared
+  **`m`**emory). **Opening a DB file on a RAM disk has many advantages** over using any of they ways listed
+  under (3), below, since a RAM disk is just a file system, meaning the file can be accessed by all the
+  usual means.
+* **(3)** Last but not least there are no less than *three* competing, *almost* equivalent ways to obtain an
+  **in-memory DB**:
+  * **(3.1)** One can pass in the special string [`':memory:'` to obtain a so-called *in-memory DB* (without
+    'shared cache')](https://www.sqlite.org/inmemorydb.html),
+  * **(3.2)** or an empty string `''` that opens [a *temporary DB* (again without 'shared
+    cache')](https://www.sqlite.org/inmemorydb.html#temp_db) (which is almost but not 100% the same thing as
+    an in-memory DB).
+  * **(3.3)** The third (and in theory preferable) way to open a DB that resides in RAM is using [a
+    connection URL like with
+    `file:xxx?mode=memory&cache=shared`](https://www.sqlite.org/sharedcache.html#inmemsharedcache) instead
+    of a plain filename; since such an in-memory DB is identified via a name, several connections to the
     *same* in-memory DB may be made (albeit only from the same client process).
-    * Having more than one connection to the same DB is interesting as it enables user-defined functions
-      (UDFs) to issue queries against the DB, but
+    * Having more than one connection to the same DB is necessary to enable user-defined functions (UDFs) to
+      issue queries against the DB, but
     * the downside is that shared connections lacks feature-parity with [WAL
-      mode](https://sqlite.org/wal.html) and
-    * are [not loved by the SQLite devs](https://sqlite.org/forum/info/871b9085849abd6e) (quoting drh: "It
-      was a clever work-around [...] shared-cache is considered a mistake and a misfeature").
-* **(3)** Last but not least one can **open a DB situated on a RAM disk** (read: Linux `ramfs` or `tmpfs`;
-  also **`sh`**ared **`m`**emory). **Opening a DB file on a RAM disk has many advantages** over using any of
-  `':memory:'`, `''` or `'file:xxx?mode=memory&cache=shared'` since a RAM disk is just a file system,
-  meaning the file can be accessed by all the usual means and ways.
+      mode](https://sqlite.org/wal.html) and that
+    * [the 'shared connection' feature is not loved by the SQLite
+      devs](https://sqlite.org/forum/info/871b9085849abd6e) (quoting drh: "It was a clever work-around [...]
+      shared-cache is considered a mistake and a misfeature").
 
 If the above litany is confusing for you that's because it is. Why *three* distinct, non-obvious ways to
 obtain an in-memory DB?—Other than "That's the accumulated results of over 20 years of development" there's
-probably no very good reason. But to boil it down: best to forget about point **(2)**, just use file system
-paths. If you're on Linux, consider to use `/dev/shm` which is a read-to-use `tmpfs`, or use something like
-`sudo mount -t tmpfs -o size=512m none /mnt/ramdisk` to obtain a new RAM disk.
+probably no very good answer.
+
+However, after much experimenting, benchmarking and feture-testing, I feel confident to state that **you
+should probably forget about using SQLite in-memory DBs as outlined in point **(3)**, above. The only
+exception to the rule would be when you wanted top performance (and who wouldn't), not worry about explicit
+transactions, do not need data durability (i.e. when the DB may become disposable on process exit), and do
+not plan on having to use more than a single connection (meaning you can not query data in that DB from
+within UDFs). In that case, feel free to pass in an empty string or `':memory:'` as path; but otherwise:
+
+**Always just use ordinary file system paths**. If you're on Linux, consider to use `/dev/shm` which is a
+read-to-use `tmpfs`, or use something like `sudo mount -t tmpfs -o size=512m none /mnt/ramdisk` to obtain a
+new RAM disk. On Linux systems that have a directory called `/dev/shm`, DBay will use that location to open
+DB files when no explicit `path` is passed in, and fall back to `/tmp` when `/dev/shm` is not found.
 
 ### Top Runners
 
