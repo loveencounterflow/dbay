@@ -48,5 +48,8 @@ guy                       = require 'guy'
   #---------------------------------------------------------------------------------------------------------
   prepare: ( sql  ) ->
     # @_echo 'prepare', sql
-    return @sqlt1.prepare sql
+    return ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+
+
+
 
