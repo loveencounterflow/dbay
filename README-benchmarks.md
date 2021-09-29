@@ -21,33 +21,34 @@
 
 #### SQLite is Fast
 
-The (preliminary) benchmark results (see
+The (preliminary) benchmark results (see below; code found at
 [in-memory-sql.benchmarks.coffee](https://github.com/loveencounterflow/hengist/blob/master/dev/in-memory-sql/src/in-memory-sql.benchmarks.coffee),
 [in-memory-sql.benchmarks.js](https://github.com/loveencounterflow/hengist/blob/master/dev/in-memory-sql/lib/in-memory-sql.benchmarks.js))
 demonstrate that
 
-* **SQLite can do RDBMS stuff faster than some of its competitors (read: PostgreSQL)**;
+* **SQLite can do RDBMS stuff faster than some of its competitors** (notably: PostgreSQL);
   * this is no doubt helped by the in-process nature of SQLite as opposed to the server/client architecture
     of more traditional RDBMSes.
 * **You can get top speed out of SQLite under NodeJS using
   [`better-sqlite3`](https://github.com/JoshuaWise/better-sqlite3)**, provided that
   * SQLite is **configured correctly** (recommended to always use `pragma journal_mode = WAL`), and
   * **explicit transactions (below marked `*_tx`) are used** to bundle many small actions (here: SQL
-    `insert`s).
+    `insert`s) into atomic commits.
+
 
 #### SQLite is Not Fast Except When It Is
 
 There are, confusingly, several 'operational modes' to run SQLite:
 
-* **(1)** The classical way is of course to pass in a file system path that SQLite will use to open an
+* **(1)** The **classical way** is of course to pass in a file system path that SQLite will use to open an
   existing or create a new database file.
-* **(2)**
-  * One can also pass in the special string [`':memory:'` to obtain an in-memory
+* **(2)** There are three competing, *almost* equivalent ways to obtain an in-memory DB:
+  * **(2.1)** One can pass in the special string [`':memory:'` to obtain an in-memory
     DB](https://www.sqlite.org/inmemorydb.html),
-  * **(2.1)** or an empty string `''` that opens [a temporary
+  * **(2.2)** or an empty string `''` that opens [a temporary
     DB](https://www.sqlite.org/inmemorydb.html#temp_db) (which is almost but not 100% the same thing as an
     in-memory DB).
-  * **(2.2)** Another (in theory preferable) way to open a DB that resides in RAM is using [a connection URL
+  * **(2.3)** Another (in theory preferable) way to open a DB that resides in RAM is using [a connection URL
     like with `file:xxx?mode=memory&cache=shared`](https://www.sqlite.org/sharedcache.html#inmemsharedcache)
     instead of a plain filename; since such in-memory are identified via a name, several connections to the
     *same* in-memory DB may be made (albeit only from the same client process).
