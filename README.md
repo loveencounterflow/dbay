@@ -81,7 +81,7 @@ dbay`, both package managers work fine.*
   `pragma journal_mode = WAL` for better concurrent access). Cons include: `tmpfs`-based RAM DBs necessitate
   mounting a RAM disk which needs `sudo` rights, so might as well just instruct users to mount RAM disk,
   then use that path? Still, it would be preferrable to have some automatic copy-to-durable in place.
-
+* **[–]** implement context handler for discardable / temporary file
 
 
 
