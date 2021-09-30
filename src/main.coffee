@@ -27,8 +27,9 @@ new_bsqlt3_connection     = require 'better-sqlite3'
 #...........................................................................................................
 E                         = require './errors'
 H                         = require './helpers'
-{ Dbay_random }           = require './random-mixin'
-{ Dbay_query }            = require './query-mixin'
+{ Dbay_random           } = require './random-mixin'
+{ Dbay_query            } = require './query-mixin'
+{ Dbay_tx               } = require './tx-mixin'
 
 
 #-----------------------------------------------------------------------------------------------------------
