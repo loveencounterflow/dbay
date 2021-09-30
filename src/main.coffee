@@ -41,11 +41,13 @@ types.declare 'constructor_cfg', tests:
 
 
 #===========================================================================================================
-class @Dbay extends Dbay_query Dbay_random()
+class @Dbay extends Dbay_query Dbay_tx Dbay_random()
 
   #---------------------------------------------------------------------------------------------------------
   @C: guy.lft.freeze
     autolocation: H.autolocation
+    symbols:
+      execute: Symbol 'execute'
     defaults:
       constructor_cfg:
         # _temp_prefix: '_dba_temp_'
