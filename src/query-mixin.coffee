@@ -27,6 +27,19 @@ E                         = require './errors'
     return null
 
   #---------------------------------------------------------------------------------------------------------
+  do: ( sql, P... ) =>
+    return @query sql, P... if P.length > 0
+    return @execute sql, P... if @_statements[ sql ] is @constructor.C.symbols.execute
+    try
+      statement = @_statements[ sql ] = @sqlt1.prepare sql
+    catch error
+      throw error unless ( error.name is 'RangeError' ) \
+        and ( error.message is "The supplied SQL string contains more than one statement" )
+      @_statements[ sql ] = @constructor.C.symbols.execute
+      return @execute sql, P...
+    return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
+
+  #---------------------------------------------------------------------------------------------------------
   query: ( sql, P... ) ->
     # @_echo 'query', sql
     statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
@@ -34,7 +47,7 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
-    throw new E.Dbay_argument_not_allowed '^dba@308^', "extra", rpr P if P.length > 0
+    throw new E.Dbay_argument_not_allowed '^dbay/query@308^', "extra", rpr P if P.length > 0
     # @_echo 'execute', sql
     @sqlt1.exec sql
     return null
