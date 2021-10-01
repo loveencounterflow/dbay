@@ -82,8 +82,13 @@ dbay`, both package managers work fine.*
   mounting a RAM disk which needs `sudo` rights, so might as well just instruct users to mount RAM disk,
   then use that path? Still, it would be preferrable to have some automatic copy-to-durable in place.
 * **[–]** implement context handler for discardable / temporary file
-
-
+* **[+]** implement `Dbay::do()` as a method that unifies all of `better-sqlite3`'s `Statement::run()`,
+  `Statement::iterate()`, and `Database::execute()`.
+* **[–]** allow to call `Dbay::do -> ...` with a synchronous function with the same semantics as
+  `Dbay::with_transaction -> ...`.
+* **[–]** allow to call `Dbay::do -> ...` with an asynchronous function
+* **[–]** make `db = new Dbay()` an instance of `Function` that, when called, runs `Dbay::do()`
+  `Database::execute()`.
 
 
 
