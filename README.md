@@ -86,7 +86,7 @@ dbay`, both package managers work fine.*
   `Statement::iterate()`, and `Database::execute()`.
 * **[+]** allow to call `Dbay::do -> ...` with a synchronous function with the same semantics as
   `Dbay::with_transaction -> ...`.
-* **[–]** allow to call `Dbay::do { mode: 'deferred', }, -> ...`.
+* **[+]** allow to call `Dbay::do { mode: 'deferred', }, -> ...`.
 * **[–]** allow to call `Dbay::do -> ...` with an asynchronous function
 * **[+]** make `db = new Dbay()` an instance of `Function` that, when called, runs `Dbay::do()`
   `Database::execute()`.
