@@ -107,7 +107,7 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random Function
     # @_compile_sql()
     # @_create_sql_functions()
     # @_create_db_structure()
-    guy.process.on_exit => @._me.destroy()
+    guy.process.on_exit => @_me.destroy()
     return @_me
 
   #---------------------------------------------------------------------------------------------------------
@@ -127,8 +127,8 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random Function
   destroy: ->
     ### To be called on progress exit or explicitly by client code. Removes all DB files marked 'temporary'
     in `@_dbs`. ###
-    try @sqlt1.close() catch error then warn '^dbay/main@1^', error.message
-    try @sqlt2.close() catch error then warn '^dbay/main@2^', error.message
+    try @sqlt1?.close() catch error then warn '^dbay/main@1^', error.message
+    try @sqlt2?.close() catch error then warn '^dbay/main@2^', error.message
     for schema, d of @_dbs
       H.unlink_file d.path if d.temporary
     return null
