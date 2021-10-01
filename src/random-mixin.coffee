@@ -23,6 +23,8 @@ guy                       = require 'guy'
   very small `delta` values (like 1e-10) may cause adjacent numbers to be close together or even repeat. To
   use default values for both parameters, set `@_rnd_int_cfg: true`.###
   @_rnd_int_cfg: false
+
+  #---------------------------------------------------------------------------------------------------------
   _$random_initialize: ->
     clasz = @constructor
     if clasz._rnd_int_cfg?
