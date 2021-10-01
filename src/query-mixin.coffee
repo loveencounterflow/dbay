@@ -47,20 +47,17 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   query: ( sql, P... ) ->
-    # @_echo 'query', sql
     statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
     return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
 
   #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
     throw new E.Dbay_argument_not_allowed '^dbay/query@2^', "extra", rpr P if P.length > 0
-    # @_echo 'execute', sql
     @sqlt1.exec sql
     return null
 
   #---------------------------------------------------------------------------------------------------------
   prepare: ( sql  ) ->
-    # @_echo 'prepare', sql
     return ( @_statements[ sql ] ?= @sqlt1.prepare sql )
 
 
