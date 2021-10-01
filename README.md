@@ -84,11 +84,12 @@ dbay`, both package managers work fine.*
 * **[–]** implement context handler for discardable / temporary file
 * **[+]** implement `Dbay::do()` as a method that unifies all of `better-sqlite3`'s `Statement::run()`,
   `Statement::iterate()`, and `Database::execute()`.
-* **[–]** allow to call `Dbay::do -> ...` with a synchronous function with the same semantics as
+* **[+]** allow to call `Dbay::do -> ...` with a synchronous function with the same semantics as
   `Dbay::with_transaction -> ...`.
 * **[–]** allow to call `Dbay::do -> ...` with an asynchronous function
-* **[–]** make `db = new Dbay()` an instance of `Function` that, when called, runs `Dbay::do()`
+* **[+]** make `db = new Dbay()` an instance of `Function` that, when called, runs `Dbay::do()`
   `Database::execute()`.
-
+* **[–]** implement `Dbay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }` and
+  `statement = Dbay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
 
 
