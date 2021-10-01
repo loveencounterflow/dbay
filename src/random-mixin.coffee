@@ -23,14 +23,14 @@ guy                       = require 'guy'
   very small `delta` values (like 1e-10) may cause adjacent numbers to be close together or even repeat. To
   use default values for both parameters, set `@_rnd_int_cfg: true`.###
   @_rnd_int_cfg: false
-  _initialize_prng: ->
+  _$random_initialize: ->
     clasz = @constructor
     if clasz._rnd_int_cfg?
       seed      = clasz._rnd_int_cfg?.seed  ? 12.34
       delta     = clasz._rnd_int_cfg?.delta ? 1
-      guy.props.def @, '_rnd_int', { enumerable: false, value: ( CND.get_rnd_int seed, delta ), }
+      guy.props.def @_me, '_rnd_int', { enumerable: false, value: ( CND.get_rnd_int seed, delta ), }
     else
-      guy.props.def @, '_rnd_int', { enumerable: false, value: ( CND.random_integer.bind CND ), }
+      guy.props.def @_me, '_rnd_int', { enumerable: false, value: ( CND.random_integer.bind CND ), }
     return null
 
   #---------------------------------------------------------------------------------------------------------
@@ -44,7 +44,5 @@ guy                       = require 'guy'
     n10     = @_rnd_int 1_000_000_000, 9_999_999_999
     return "dbay-#{n10}.sqlite"
 
-  #---------------------------------------------------------------------------------------------------------
-  constructor: -> super(); @_initialize_prng()
 
 

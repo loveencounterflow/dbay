@@ -41,7 +41,7 @@ types.declare 'constructor_cfg', tests:
 
 
 #===========================================================================================================
-class @Dbay extends Dbay_query Dbay_tx Dbay_random()
+class @Dbay extends Dbay_query Dbay_tx Dbay_random Function
 
   #---------------------------------------------------------------------------------------------------------
   @C: guy.lft.freeze
@@ -59,50 +59,56 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random()
         path:         null
 
   #---------------------------------------------------------------------------------------------------------
-  @cast_sqlt_cfg: ( self ) ->
-    ### Produce a configuration object for `better-sqlite3` from `self.cfg`. ###
-    R                = guy.obj.pluck_with_fallback self.cfg, null, 'readonly', 'timeout'
-    R.fileMustExist  = not self.cfg.create; delete self.cfg.create
+  @cast_sqlt_cfg: ( me ) ->
+    ### Produce a configuration object for `better-sqlite3` from `me.cfg`. ###
+    R                = guy.obj.pluck_with_fallback me.cfg, null, 'readonly', 'timeout'
+    R.fileMustExist  = not me.cfg.create; delete me.cfg.create
     return R
 
   #---------------------------------------------------------------------------------------------------------
-  @cast_constructor_cfg: ( self ) ->
-    clasz           = self.constructor
-    R               = self.cfg
+  @cast_constructor_cfg: ( me ) ->
+    clasz           = me.constructor
+    R               = me.cfg
     #.......................................................................................................
     if R.path?
       R.temporary  ?= false
       R.path        = PATH.resolve R.path
     else
       R.temporary  ?= true
-      filename        = self._get_random_filename()
+      filename        = me._get_random_filename()
       R.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
     return R
 
   #---------------------------------------------------------------------------------------------------------
-  @declare_types: ( self ) ->
+  @declare_types: ( me ) ->
     ### called from constructor via `guy.cfg.configure_with_types()` ###
-    self.cfg        = @cast_constructor_cfg self
-    self.sqlt_cfg   = @cast_sqlt_cfg        self
-    self.cfg        = guy.lft.freeze guy.obj.omit_nullish self.cfg
-    self.sqlt_cfg   = guy.lft.freeze guy.obj.omit_nullish self.sqlt_cfg
-    self.types.validate.constructor_cfg self.cfg
+    me.cfg        = @cast_constructor_cfg me
+    me.sqlt_cfg   = @cast_sqlt_cfg        me
+    me.cfg        = guy.lft.freeze guy.obj.omit_nullish me.cfg
+    me.sqlt_cfg   = guy.lft.freeze guy.obj.omit_nullish me.sqlt_cfg
+    me.types.validate.constructor_cfg me.cfg
     return null
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( cfg ) ->
-    super()
-    guy.cfg.configure_with_types @, cfg, types
-    @_register_schema 'main', @cfg.path, @cfg.temporary
+    super '...P', 'return this._me.do(...P)'
+    @_me = @bind @
+    @_$random_initialize?()
+    @_$tx_initialize?()
+    @_$query_initialize?()
+    guy.cfg.configure_with_types @_me, cfg, types
+    # @_me.cfg = freeze @_me.cfg
     #.......................................................................................................
+    guy.props.def @_me, '_dbs', { enumerable: false, value: {}, }
+    @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
     unless @constructor._skip_sqlt
-      guy.props.def @, 'sqlt1', { enumerable: false, value: @_new_bsqlt3_connection(), }
-      guy.props.def @, 'sqlt2', { enumerable: false, value: @_new_bsqlt3_connection(), }
+      guy.props.def @_me, 'sqlt1', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
+      guy.props.def @_me, 'sqlt2', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
     # @_compile_sql()
     # @_create_sql_functions()
     # @_create_db_structure()
-    guy.process.on_exit => @destroy()
-    return undefined
+    guy.process.on_exit => @._me.destroy()
+    return @_me
 
   #---------------------------------------------------------------------------------------------------------
   _new_bsqlt3_connection: ->
@@ -112,7 +118,6 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random()
   _register_schema: ( schema, path, temporary ) ->
     ### Register a schema and descriptional properties, especially whether DB file is to be removed on
     process exit. ###
-    guy.props.def @, '_dbs', { enumerable: false, value: {}, } unless @_dbs?
     @_dbs[ schema ] = { path, temporary, }
     return null
 
@@ -122,8 +127,8 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random()
   destroy: ->
     ### To be called on progress exit or explicitly by client code. Removes all DB files marked 'temporary'
     in `@_dbs`. ###
-    try @sqlt1.close() catch error then warn '^dbay@1^', error.message
-    try @sqlt2.close() catch error then warn '^dbay@1^', error.message
+    try @sqlt1.close() catch error then warn '^dbay/main@1^', error.message
+    try @sqlt2.close() catch error then warn '^dbay/main@2^', error.message
     for schema, d of @_dbs
       H.unlink_file d.path if d.temporary
     return null

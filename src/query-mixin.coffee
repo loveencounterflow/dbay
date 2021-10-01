@@ -16,9 +16,8 @@ E                         = require './errors'
 @Dbay_query = ( clasz = Object ) => class extends clasz
 
   #---------------------------------------------------------------------------------------------------------
-  constructor: ->
-    super()
-    guy.props.def @, '_statements', { enumerable: false, value: {}, }
+  _$query_initialize: ->
+    guy.props.def @_me, '_statements', { enumerable: false, value: {}, }
     return undefined
 
   #---------------------------------------------------------------------------------------------------------
