@@ -11,9 +11,8 @@
   - [SQLite is Fast](#sqlite-is-fast)
   - [SQLite is Not Fast Except When It Is](#sqlite-is-not-fast-except-when-it-is)
 - [Top Runners](#top-runners)
-- [Upper League](#upper-league)
+- [Midfield](#midfield)
 - [Also-Rans](#also-rans)
-- [Deplorables](#deplorables)
 - [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -23,8 +22,7 @@
 #### SQLite is Fast
 
 The (preliminary) benchmark results (see below; code found at
-[in-memory-sql.benchmarks.coffee](https://github.com/loveencounterflow/hengist/blob/master/dev/in-memory-sql/src/in-memory-sql.benchmarks.coffee),
-[in-memory-sql.benchmarks.js](https://github.com/loveencounterflow/hengist/blob/master/dev/in-memory-sql/lib/in-memory-sql.benchmarks.js))
+[dbay/inserts.benchmarks](https://github.com/loveencounterflow/hengist/blob/master/dev/dbay/src/inserts.benchmarks.coffee).
 demonstrate that
 
 * **SQLite can do RDBMS stuff faster than some of its competitors** (notably: PostgreSQL);
@@ -93,50 +91,57 @@ explanation for that performance cliff other than that maybe disk writes are bet
 components and threads when using SSDs.
 
 
+
+
+
 ### Top Runners
 
-```
-bsqlt_mem_tx            44,991 Hz ≙ 1 ÷ 1.0       100.0 % │████████████▌│
-bsqlt_tmpfs_tx_jmwal    44,789 Hz ≙ 1 ÷ 1.0        99.6 % │████████████▌│
-bsqlt_mem_tx_jmwal      44,757 Hz ≙ 1 ÷ 1.0        99.5 % │████████████▍│
-bsqlt_tmpfs_tx          44,538 Hz ≙ 1 ÷ 1.0        99.0 % │████████████▍│
-bsqlt_fle_tx            44,255 Hz ≙ 1 ÷ 1.0        98.4 % │████████████▎│
-bsqlt_fle_tx_jmwal      44,172 Hz ≙ 1 ÷ 1.0        98.2 % │████████████▎│
-```
-
-### Upper League
+80% — 100%
 
 ```
-bsqlt_mem               35,666 Hz ≙ 1 ÷ 1.3        79.3 % │█████████▉   │
-bsqlt_mem_thrds         35,307 Hz ≙ 1 ÷ 1.3        78.5 % │█████████▊   │
-bsqlt_mem_jmwal         35,061 Hz ≙ 1 ÷ 1.3        77.9 % │█████████▊   │
-sqljs_tx                27,369 Hz ≙ 1 ÷ 1.6        60.8 % │███████▋     │
+bsqlt_tmpfs_tx          45,595 Hz ≙ 1 ÷ 1.0       100.0 % │████████████▌│
+dbay_tmpfs_prep_tx1     44,830 Hz ≙ 1 ÷ 1.0        98.3 % │████████████▎│
+bsqlt_tmpfs_tx_jmwal    44,610 Hz ≙ 1 ÷ 1.0        97.8 % │████████████▎│
+bsqlt_fle_tx            44,328 Hz ≙ 1 ÷ 1.0        97.2 % │████████████▏│
+bsqlt_mem_tx            44,251 Hz ≙ 1 ÷ 1.0        97.1 % │████████████▏│
+bsqlt_mem_tx_jmwal      43,679 Hz ≙ 1 ÷ 1.0        95.8 % │████████████ │
+bsqlt_fle_tx_jmwal      43,182 Hz ≙ 1 ÷ 1.1        94.7 % │███████████▉ │
+```
+
+### Midfield
+
+20% — 80%
+
+```
+bsqlt_mem_jmwal         35,612 Hz ≙ 1 ÷ 1.3        78.1 % │█████████▊   │
+bsqlt_mem_thrds         35,412 Hz ≙ 1 ÷ 1.3        77.7 % │█████████▊   │
+bsqlt_mem               35,132 Hz ≙ 1 ÷ 1.3        77.1 % │█████████▋   │
+sqljs_tx                28,640 Hz ≙ 1 ÷ 1.6        62.8 % │███████▉     │
+dbay_naive_tx1          25,099 Hz ≙ 1 ÷ 1.8        55.0 % │██████▉      │
+bsqlt_tmpfs_qtforum2    20,979 Hz ≙ 1 ÷ 2.2        46.0 % │█████▊       │
+bsqlt_fle_qtforum2      16,907 Hz ≙ 1 ÷ 2.7        37.1 % │████▋        │
+bsqlt_tmpfs_jmwal       13,830 Hz ≙ 1 ÷ 3.3        30.3 % │███▊         │
+pgmem                   12,682 Hz ≙ 1 ÷ 3.6        27.8 % │███▌         │
+bsqlt_fle_jmwal         11,670 Hz ≙ 1 ÷ 3.9        25.6 % │███▎         │
+pgmem_tx                11,664 Hz ≙ 1 ÷ 3.9        25.6 % │███▎         │
 ```
 
 ### Also-Rans
 
-```
-bsqlt_tmpfs_qtforum2    20,228 Hz ≙ 1 ÷ 2.2        45.0 % │█████▋       │
-bsqlt_fle_qtforum2      16,819 Hz ≙ 1 ÷ 2.7        37.4 % │████▋        │
-bsqlt_tmpfs_jmwal       12,829 Hz ≙ 1 ÷ 3.5        28.5 % │███▋         │
-pgmem                   12,754 Hz ≙ 1 ÷ 3.5        28.3 % │███▌         │
-pgmem_tx                12,214 Hz ≙ 1 ÷ 3.7        27.1 % │███▍         │
-bsqlt_fle_jmwal         11,291 Hz ≙ 1 ÷ 4.0        25.1 % │███▏         │
-```
-
-### Deplorables
+0% — 20%
 
 ```
-bsqlt_tmpfs              3,994 Hz ≙ 1 ÷ 11.3        8.9 % │█▏           │
-porsagerpostgres_tx      2,003 Hz ≙ 1 ÷ 22.5        4.5 % │▌            │
-sqljs                    1,985 Hz ≙ 1 ÷ 22.7        4.4 % │▌            │
-briancpg_tx              1,730 Hz ≙ 1 ÷ 26.0        3.8 % │▌            │
+bsqlt_tmpfs              4,337 Hz ≙ 1 ÷ 10.5        9.5 % │█▎           │
+dbay_naive_tx0           3,455 Hz ≙ 1 ÷ 13.2        7.6 % │█            │
+sqljs                    1,864 Hz ≙ 1 ÷ 24.5        4.1 % │▌            │
+porsagerpostgres_tx      1,058 Hz ≙ 1 ÷ 43.1        2.3 % │▎            │
+briancpg_tx                960 Hz ≙ 1 ÷ 47.5        2.1 % │▎            │
 ```
 
 
 ### To Do
 
-* explain different benchmarks scenarios
+* **[–]** explain different benchmarks scenarios
 
 
 
