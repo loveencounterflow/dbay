@@ -63,6 +63,8 @@ class @Dbay_no_arguments_allowed      extends @Dbay_error
   constructor: ( ref, name, arity ) -> super ref, "method #{name} doesn't take arguments, got #{arity}"
 class @Dbay_argument_not_allowed      extends @Dbay_error
   constructor: ( ref, name, value ) -> super ref, "argument #{name} not allowed, got #{rpr value}"
+class @Dbay_wrong_type                extends @Dbay_error
+  constructor: ( ref, types, type ) -> super ref, "expected #{types}, got a #{type}"
 class @Dbay_wrong_arity               extends @Dbay_error
   constructor: ( ref, name, min, max, found ) -> super ref, "#{name} expected between #{min} and #{max} arguments, got #{found}"
 class @Dbay_empty_csv                 extends @Dbay_error
