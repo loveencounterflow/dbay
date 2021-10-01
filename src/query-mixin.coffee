@@ -26,7 +26,14 @@ E                         = require './errors'
     return null
 
   #---------------------------------------------------------------------------------------------------------
-  do: ( sql, P... ) =>
+  do: ( first, P... ) =>
+    return switch ( type = @types.type_of first )
+      when 'text'     then @_query_run_or_execute first, P...
+      when 'function' then @with_transaction first, P...
+    throw new E.Dbay_wrong_type '^dbay/query@1^', 'a text or a function', type
+
+  #---------------------------------------------------------------------------------------------------------
+  _query_run_or_execute: ( sql, P... ) ->
     return @query sql, P... if P.length > 0
     return @execute sql, P... if @_statements[ sql ] is @constructor.C.symbols.execute
     try
