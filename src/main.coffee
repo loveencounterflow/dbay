@@ -16,11 +16,7 @@ echo                      = CND.echo.bind CND
 #...........................................................................................................
 PATH                      = require 'path'
 FS                        = require 'fs'
-types                     = new ( require 'intertype' ).Intertype
-{ isa
-  type_of
-  validate
-  validate_list_of }      = types.export()
+types                     = require './types'
 SQL                       = String.raw
 guy                       = require 'guy'
 new_bsqlt3_connection     = require 'better-sqlite3'
@@ -31,12 +27,6 @@ H                         = require './helpers'
 { Dbay_query            } = require './query-mixin'
 { Dbay_tx               } = require './tx-mixin'
 
-
-#-----------------------------------------------------------------------------------------------------------
-types.declare 'constructor_cfg', tests:
-  "@isa.object x":                            ( x ) -> @isa.object x
-  "@isa.nonempty_text x.path":                ( x ) -> @isa.nonempty_text x.path
-  "@isa.boolean x.temporary":                 ( x ) -> @isa.boolean x.temporary
 
 
 
@@ -49,6 +39,7 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random Function
     symbols:
       execute: Symbol 'execute'
     defaults:
+      #.....................................................................................................
       constructor_cfg:
         # _temp_prefix: '_dba_temp_'
         readonly:     false
@@ -57,6 +48,9 @@ class @Dbay extends Dbay_query Dbay_tx Dbay_random Function
         #...................................................................................................
         overwrite:    false
         path:         null
+      #.....................................................................................................
+      dbay_with_transaction_cfg:
+        mode:         'deferred'
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->

@@ -20,15 +20,31 @@ Intertype                 = ( require 'intertype' ).Intertype
 intertype                 = new Intertype module.exports
 Dba                       = null
 
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'constructor_cfg', tests:
+  "@isa.object x":                            ( x ) -> @isa.object x
+  "@isa.nonempty_text x.path":                ( x ) -> @isa.nonempty_text x.path
+  "@isa.boolean x.temporary":                 ( x ) -> @isa.boolean x.temporary
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_with_transaction_cfg', tests:
+  "@isa.object x":                                    ( x ) -> @isa.object x
+  "x.mode in [ 'deferred', 'immediate', 'exclusive', ]": \
+    ( x ) -> x.mode in [ 'deferred', 'immediate', 'exclusive', ]
+
 # #-----------------------------------------------------------------------------------------------------------
-# @declare 'icql_settings',
-#   tests:
-#     "x is a object":                          ( x ) -> @isa.object          x
-#     # "x has key 'db_path'":                    ( x ) -> @has_key             x, 'db_path'
-#     # "x has key 'icql_path'":                  ( x ) -> @has_key             x, 'icql_path'
-#     "x.db_path is a nonempty text":           ( x ) -> @isa.nonempty_text x.db_path
-#     "x.icql_path is a nonempty text":         ( x ) -> @isa.nonempty_text x.icql_path
-#     "x.echo? is a boolean":                   ( x ) -> @isa_optional.boolean x.echo
+# @declare 'dba_constructor_cfg', tests:
+#   "x is an object":                       ( x ) -> @isa.object          x
+#   "x._temp_prefix is a ic_schema":        ( x ) -> @isa.ic_schema       x._temp_prefix
+#   "@isa.boolean x.readonly":              ( x ) -> @isa.boolean x.readonly
+#   "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
+#   "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
+#   ### TAINT possibly `timout: 0` could be valid ###
+#   "@isa.positive_float x.timeout":        ( x ) -> @isa.positive_float x.timeout
+#   # "@isa.ic_not_temp_schema x.schema":     ( x ) -> @isa.ic_not_temp_schema x.schema
+#   "@isa_optional.ic_path x.path":         ( x ) -> @isa_optional.ic_path x.path
+#   "@isa.boolean x.ram":                   ( x ) -> @isa.boolean x.ram
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'ic_entry_type',
@@ -49,19 +65,6 @@ Dba                       = null
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_ram_path',        ( x ) -> x in [ null, '', ':memory:', ]
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_constructor_cfg', tests:
-#   "x is an object":                       ( x ) -> @isa.object          x
-#   "x._temp_prefix is a ic_schema":        ( x ) -> @isa.ic_schema       x._temp_prefix
-#   "@isa.boolean x.readonly":              ( x ) -> @isa.boolean x.readonly
-#   "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
-#   "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
-#   ### TAINT possibly `timout: 0` could be valid ###
-#   "@isa.positive_float x.timeout":        ( x ) -> @isa.positive_float x.timeout
-#   # "@isa.ic_not_temp_schema x.schema":     ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa_optional.ic_path x.path":         ( x ) -> @isa_optional.ic_path x.path
-#   "@isa.boolean x.ram":                   ( x ) -> @isa.boolean x.ram
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_open_cfg', tests:
@@ -288,12 +291,6 @@ Dba                       = null
 #   "x instanceof Dba":                     ( x ) -> x instanceof ( Dba ?= ( require './main' ).Dba )
 
 # #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_with_transaction_cfg', tests:
-#   "@isa.object x":                                    ( x ) -> @isa.object x
-#   "x.mode in [ 'deferred', 'immediate', 'exclusive', ]": \
-#     ( x ) -> x.mode in [ 'deferred', 'immediate', 'exclusive', ]
-
-# #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_create_stdlib_cfg', tests:
 #   "@isa.object x":                        ( x ) -> @isa.object x
 #   "@isa.ic_schema x.prefix":              ( x ) -> @isa.ic_schema x.prefix
@@ -457,9 +454,6 @@ Dba                       = null
 #     name:         null
 #     order_by:     'random()'
 #     limit:        10
-#   #.........................................................................................................
-#   dba_with_transaction_cfg:
-#     mode:         'deferred'
 #   #.........................................................................................................
 #   dba_create_stdlib_cfg:
 #     prefix:       'std_'
