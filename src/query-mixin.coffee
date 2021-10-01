@@ -53,7 +53,7 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
-    throw new E.Dbay_argument_not_allowed '^dbay/query@308^', "extra", rpr P if P.length > 0
+    throw new E.Dbay_argument_not_allowed '^dbay/query@2^', "extra", rpr P if P.length > 0
     # @_echo 'execute', sql
     @sqlt1.exec sql
     return null
