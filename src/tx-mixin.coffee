@@ -67,8 +67,8 @@ SQL                       = String.raw
   #---------------------------------------------------------------------------------------------------------
   within_transaction:   -> @sqlt.inTransaction
   begin_transaction:    -> throw new E.Dbay_not_implemented '^dbay/tx@1^', "tx_begin"
-  commit_transaction:   -> throw new E.Dbay_not_implemented '^dbay/tx@1^', "tx_commit"
-  rollback_transaction: -> throw new E.Dbay_not_implemented '^dbay/tx@1^', "tx_rollback"
+  commit_transaction:   -> throw new E.Dbay_not_implemented '^dbay/tx@2^', "tx_commit"
+  rollback_transaction: -> throw new E.Dbay_not_implemented '^dbay/tx@3^', "tx_rollback"
 
 
   #=========================================================================================================
