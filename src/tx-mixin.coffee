@@ -78,4 +78,51 @@ SQL                       = String.raw
   check_quick:        -> @pragma SQL"quick_check;"
 
 
+  #=========================================================================================================
+  # CONTEXT HANDLERS
+  #---------------------------------------------------------------------------------------------------------
+  with_transaction: ( cfg, f ) ->
+    switch arity = arguments.length
+      when 1 then [ cfg, f, ] = [ null, cfg, ]
+      when 2 then null
+      else throw new E.Dbay_wrong_arity '^dbay/tx@4^', 'with_transaction()', 1, 2, arity
+    @types.validate.dbay_with_transaction_cfg ( cfg = { @constructor.C.defaults.dbay_with_transaction_cfg..., cfg..., } )
+    @types.validate.function f
+    throw new E.Dbay_no_nested_transactions '^dbay/tx@5^' if @sqlt1.inTransaction
+    @execute SQL"begin #{cfg.mode} transaction;"
+    error = null
+    try
+      R = f()
+    catch error
+      @execute SQL"rollback;"
+      throw error
+    try
+      @execute SQL"commit;"
+    catch error
+      @execute SQL"rollback;"
+    return null
+
+  # #---------------------------------------------------------------------------------------------------------
+  # with_unsafe_mode: ( f ) ->
+  #   @types.validate.function f
+  #   unsafe_mode_state = @get_unsafe_mode()
+  #   @set_unsafe_mode true
+  #   try
+  #     R = f()
+  #   finally
+  #     @set_unsafe_mode unsafe_mode_state
+  #   return R
+
+  # #---------------------------------------------------------------------------------------------------------
+  # with_foreign_keys_deferred: ( f ) ->
+  #   @types.validate.function f
+  #   R = null
+  #   throw new E.Dbay_no_deferred_fks_in_tx '^dbay/tx@6^' if @sqlt.inTransaction
+  #   @with_transaction =>
+  #     @sqlt.pragma SQL"defer_foreign_keys=true"
+  #     R = f()
+  #   return R
+
+
+
 
