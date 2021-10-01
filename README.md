@@ -92,5 +92,5 @@ dbay`, both package managers work fine.*
   `Database::execute()`.
 * **[–]** implement `Dbay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }` and
   `statement = Dbay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
-
+* **[–]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
 
