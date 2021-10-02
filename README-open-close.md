@@ -19,7 +19,8 @@
 * `cfg`:
   * `schema` (non-empty string): Required property
   * `path` (string): FS path to existing or to-be-created DB file; for compatibility, this may also be set
-    [to one of the special values that indicates a in-memory DB](), although that is not recommended.
+    [to one of the special values that indicates a in-memory
+    DB](./README-benchmarks.md#sqlite-is-not-fast-except-when-it-is), although that is not recommended.
   * `temporary` (boolean): Defaults to `false` when a `path` is given, and to `true` otherwise.
 
 * The custom SQLite library that is compiled when installing DBay has its `SQLITE_LIMIT_ATTACHED`
