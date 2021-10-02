@@ -37,6 +37,7 @@ DBay provides
 * **[`Dbay` object construction](./README-construction.md)**
 * **[Benchmarks](./README-benchmarks.md)**
 * **[Executing SQL and Queries](./README-query.md)**
+* **[Opening and Closing DBs](./README-open-close.md)**
 
 ## Note on Package Structure
 
@@ -93,4 +94,6 @@ dbay`, both package managers work fine.*
 * **[–]** implement `Dbay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }` and
   `statement = Dbay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
 * **[–]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
+* **[–]** implement `Dbay::open()`, `Dbay::close()`
+* **[–]** ensure how cross-schema foreign keys work when re-attaching DBs / schemas one by one
 
