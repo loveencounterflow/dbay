@@ -3,7 +3,6 @@
 ## API
 
 
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -30,6 +29,11 @@
   case the query did not yield any rows, `db.first_row()` will return `null`.
 * **`single_row: ( sql, P... ) ->`**: Return the only row of the result set. Like `db.first_row()`, but will
   throw an error if the size of the result set is not exactly 1.
+* **`first_values: ( sql, P... ) ->`**: Walk over all 'first' value of the rows of the result set, i.e. the
+  field that is mentioned first in a `select ... from ...` query.
+* **`all_first_values: ( sql, P... ) ->`**: Same as `db.first_values()`, but returns a list of values.
+* **`single_value: ( sql, P... ) ->`**: Given a query that returns a single field in a single row, return
+  its value. Throws an error if the query didn't return a single row or the row doesn't have a single field.
 
 ### Module: Random
 
