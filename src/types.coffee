@@ -22,6 +22,17 @@ Dba                       = null
 
 
 #-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_schema', ( x ) ->
+  ### NOTE to keep things simple, only allow lower case ASCII letters, digits, underscores in schemas ###
+  return false unless @isa.text x
+  return ( /^[a-z_][a-z0-9_]*$/ ).test x
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_usr_schema',     ( x ) -> ( @isa.dbay_schema x ) and ( x not in [ 'main', 'temp', ] )
+@declare 'dbay_path',           ( x ) -> @isa.text x
+@declare 'dbay_name',           ( x ) -> @isa.nonempty_text x
+
+#-----------------------------------------------------------------------------------------------------------
 @declare 'constructor_cfg', tests:
   "@isa.object x":                            ( x ) -> @isa.object x
   "@isa.nonempty_text x.path":                ( x ) -> @isa.nonempty_text x.path
@@ -33,17 +44,26 @@ Dba                       = null
   "x.mode in [ 'deferred', 'immediate', 'exclusive', ]": \
     ( x ) -> x.mode in [ 'deferred', 'immediate', 'exclusive', ]
 
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_open_cfg', tests:
+  "@isa.object x":                        ( x ) -> @isa.object x
+  "@isa.dbay_usr_schema x.schema":        ( x ) -> @isa.dbay_usr_schema x.schema
+  "@isa_optional.dbay_path x.path":       ( x ) -> @isa_optional.dbay_path x.path
+  "@isa.boolean x.temporary":             ( x ) -> @isa.boolean x.temporary
+  # "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
+  # "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
+
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_constructor_cfg', tests:
 #   "x is an object":                       ( x ) -> @isa.object          x
-#   "x._temp_prefix is a ic_schema":        ( x ) -> @isa.ic_schema       x._temp_prefix
+#   "x._temp_prefix is a dbay_schema":        ( x ) -> @isa.dbay_schema       x._temp_prefix
 #   "@isa.boolean x.readonly":              ( x ) -> @isa.boolean x.readonly
 #   "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
 #   "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
 #   ### TAINT possibly `timout: 0` could be valid ###
 #   "@isa.positive_float x.timeout":        ( x ) -> @isa.positive_float x.timeout
-#   # "@isa.ic_not_temp_schema x.schema":     ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa_optional.ic_path x.path":         ( x ) -> @isa_optional.ic_path x.path
+#   # "@isa.dbay_usr_schema x.schema":     ( x ) -> @isa.dbay_usr_schema x.schema
+#   "@isa_optional.dbay_path x.path":         ( x ) -> @isa_optional.dbay_path x.path
 #   "@isa.boolean x.ram":                   ( x ) -> @isa.boolean x.ram
 
 # #-----------------------------------------------------------------------------------------------------------
@@ -53,27 +73,7 @@ Dba                       = null
 #     "x is in 'procedure', 'query', 'fragment'": ( x ) -> x in [ 'procedure', 'query', 'fragment', ]
 
 # #-----------------------------------------------------------------------------------------------------------
-# @declare 'ic_schema', ( x ) ->
-#   ### NOTE to keep things simple, only allow lower case ASCII letters, digits, underscores in schemas ###
-#   return false unless @isa.text x
-#   return ( /^[a-z_][a-z0-9_]*$/ ).test x
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'ic_not_temp_schema',  ( x ) -> ( @isa.ic_schema x ) and ( x isnt 'temp' )
-# @declare 'ic_path',             ( x ) -> @isa.text x
-# @declare 'ic_name',             ( x ) -> @isa.nonempty_text x
-
-# #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_ram_path',        ( x ) -> x in [ null, '', ':memory:', ]
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_open_cfg', tests:
-#   "@isa.object x":                        ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.schema":     ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa_optional.ic_path x.path":         ( x ) -> @isa_optional.ic_path x.path
-#   "@isa.boolean x.ram":                   ( x ) -> @isa.boolean x.ram
-#   # "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
-#   # "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_create_function_cfg', tests:
@@ -126,8 +126,8 @@ Dba                       = null
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_import_cfg', tests:
 #   "@isa.object x":                                ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.schema":             ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa.ic_path x.path":                          ( x ) -> @isa.ic_path x.path
+#   "@isa.dbay_usr_schema x.schema":             ( x ) -> @isa.dbay_usr_schema x.schema
+#   "@isa.dbay_path x.path":                          ( x ) -> @isa.dbay_path x.path
 #   "@isa_optional.dba_format x.format":            ( x ) -> @isa_optional.dba_format x.format
 #   "x.method in [ 'single', 'batch', ]":           ( x ) -> x.method in [ 'single', 'batch', ]
 #   "@isa_optional.positive_integer x.batch_size":  ( x ) -> @isa_optional.positive_integer x.batch_size
@@ -136,7 +136,7 @@ Dba                       = null
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_import_cfg_csv', tests:
 #   "@isa.dba_import_cfg x":                        ( x ) -> @isa.dba_import_cfg x
-#   "@isa.ic_name x.table_name":                    ( x ) -> @isa.ic_name x.table_name
+#   "@isa.dbay_name x.table_name":                    ( x ) -> @isa.dbay_name x.table_name
 #   ### NOTE see `_import_csv()`; for now only RAM DBs allowed for imported CSV ###
 #   "@isa.true x.ram":                              ( x ) -> @isa.true x.ram
 #   # "@isa.boolean x.skip_first":                    ( x ) -> @isa.boolean x.skip_first
@@ -191,85 +191,85 @@ Dba                       = null
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_save_cfg', tests:
 #   "@isa.object x":                               ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.schema":            ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa_optional.ic_path x.path":                ( x ) -> @isa_optional.ic_path x.path
+#   "@isa.dbay_usr_schema x.schema":            ( x ) -> @isa.dbay_usr_schema x.schema
+#   "@isa_optional.dbay_path x.path":                ( x ) -> @isa_optional.dbay_path x.path
 #   "@isa_optional.dba_format x.format":           ( x ) -> @isa_optional.dba_format x.format
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_vacuum_atomically', tests:
 #   "@isa.object x":                               ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.schema":            ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa_optional.ic_path x.path":                ( x ) -> @isa_optional.ic_path x.path
+#   "@isa.dbay_usr_schema x.schema":            ( x ) -> @isa.dbay_usr_schema x.schema
+#   "@isa_optional.dbay_path x.path":                ( x ) -> @isa_optional.dbay_path x.path
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_export_cfg', tests:
 #   "@isa.object x":                               ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.schema":            ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa.ic_path x.path":                         ( x ) -> @isa.ic_path x.path
+#   "@isa.dbay_usr_schema x.schema":            ( x ) -> @isa.dbay_usr_schema x.schema
+#   "@isa.dbay_path x.path":                         ( x ) -> @isa.dbay_path x.path
 #   "@isa_optional.dba_format x.format":           ( x ) -> @isa_optional.dba_format x.format
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_attach_cfg', tests:
 #   "@isa.object x":                                  ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.schema":               ( x ) -> @isa.ic_not_temp_schema x.schema
-#   "@isa.ic_path x.path":                            ( x ) -> @isa.ic_path x.path
-#   "( x.saveas is null ) or @isa.ic_path x.saveas":  ( x ) -> ( x.saveas is null ) or @isa.ic_path x.saveas
+#   "@isa.dbay_usr_schema x.schema":               ( x ) -> @isa.dbay_usr_schema x.schema
+#   "@isa.dbay_path x.path":                            ( x ) -> @isa.dbay_path x.path
+#   "( x.saveas is null ) or @isa.dbay_path x.saveas":  ( x ) -> ( x.saveas is null ) or @isa.dbay_path x.saveas
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'copy_or_move_schema_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_not_temp_schema x.from_schema":  ( x ) -> @isa.ic_not_temp_schema x.from_schema
-#   "@isa.ic_not_temp_schema x.to_schema":    ( x ) -> @isa.ic_not_temp_schema x.to_schema
+#   "@isa.dbay_usr_schema x.from_schema":  ( x ) -> @isa.dbay_usr_schema x.from_schema
+#   "@isa.dbay_usr_schema x.to_schema":    ( x ) -> @isa.dbay_usr_schema x.to_schema
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_is_ram_db_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_detach_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_has_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_is_empty_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
-#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.ic_name x.name
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
+#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.dbay_name x.name
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_clear_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_walk_objects_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
 #   "x._ordering is optionally 'drop'":       ( x ) -> ( not x._ordering? ) or ( x._ordering is 'drop' )
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_type_of_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
-#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.ic_name x.name
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
+#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.dbay_name x.name
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_fields_of_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
-#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.ic_name x.name
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
+#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.dbay_name x.name
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_field_names_of_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
-#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.ic_name x.name
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
+#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.dbay_name x.name
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'sql_limit', ( x ) ->
@@ -281,8 +281,8 @@ Dba                       = null
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_dump_relation_cfg', tests:
 #   "@isa.object x":                          ( x ) -> @isa.object x
-#   "@isa.ic_schema x.schema":                ( x ) -> @isa.ic_schema x.schema
-#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.ic_name x.name
+#   "@isa.dbay_schema x.schema":                ( x ) -> @isa.dbay_schema x.schema
+#   "@isa.nonempty_text x.name":              ( x ) -> @isa_optional.dbay_name x.name
 #   "@isa.nonempty_text x.order_by":          ( x ) -> @isa.nonempty_text x.order_by
 #   "@isa.sql_limit x.limit":                 ( x ) -> @isa.sql_limit x.limit
 
@@ -293,7 +293,7 @@ Dba                       = null
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_create_stdlib_cfg', tests:
 #   "@isa.object x":                        ( x ) -> @isa.object x
-#   "@isa.ic_schema x.prefix":              ( x ) -> @isa.ic_schema x.prefix
+#   "@isa.dbay_schema x.prefix":              ( x ) -> @isa.dbay_schema x.prefix
 
 # #-----------------------------------------------------------------------------------------------------------
 # @defaults =

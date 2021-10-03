@@ -26,12 +26,17 @@ H                         = require './helpers'
 { Dbay_random           } = require './random-mixin'
 { Dbay_query            } = require './query-mixin'
 { Dbay_tx               } = require './tx-mixin'
-
+{ Dbay_openclose        } = require './open-close-mixin'
 
 
 
 #===========================================================================================================
-class @Dbay extends Dbay_query Dbay_tx Dbay_random Function
+class @Dbay extends   \
+  Dbay_query          \
+  Dbay_tx             \
+  Dbay_openclose      \
+  Dbay_random         \
+  Function
 
   #---------------------------------------------------------------------------------------------------------
   @C: guy.lft.freeze
