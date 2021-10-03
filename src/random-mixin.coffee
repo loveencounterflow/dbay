@@ -27,7 +27,7 @@ guy                       = require 'guy'
   #---------------------------------------------------------------------------------------------------------
   _$random_initialize: ->
     clasz = @constructor
-    if clasz._rnd_int_cfg?
+    if clasz._rnd_int_cfg ? false
       seed      = clasz._rnd_int_cfg?.seed  ? 12.34
       delta     = clasz._rnd_int_cfg?.delta ? 1
       guy.props.def @_me, '_rnd_int', { enumerable: false, value: ( CND.get_rnd_int seed, delta ), }
