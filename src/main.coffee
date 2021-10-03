@@ -71,9 +71,9 @@ class @Dbay extends   \
     return R
 
   #---------------------------------------------------------------------------------------------------------
-  @cast_constructor_cfg: ( me ) ->
+  @cast_constructor_cfg: ( me, cfg = null ) ->
     clasz           = me.constructor
-    R               = me.cfg
+    R               = cfg ? me.cfg
     #.......................................................................................................
     if R.path?
       R.temporary  ?= false
