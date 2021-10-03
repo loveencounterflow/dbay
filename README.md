@@ -38,6 +38,7 @@ DBay provides
 * **[Benchmarks](./README-benchmarks.md)**
 * **[Executing SQL and Queries](./README-query.md)**
 * **[Opening and Closing DBs](./README-open-close.md)**
+* **[API](./README-api.md)**
 
 ## Note on Package Structure
 
