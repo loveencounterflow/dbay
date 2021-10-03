@@ -33,7 +33,7 @@
 
 ### Statement Interpolation
 
-**`dba.interpolate( sql, values ): ->`** accepts a template (a string with placeholder formulas) and a list
+**`db.interpolate( sql, values ): ->`** accepts a template (a string with placeholder formulas) and a list
 or object of values. It returns a string with the placeholder formulas replaced with the escaped values.
 
 ```coffee

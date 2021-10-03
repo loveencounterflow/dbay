@@ -11,6 +11,7 @@
 - [Module: Open-close](#module-open-close)
 - [Module: Query](#module-query)
 - [Module: Random](#module-random)
+- [Module: SQL](#module-sql)
 - [Module: Tx](#module-tx)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -36,6 +37,15 @@
   its value. Throws an error if the query didn't return a single row or the row doesn't have a single field.
 
 ### Module: Random
+
+### Module: SQL
+
+* **`db.sql.I: ( name ): ->`**: returns a properly quoted and escaped SQL **I**dentifier.
+* **`db.sql.L: ( x ): ->`**: returns a properly quoted and escaped SQL **V**alue.
+* **`db.sql.V: ( x ): ->`**: returns a bracketed SQL list of values (using `db.sql.V()` for each list
+  element).
+* **`db.interpolate( sql, values ): ->`** interpolates values into a template with placeholder formulas.
+
 
 ### Module: Tx
 
