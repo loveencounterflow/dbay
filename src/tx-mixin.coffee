@@ -94,12 +94,12 @@ SQL                       = String.raw
     try
       R = f()
     catch error
-      @execute SQL"rollback;"
+      @execute SQL"rollback;" if @sqlt1.inTransaction
       throw error
     try
-      @execute SQL"commit;"
+      @execute SQL"commit;"   if @sqlt1.inTransaction
     catch error
-      @execute SQL"rollback;"
+      @execute SQL"rollback;" if @sqlt1.inTransaction
     return null
 
   # #---------------------------------------------------------------------------------------------------------
