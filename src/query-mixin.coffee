@@ -51,6 +51,20 @@ E                         = require './errors'
     return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
 
   #---------------------------------------------------------------------------------------------------------
+  walk: ( sql, P... ) ->
+    statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    return statement.iterate P...
+
+  #---------------------------------------------------------------------------------------------------------
+  all_rows: ( sql, P... ) ->
+    statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    return statement.all P...
+
+  #---------------------------------------------------------------------------------------------------------
+  first_row: ( sql, P... ) -> ( @all_rows sql, P... )[ 0 ]
+  # first_row: ( sql, P... ) -> return row for row from @query sql, P...
+
+  #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
     throw new E.Dbay_argument_not_allowed '^dbay/query@2^', "extra", rpr P if P.length > 0
     @sqlt1.exec sql
