@@ -64,14 +64,32 @@ E                         = require './errors'
   first_row: ( sql, P... ) -> ( @all_rows sql, P... )[ 0 ] ? null
 
   #---------------------------------------------------------------------------------------------------------
+  first_values: ( sql, P... ) ->
+    for row from @walk sql, P...
+      for key, value of row
+        yield value
+        break
+    return null
+
+  #---------------------------------------------------------------------------------------------------------
+  all_first_values: ( sql, P... ) -> [ ( @first_values sql, P... )..., ]
+
+  #---------------------------------------------------------------------------------------------------------
   single_row: ( sql, P... ) ->
     unless ( rows = ( @all_rows sql, P... ) ).length is 1
       throw new E.Dbay_expected_single_row '^dbay/query@2^', rows.length
     return rows[ 0 ]
 
   #---------------------------------------------------------------------------------------------------------
+  single_value: ( sql, P... ) ->
+    row = @single_row sql, P...
+    unless ( keys = Object.keys row ).length is 1
+      throw new E.Dbay_expected_single_value '^dbay/query@4^', keys
+    return row[ keys[ 0 ] ]
+
+  #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
-    throw new E.Dbay_argument_not_allowed '^dbay/query@2^', "extra", rpr P if P.length > 0
+    throw new E.Dbay_argument_not_allowed '^dbay/query@5^', "extra", rpr P if P.length > 0
     @sqlt1.exec sql
     return null
 

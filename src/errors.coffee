@@ -41,6 +41,8 @@ class @Dbay_schema_repeated           extends @Dbay_error
   constructor: ( ref, schema )      -> super ref, "unable to copy schema to itself, got #{rpr schema}"
 class @Dbay_expected_single_row       extends @Dbay_error
   constructor: ( ref, row_count )   -> super ref, "expected 1 row, got #{row_count}"
+class @Dbay_expected_single_value       extends @Dbay_error
+  constructor: ( ref, keys )        -> super ref, "expected row with single field, got fields #{rpr keys}"
 class @Dbay_extension_unknown         extends @Dbay_error
   constructor: ( ref, path )        -> super ref, "extension of path #{path} is not registered for any format"
 class @Dbay_not_implemented           extends @Dbay_error
