@@ -27,7 +27,7 @@ H                         = require './helpers'
 { Dbay_query            } = require './query-mixin'
 { Dbay_tx               } = require './tx-mixin'
 { Dbay_openclose        } = require './open-close-mixin'
-
+{ Sql                   } = require './sql'
 
 
 #===========================================================================================================
@@ -101,6 +101,7 @@ class @Dbay extends   \
     @_$random_initialize?()
     @_$tx_initialize?()
     @_$query_initialize?()
+    @_me.sql = new Sql()
     guy.cfg.configure_with_types @_me, cfg, types
     # @_me.cfg = freeze @_me.cfg
     #.......................................................................................................
