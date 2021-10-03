@@ -39,7 +39,7 @@ class @Dbay_schema_not_allowed        extends @Dbay_error
   constructor: ( ref, schema )      -> super ref, "schema #{rpr schema} not allowed here"
 class @Dbay_schema_repeated           extends @Dbay_error
   constructor: ( ref, schema )      -> super ref, "unable to copy schema to itself, got #{rpr schema}"
-class @Dbay_expected_one_row          extends @Dbay_error
+class @Dbay_expected_single_row       extends @Dbay_error
   constructor: ( ref, row_count )   -> super ref, "expected 1 row, got #{row_count}"
 class @Dbay_extension_unknown         extends @Dbay_error
   constructor: ( ref, path )        -> super ref, "extension of path #{path} is not registered for any format"

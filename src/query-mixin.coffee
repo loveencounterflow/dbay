@@ -61,8 +61,13 @@ E                         = require './errors'
     return statement.all P...
 
   #---------------------------------------------------------------------------------------------------------
-  first_row: ( sql, P... ) -> ( @all_rows sql, P... )[ 0 ]
-  # first_row: ( sql, P... ) -> return row for row from @query sql, P...
+  first_row: ( sql, P... ) -> ( @all_rows sql, P... )[ 0 ] ? null
+
+  #---------------------------------------------------------------------------------------------------------
+  single_row: ( sql, P... ) ->
+    unless ( rows = ( @all_rows sql, P... ) ).length is 1
+      throw new E.Dbay_expected_single_row '^dbay/query@2^', rows.length
+    return rows[ 0 ]
 
   #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
