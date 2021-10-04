@@ -125,16 +125,16 @@ class @Dbay extends   \
   #---------------------------------------------------------------------------------------------------------
   constructor: ( cfg ) ->
     super '...P', 'return this._me.do(...P)'
-    @_me = @bind @
+    @_me        = @bind @
+    @_me.state  = guy.lft.freeze {}
+    @_me.sql    = new Sql()
     @_$query_initialize?()
     @_$tx_initialize?()
     @_$openclose_initialize?()
     @_$stdlib_initialize?()
     @_$random_initialize?()
     @_$udf_initialize?()
-    @_me.sql = new Sql()
     guy.cfg.configure_with_types @_me, cfg, types
-    # @_me.cfg = freeze @_me.cfg
     #.......................................................................................................
     guy.props.def @_me, '_dbs', { enumerable: false, value: {}, }
     @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
