@@ -104,16 +104,6 @@ guy                       = require 'guy'
       @execute SQL"rollback;" if @sqlt1.inTransaction
     return null
 
-
-  # #---------------------------------------------------------------------------------------------------------
-  # with_foreign_keys_deferred: ( f ) ->
-  #   @types.validate.function f
-  #   R = null
-  #   throw new E.Dbay_no_deferred_fks_in_tx '^dbay/tx@6^' if @sqlt.inTransaction
-  #   @with_transaction =>
-  #     @sqlt.pragma SQL"defer_foreign_keys=true"
-  #     R = f()
-  #   return R
   #---------------------------------------------------------------------------------------------------------
   with_unsafe_mode: ( f ) ->
     @types.validate.function f
@@ -123,6 +113,16 @@ guy                       = require 'guy'
       R = f()
     finally
       @set_unsafe_mode unsafe_mode_state
+    return R
+
+  #---------------------------------------------------------------------------------------------------------
+  with_foreign_keys_deferred: ( f ) ->
+    @types.validate.function f
+    R = null
+    throw new E.Dbay_no_deferred_fks_in_tx '^dbay/tx@6^' if @sqlt.inTransaction
+    @with_transaction =>
+      @sqlt1.pragma SQL"defer_foreign_keys=true"
+      R = f()
     return R
 
 
