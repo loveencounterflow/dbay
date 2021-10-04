@@ -18,8 +18,7 @@ PATH                      = require 'path'
 FS                        = require 'fs'
 E                         = require './errors'
 SQL                       = String.raw
-{ lets
-  freeze }                = require 'letsfreezethat'
+guy                       = require 'guy'
 
 
 #===========================================================================================================
