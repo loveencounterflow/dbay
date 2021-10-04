@@ -24,7 +24,7 @@ new_bsqlt3_connection     = require 'better-sqlite3'
 E                         = require './errors'
 H                         = require './helpers'
 { Dbay_query            } = require './query-mixin'
-{ Dbay_tx               } = require './tx-mixin'
+{ Dbay_ctx              } = require './ctx-mixin'
 { Dbay_openclose        } = require './open-close-mixin'
 { Dbay_stdlib           } = require './stdlib-mixin'
 { Dbay_random           } = require './random-mixin'
@@ -35,7 +35,7 @@ H                         = require './helpers'
 #===========================================================================================================
 class @Dbay extends   \
   Dbay_query          \
-  Dbay_tx             \
+  Dbay_ctx            \
   Dbay_openclose      \
   Dbay_stdlib         \
   Dbay_random         \
@@ -129,7 +129,7 @@ class @Dbay extends   \
     @_me.state  = guy.lft.freeze {}
     @_me.sql    = new Sql()
     @_$query_initialize?()
-    @_$tx_initialize?()
+    @_$ctx_initialize?()
     @_$openclose_initialize?()
     @_$stdlib_initialize?()
     @_$random_initialize?()

@@ -5,7 +5,7 @@
 ############################################################################################################
 CND                       = require 'cnd'
 rpr                       = CND.rpr
-badge                     = 'DBAY/MIXIN/TX'
+badge                     = 'DBAY/MIXIN/CTX'
 debug                     = CND.get_logger 'debug',     badge
 warn                      = CND.get_logger 'warn',      badge
 info                      = CND.get_logger 'info',      badge
@@ -24,10 +24,10 @@ guy                       = require 'guy'
 #===========================================================================================================
 # CHECK, GETS, SETS
 #-----------------------------------------------------------------------------------------------------------
-@Dbay_tx = ( clasz = Object ) => class extends clasz
+@Dbay_ctx = ( clasz = Object ) => class extends clasz
 
   #---------------------------------------------------------------------------------------------------------
-  _$tx_initialize: ->
+  _$ctx_initialize: ->
     @_me.state = guy.lft.lets @_me.state, ( d ) -> d.in_unsafe_mode = false
     return null
 
