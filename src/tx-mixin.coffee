@@ -27,7 +27,9 @@ guy                       = require 'guy'
 @Dbay_tx = ( clasz = Object ) => class extends clasz
 
   #---------------------------------------------------------------------------------------------------------
-  # _$tx_initialize: ->
+  _$tx_initialize: ->
+    @_me.state = guy.lft.lets @_me.state, ( d ) -> d.in_unsafe_mode = false
+    return null
 
   #=========================================================================================================
   # FOREIGN KEYS MODE, DEFERRED
@@ -51,13 +53,14 @@ guy                       = require 'guy'
   #=========================================================================================================
   # UNSAFE MODE
   #---------------------------------------------------------------------------------------------------------
-  get_unsafe_mode: -> @_state.in_unsafe_mode
+  get_unsafe_mode: -> @state.in_unsafe_mode
 
   #---------------------------------------------------------------------------------------------------------
   set_unsafe_mode: ( onoff ) ->
     @types.validate.boolean onoff
-    @sqlt.unsafeMode onoff
-    @_state = lets @_state, ( d ) -> d.in_unsafe_mode = onoff
+    @sqlt1.unsafeMode onoff
+    @sqlt2.unsafeMode onoff
+    @state = guy.lft.lets @state, ( d ) -> d.in_unsafe_mode = onoff
     return null
 
 
@@ -101,16 +104,6 @@ guy                       = require 'guy'
       @execute SQL"rollback;" if @sqlt1.inTransaction
     return null
 
-  # #---------------------------------------------------------------------------------------------------------
-  # with_unsafe_mode: ( f ) ->
-  #   @types.validate.function f
-  #   unsafe_mode_state = @get_unsafe_mode()
-  #   @set_unsafe_mode true
-  #   try
-  #     R = f()
-  #   finally
-  #     @set_unsafe_mode unsafe_mode_state
-  #   return R
 
   # #---------------------------------------------------------------------------------------------------------
   # with_foreign_keys_deferred: ( f ) ->
@@ -121,6 +114,16 @@ guy                       = require 'guy'
   #     @sqlt.pragma SQL"defer_foreign_keys=true"
   #     R = f()
   #   return R
+  #---------------------------------------------------------------------------------------------------------
+  with_unsafe_mode: ( f ) ->
+    @types.validate.function f
+    unsafe_mode_state = @get_unsafe_mode()
+    @set_unsafe_mode true
+    try
+      R = f()
+    finally
+      @set_unsafe_mode unsafe_mode_state
+    return R
 
 
 
