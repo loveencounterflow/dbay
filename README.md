@@ -8,6 +8,24 @@
 - [Under Construction](#under-construction)
 - [Introduction](#introduction)
 - [Documentation](#documentation)
+  - [Main](#main)
+    - [Using Defaults](#using-defaults)
+    - [Automatic Location](#automatic-location)
+    - [Randomly Chosen Filename](#randomly-chosen-filename)
+    - [Using Parameters](#using-parameters)
+  - [Opening and Closing DBs](#opening-and-closing-dbs)
+    - [Opening / Attaching DBs](#opening--attaching-dbs)
+    - [Closing / Detaching DBs](#closing--detaching-dbs)
+  - [CTX](#ctx)
+  - [Query](#query)
+    - [Executing SQL](#executing-sql)
+  - [Udf](#udf)
+  - [Stdlib](#stdlib)
+  - [Sql](#sql)
+    - [Purpose](#purpose)
+    - [Escaping Identifiers, General Values, and List Values](#escaping-identifiers-general-values-and-list-values)
+    - [Statement Interpolation](#statement-interpolation)
+  - [Random](#random)
 - [Note on Package Structure](#note-on-package-structure)
   - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
 - [Use npm, Not pnpm](#use-npm-not-pnpm)
@@ -34,12 +52,227 @@ DBay provides
 
 ## Documentation
 
-* **[`Dbay` object construction](./README-construction.md)**
 * **[Benchmarks](./README-benchmarks.md)**
-* **[Executing SQL and Queries](./README-query.md)**
-* **[Opening and Closing DBs](./README-open-close.md)**
-* **[SQL Processing Helpers](./README-sql.md)**
-* **[API](./README-api.md)**
+
+------------------------------------------------------------------------------------------------------------
+
+### Main
+
+#### Using Defaults
+
+In order to construct (instantiate) a DBay object, you can call the constructor without any arguments:
+
+```coffee
+{ Dbay }  = require 'dbay'
+db        = new Dbay()
+```
+
+The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
+connections to the same temporary DB in the ['automatic location'](#automatic-location).
+
+#### Automatic Location
+
+The so-called 'automatic location' is either
+
+* the directory `/dev/shm` on Linux systems that support **SH**ared **M**emory (a.k.a a RAM disk)
+* the OS's temporary directory as announced by `os.tmpdir()`
+
+In either case, a [file with a random name](#randomly-chosen-filename) will be created in that location.
+
+#### Randomly Chosen Filename
+
+Format `dbay-NNNNNNNNNN.sqlite`, where `N` is a digit `[0-9]`.
+
+#### Using Parameters
+
+You can also call the constructor with a configuration object that may have one or more of the following
+fields:
+
+* **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to; if the path given
+  is relative, it will be resolved in reference to the current directory (`process.cwd()`). When not
+  specified, `cfg.path` will be derived from [`Dbay.C.autolocation`](#automatic-location) and a [randomly
+  chosen filename](#randomly-chosen-filename).
+
+* **`cfg.temporary`** (`?boolean`): Specifies whether DB file is to be removed when process exits or
+  `db.destry()` is called explicitly. `cfg.temporary` defaults to `false` if `cfg.path` is given, and `true`
+  otherwise (when a random filename is chosen).
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+### Opening and Closing DBs
+
+
+#### Opening / Attaching DBs
+
+* **`db.open cfg`**: [Attach](https://www.sqlite.org/lang_attach.html) a new or existing DB to the `db`'s
+  connections (`db.sqlt1`, `db.sqlt1`).
+* `cfg`:
+  * `schema` (non-empty string): Required property that specifies the name under which the newly attached
+    DB's objects can be accessed as; having attached a DB as, say, `db.open { schema: 'foo', path:
+    'path/to/my.db', }`, one can then run queries like `db "select * from foo.main;"` against it. Observe
+    that
+    * the DB opened at object creation time (`db = new DBay()`) always has the implicit name `main`, and
+      schema `temp` is reserved for temporary databases.
+  * `path` (string): FS path to existing or to-be-created DB file; for compatibility, this may also be set
+    [to one of the special values that indicates a in-memory
+    DB](./README-benchmarks.md#sqlite-is-not-fast-except-when-it-is), although that is not recommended.
+  * `temporary` (boolean): Defaults to `false` when a `path` is given, and to `true` otherwise.
+
+* The custom SQLite library that is compiled when installing DBay has its `SQLITE_LIMIT_ATTACHED`
+  compilation parameter set to the maximum allowed value of 125 (instead of the default 10). This allows
+  developers to assemble a DB application from dozens of smaller pieces when desired.
+
+#### Closing / Detaching DBs
+
+XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+### CTX
+
+------------------------------------------------------------------------------------------------------------
+
+### Query
+
+
+#### Executing SQL
+
+One thing that sets DBay apart from other database adapters is the fact that the object returned from `new
+Dbay()` is both the representative of the database opened *and* a callable function. This makes executing
+statements and running queries very concise. This is an excerpt from the [DBay test suite]():
+
+```coffee
+{ Dbay }            = require H.dbay_path
+db                  = new Dbay()
+db ->
+  db SQL"drop table if exists texts;"
+  db SQL"create table texts ( nr integer not null primary key, text text );"
+  db SQL"insert into texts values ( 3, 'third' );"
+  db SQL"insert into texts values ( 1, 'first' );"
+  db SQL"insert into texts values ( ?, ? );", [ 2, 'second', ]
+  #.......................................................................................................
+  T?.throws /cannot start a transaction within a transaction/, ->
+    db ->
+#.........................................................................................................
+T?.throws /UNIQUE constraint failed: texts\.nr/, ->
+  db ->
+    db SQL"insert into texts values ( 3, 'third' );"
+#.........................................................................................................
+rows = db SQL"select * from texts order by nr;"
+rows = [ rows..., ]
+T?.eq rows, [ { nr: 1, text: 'first' }, { nr: 2, text: 'second' }, { nr: 3, text: 'third' } ]
+```
+
+> **Note** In the above `SQL` has been set to `String.raw` and has no further effect on the string it
+> precedes; it is just used as a syntax marker (cool because then you can have nested syntax hiliting).
+
+As shown by [benchmarks](./README-benchmarks.md), a crucial factor for getting maximum performance out of
+using SQLite is strategically placed transactions. SQLite will not ever execute a DB query *outside* of a
+transaction; when no transaction has been explicitly opened with `begin transaction`, the DB engine will
+precede each query implicitly with (the equivalent of) `begin transaction` and follow it with either
+`commit` or `rollback`. This means when a thousand `insert` statements are run, a thousand transactions will
+be started and committed, leavin performance pretty much in the dust.
+
+To avoid that performance hit, users are advised to always start and commit transactions when doing many
+consecutive queries. DBay's callable `db` object makes that easy: just write `db -> many; inserts; here;`
+(JS: `db( () -> { many; inserts; here; })`), i.e. pass a function as the sole argument to `db`, and DBay
+will wrap that function with a transaction. In case an error should occur, DBay guarantees to call
+`rollback` (in a `try ... finally ...` clause). Those who like to make things more explicit can also use
+`db.with_transaction ->`. Both formats allow to pass in a configuration object with an attribute `mode` that
+may be set to [one of `'deferred'`, `'immediate'`, or
+`'exclusive'`](https://www.sqlite.org/lang_transaction.html), the default being `'deferred'`.
+
+Another slight performance hit may be caused by the logic DBay uses to (look up an SQL text in a cache or)
+prepare a statement and then decide whether to call `better-sqlite3`'s' `Database::execute()`,
+`Statement::run()` or `Statement::iterate()`; in order to circumvent that extra work, users may choose to
+fall back on to `better-sqlite3` explicitly:
+
+```coffee
+insert = db.prepare SQL"insert into texts values ( ?, ? );" # returns a `better-sqlite3` `Statement` instance
+db ->
+  insert [ 2, 'second', ]
+```
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+### Udf
+
+------------------------------------------------------------------------------------------------------------
+
+
+### Stdlib
+
+------------------------------------------------------------------------------------------------------------
+
+### Sql
+
+
+#### Purpose
+
+* Facilitate the creation of securely escaped SQL literals.
+* In general not thought of as a replacement for the value interpolation offered by `DBay::prepare()`,
+  `DBay::query()` and so, except when
+  * one wants to parametrize DB object names (e.g. use table or column names like variables),
+  * one wants to interpolate an SQL `values` list, as in `select employee from employees where department in
+    ( 'sales', 'HR' );`.
+
+#### Escaping Identifiers, General Values, and List Values
+
+* **`db.sql.I: ( name ): ->`**: returns a properly quoted and escaped SQL **I**dentifier.
+* **`db.sql.L: ( x ): ->`**: returns a properly quoted and escaped SQL **V**alue. Note that booleans
+  (`true`, `false`) will be converted to `1` and `0`, respectively.
+* **`db.sql.V: ( x ): ->`**: returns a bracketed SQL list of values (using `db.sql.V()` for each list
+  element).
+
+
+#### Statement Interpolation
+
+**`db.interpolate( sql, values ): ->`** accepts a template (a string with placeholder formulas) and a list
+or object of values. It returns a string with the placeholder formulas replaced with the escaped values.
+
+```coffee
+# using named placeholders
+sql     = SQL"select $:col_a, $:col_b where $:col_b in $V:choices"
+d       = { col_a: 'foo', col_b: 'bar', choices: [ 1, 2, 3, ], }
+result  = db.sql.interpolate sql, d
+# > """select "foo", "bar" where "bar" in ( 1, 2, 3 )"""
+```
+
+```coffee
+# using positional placeholders
+sql     = SQL"select ?:, ?: where ?: in ?V:"
+d       = [ 'foo', 'bar', 'bar', [ 1, 2, 3, ], ]
+result  = db.sql.interpolate sql, d
+# > """select "foo", "bar" where "bar" in ( 1, 2, 3 )"""
+```
+
+```coffee
+# using an unknown format
+sql     = SQL"select ?:, ?X: where ?: in ?V:"
+d       = [ 'foo', 'bar', 'bar', [ 1, 2, 3, ], ]
+result  = db.sql.interpolate sql, d
+# throws "unknown interpolation format 'X'"
+```
+
+
+------------------------------------------------------------------------------------------------------------
+
+### Random
+
+
+
+------------------------------------------------------------------------------------------------------------
 
 ## Note on Package Structure
 
@@ -98,4 +331,4 @@ dbay`, both package managers work fine.*
 * **[–]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
 * **[–]** implement `Dbay::open()`, `Dbay::close()`
 * **[–]** ensure how cross-schema foreign keys work when re-attaching DBs / schemas one by one
-
+* **[–]** demote `random` from a mixin to functions in `helpers`.
