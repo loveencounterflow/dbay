@@ -67,10 +67,10 @@ guy                       = require 'guy'
   #=========================================================================================================
   # TRANSACTIONS
   #---------------------------------------------------------------------------------------------------------
-  within_transaction:   -> @sqlt.inTransaction
-  begin_transaction:    -> throw new E.Dbay_not_implemented '^dbay/tx@1^', "tx_begin"
-  commit_transaction:   -> throw new E.Dbay_not_implemented '^dbay/tx@2^', "tx_commit"
-  rollback_transaction: -> throw new E.Dbay_not_implemented '^dbay/tx@3^', "tx_rollback"
+  within_transaction:   -> @sqlt1.inTransaction
+  begin_transaction:    -> throw new E.Dbay_not_implemented '^dbay/ctx@1^', "tx_begin"
+  commit_transaction:   -> throw new E.Dbay_not_implemented '^dbay/ctx@2^', "tx_commit"
+  rollback_transaction: -> throw new E.Dbay_not_implemented '^dbay/ctx@3^', "tx_rollback"
 
 
   #=========================================================================================================
@@ -87,10 +87,10 @@ guy                       = require 'guy'
     switch arity = arguments.length
       when 1 then [ cfg, f, ] = [ null, cfg, ]
       when 2 then null
-      else throw new E.Dbay_wrong_arity '^dbay/tx@4^', 'with_transaction()', 1, 2, arity
+      else throw new E.Dbay_wrong_arity '^dbay/ctx@4^', 'with_transaction()', 1, 2, arity
     @types.validate.dbay_with_transaction_cfg ( cfg = { @constructor.C.defaults.dbay_with_transaction_cfg..., cfg..., } )
     @types.validate.function f
-    throw new E.Dbay_no_nested_transactions '^dbay/tx@5^' if @sqlt1.inTransaction
+    throw new E.Dbay_no_nested_transactions '^dbay/ctx@5^' if @sqlt1.inTransaction
     @execute SQL"begin #{cfg.mode} transaction;"
     error = null
     try
@@ -119,7 +119,7 @@ guy                       = require 'guy'
   with_foreign_keys_deferred: ( f ) ->
     @types.validate.function f
     R = null
-    throw new E.Dbay_no_deferred_fks_in_tx '^dbay/tx@6^' if @sqlt.inTransaction
+    throw new E.Dbay_no_deferred_fks_in_tx '^dbay/ctx@6^' if @sqlt1.inTransaction
     @with_transaction =>
       @sqlt1.pragma SQL"defer_foreign_keys=true"
       R = f()
