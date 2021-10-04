@@ -53,18 +53,69 @@ Dba                       = null
   # "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
   # "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
 
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_constructor_cfg', tests:
-#   "x is an object":                       ( x ) -> @isa.object          x
-#   "x._temp_prefix is a dbay_schema":        ( x ) -> @isa.dbay_schema       x._temp_prefix
-#   "@isa.boolean x.readonly":              ( x ) -> @isa.boolean x.readonly
-#   "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
-#   "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
-#   ### TAINT possibly `timout: 0` could be valid ###
-#   "@isa.positive_float x.timeout":        ( x ) -> @isa.positive_float x.timeout
-#   # "@isa.dbay_usr_schema x.schema":     ( x ) -> @isa.dbay_usr_schema x.schema
-#   "@isa_optional.dbay_path x.path":         ( x ) -> @isa_optional.dbay_path x.path
-#   "@isa.boolean x.ram":                   ( x ) -> @isa.boolean x.ram
+
+#===========================================================================================================
+# UDF
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_function_cfg', tests:
+  "@isa.object x":                  ( x ) -> @isa.object x
+  "@isa.nonempty_text x.name":      ( x ) -> @isa.nonempty_text x.name
+  "@isa.function x.call":           ( x ) -> @isa.function x.call
+  "@isa.boolean x.deterministic":   ( x ) -> @isa.boolean x.deterministic
+  "@isa.boolean x.varargs":         ( x ) -> @isa.boolean x.varargs
+  "@isa.boolean x.directOnly":      ( x ) -> @isa.boolean x.directOnly
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_aggregate_function_cfg', tests:
+  "@isa.object x":                  ( x ) -> @isa.object x
+  "@isa.nonempty_text x.name":      ( x ) -> @isa.nonempty_text x.name
+  # "@isa.any x.start":               ( x ) -> @isa.any x.start
+  "@isa.function x.step":           ( x ) -> @isa.function x.step
+  "@isa.boolean x.deterministic":   ( x ) -> @isa.boolean x.deterministic
+  "@isa.boolean x.varargs":         ( x ) -> @isa.boolean x.varargs
+  "@isa.boolean x.directOnly":      ( x ) -> @isa.boolean x.directOnly
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_window_function_cfg', tests:
+  "@isa.object x":                    ( x ) -> @isa.object x
+  "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
+  # "@isa.any x.start":                 ( x ) -> @isa.any x.start
+  "@isa.function x.step":             ( x ) -> @isa.function x.step
+  "@isa.function x.inverse":          ( x ) -> @isa.function x.inverse
+  "@isa_optional.function x.result":  ( x ) -> @isa_optional.function x.result
+  "@isa.boolean x.deterministic":     ( x ) -> @isa.boolean x.deterministic
+  "@isa.boolean x.varargs":           ( x ) -> @isa.boolean x.varargs
+  "@isa.boolean x.directOnly":        ( x ) -> @isa.boolean x.directOnly
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_table_function_cfg', tests:
+  "@isa.object x":                    ( x ) -> @isa.object x
+  "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
+  "@isa_optional.list x.columns":     ( x ) -> @isa_optional.list x.columns
+  "@isa_optional.list x.parameters":  ( x ) -> @isa_optional.list x.parameters
+  "@isa.generatorfunction x.rows":    ( x ) -> @isa.generatorfunction x.rows
+  "@isa.boolean x.deterministic":     ( x ) -> @isa.boolean x.deterministic
+  "@isa.boolean x.varargs":           ( x ) -> @isa.boolean x.varargs
+  "@isa.boolean x.directOnly":        ( x ) -> @isa.boolean x.directOnly
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_virtual_table_cfg', tests:
+  "@isa.object x":                    ( x ) -> @isa.object x
+  "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
+  "@isa.function x.create":           ( x ) -> @isa.function x.create
+
+
+
+
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'ic_entry_type',
@@ -75,53 +126,6 @@ Dba                       = null
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_ram_path',        ( x ) -> x in [ null, '', ':memory:', ]
 
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_create_function_cfg', tests:
-#   "@isa.object x":                  ( x ) -> @isa.object x
-#   "@isa.nonempty_text x.name":      ( x ) -> @isa.nonempty_text x.name
-#   "@isa.function x.call":           ( x ) -> @isa.function x.call
-#   "@isa.boolean x.deterministic":   ( x ) -> @isa.boolean x.deterministic
-#   "@isa.boolean x.varargs":         ( x ) -> @isa.boolean x.varargs
-#   "@isa.boolean x.directOnly":      ( x ) -> @isa.boolean x.directOnly
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_create_aggregate_function_cfg', tests:
-#   "@isa.object x":                  ( x ) -> @isa.object x
-#   "@isa.nonempty_text x.name":      ( x ) -> @isa.nonempty_text x.name
-#   # "@isa.any x.start":               ( x ) -> @isa.any x.start
-#   "@isa.function x.step":           ( x ) -> @isa.function x.step
-#   "@isa.boolean x.deterministic":   ( x ) -> @isa.boolean x.deterministic
-#   "@isa.boolean x.varargs":         ( x ) -> @isa.boolean x.varargs
-#   "@isa.boolean x.directOnly":      ( x ) -> @isa.boolean x.directOnly
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_create_window_function_cfg', tests:
-#   "@isa.object x":                    ( x ) -> @isa.object x
-#   "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
-#   # "@isa.any x.start":                 ( x ) -> @isa.any x.start
-#   "@isa.function x.step":             ( x ) -> @isa.function x.step
-#   "@isa.function x.inverse":          ( x ) -> @isa.function x.inverse
-#   "@isa_optional.function x.result":  ( x ) -> @isa_optional.function x.result
-#   "@isa.boolean x.deterministic":     ( x ) -> @isa.boolean x.deterministic
-#   "@isa.boolean x.varargs":           ( x ) -> @isa.boolean x.varargs
-#   "@isa.boolean x.directOnly":        ( x ) -> @isa.boolean x.directOnly
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_create_table_function_cfg', tests:
-#   "@isa.object x":                    ( x ) -> @isa.object x
-#   "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
-#   "@isa_optional.list x.columns":     ( x ) -> @isa_optional.list x.columns
-#   "@isa_optional.list x.parameters":  ( x ) -> @isa_optional.list x.parameters
-#   "@isa.generatorfunction x.rows":    ( x ) -> @isa.generatorfunction x.rows
-#   "@isa.boolean x.deterministic":     ( x ) -> @isa.boolean x.deterministic
-#   "@isa.boolean x.varargs":           ( x ) -> @isa.boolean x.varargs
-#   "@isa.boolean x.directOnly":        ( x ) -> @isa.boolean x.directOnly
-
-# #-----------------------------------------------------------------------------------------------------------
-# @declare 'dba_create_virtual_table_cfg', tests:
-#   "@isa.object x":                    ( x ) -> @isa.object x
-#   "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
-#   "@isa.function x.create":           ( x ) -> @isa.function x.create
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'dba_import_cfg', tests:
@@ -335,30 +339,6 @@ Dba                       = null
 #     schema:     null
 #     path:       null
 #     format:     null
-#   #.........................................................................................................
-#   dba_create_function_cfg:
-#     deterministic:  true
-#     varargs:        false
-#     directOnly:     false
-#   #.........................................................................................................
-#   dba_create_aggregate_function_cfg:
-#     deterministic:  true
-#     varargs:        false
-#     directOnly:     false
-#     start:          null
-#   #.........................................................................................................
-#   dba_create_window_function_cfg:
-#     deterministic:  true
-#     varargs:        false
-#     directOnly:     false
-#     start:          null
-#   #.........................................................................................................
-#   dba_create_table_function_cfg:
-#     deterministic:  true
-#     varargs:        false
-#     directOnly:     false
-#   #.........................................................................................................
-#   dba_create_virtual_table_cfg: {}
 #   #.........................................................................................................
 #   dba_vacuum_atomically:
 #     schema:     null

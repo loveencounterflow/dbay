@@ -23,10 +23,12 @@ new_bsqlt3_connection     = require 'better-sqlite3'
 #...........................................................................................................
 E                         = require './errors'
 H                         = require './helpers'
-{ Dbay_random           } = require './random-mixin'
 { Dbay_query            } = require './query-mixin'
 { Dbay_tx               } = require './tx-mixin'
 { Dbay_openclose        } = require './open-close-mixin'
+{ Dbay_stdlib           } = require './stdlib-mixin'
+{ Dbay_random           } = require './random-mixin'
+{ Dbay_udf              } = require './udf-mixin'
 { Sql                   } = require './sql'
 
 
@@ -35,7 +37,9 @@ class @Dbay extends   \
   Dbay_query          \
   Dbay_tx             \
   Dbay_openclose      \
+  Dbay_stdlib         \
   Dbay_random         \
+  Dbay_udf            \
   Function
 
   #---------------------------------------------------------------------------------------------------------
@@ -62,6 +66,30 @@ class @Dbay extends   \
         path:       null
         # overwrite:  false
         # create:     true
+      #.....................................................................................................
+      dbay_create_function_cfg:
+        deterministic:  true
+        varargs:        false
+        directOnly:     false
+      #.....................................................................................................
+      dbay_create_aggregate_function_cfg:
+        deterministic:  true
+        varargs:        false
+        directOnly:     false
+        start:          null
+      #.....................................................................................................
+      dbay_create_window_function_cfg:
+        deterministic:  true
+        varargs:        false
+        directOnly:     false
+        start:          null
+      #.....................................................................................................
+      dbay_create_table_function_cfg:
+        deterministic:  true
+        varargs:        false
+        directOnly:     false
+      #.....................................................................................................
+      dbay_create_virtual_table_cfg: {}
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->
@@ -98,9 +126,12 @@ class @Dbay extends   \
   constructor: ( cfg ) ->
     super '...P', 'return this._me.do(...P)'
     @_me = @bind @
-    @_$random_initialize?()
-    @_$tx_initialize?()
     @_$query_initialize?()
+    @_$tx_initialize?()
+    @_$openclose_initialize?()
+    @_$stdlib_initialize?()
+    @_$random_initialize?()
+    @_$udf_initialize?()
     @_me.sql = new Sql()
     guy.cfg.configure_with_types @_me, cfg, types
     # @_me.cfg = freeze @_me.cfg
