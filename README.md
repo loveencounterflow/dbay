@@ -1,14 +1,13 @@
 
 
-# DBay 笛貝 𓏞𓆤 ⒹⒷⓐⓨ ⒹBay 鼑鼎倉 聿 𦘔 𤰱画𡇍𤱪 帝碑 帝貝 笛备 ⲆⲂⲁⲩ
+# 𓆤DBay
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [DBay](#dbay)
-  - [Under Construction](#under-construction)
+- [𓆤DBay](#%F0%93%86%A4dbay)
   - [Introduction](#introduction)
   - [Documentation](#documentation)
     - [Main](#main)
@@ -38,13 +37,16 @@
 
 
 
-# DBay
+# 𓆤DBay
+
+DBay is built on [`better-sqlite3`](https://github.com/JoshuaWise/better-sqlite3), which is a NodeJS adapter
+for [SQLite](https://www.sqlite.org). It provides convenient access to in-process, on-file and in-memory
+relational databases. <!-- The mascot of DBay is the -->
 
 
-## Under Construction
-
-DBay is the successor to and a re-write of [icql-dba](https://github.com/loveencounterflow/icql-dba) which
-you'll probably want to use for the time being until this package reaches MVP.
+DBay is the successor to and a re-write of [ICQL-DBA](https://github.com/loveencounterflow/icql-dba). It is
+under development and nearing feature-parity with its predecessor while already providing some significant
+improvements in terms of ease of use and simplicity of implementation.
 
 ## Introduction
 
