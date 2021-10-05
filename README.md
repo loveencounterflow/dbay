@@ -16,10 +16,10 @@
   - [Opening and Closing DBs](#opening-and-closing-dbs)
     - [Opening / Attaching DBs](#opening--attaching-dbs)
     - [Closing / Detaching DBs](#closing--detaching-dbs)
-  - [CTX](#ctx)
+  - [Transactions and Context Handlers](#transactions-and-context-handlers)
   - [Query](#query)
     - [Executing SQL](#executing-sql)
-  - [Udf](#udf)
+  - [User-Defined Functions (UDFs)](#user-defined-functions-udfs)
   - [Stdlib](#stdlib)
   - [Sql](#sql)
     - [Purpose](#purpose)
@@ -137,7 +137,7 @@ XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXX
 
 ------------------------------------------------------------------------------------------------------------
 
-### CTX
+### Transactions and Context Handlers
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -206,7 +206,7 @@ db ->
 
 ------------------------------------------------------------------------------------------------------------
 
-### Udf
+### User-Defined Functions (UDFs)
 
 ------------------------------------------------------------------------------------------------------------
 
