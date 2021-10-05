@@ -63,8 +63,8 @@ DBay provides
 In order to construct (instantiate) a DBay object, you can call the constructor without any arguments:
 
 ```coffee
-{ Dbay }  = require 'dbay'
-db        = new Dbay()
+{ DBay }  = require 'dbay'
+db        = new DBay()
 ```
 
 The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
@@ -90,7 +90,7 @@ fields:
 
 * **`cfg.path`** (`?non-empty text`): Specifies which file system path to save the DB to; if the path given
   is relative, it will be resolved in reference to the current directory (`process.cwd()`). When not
-  specified, `cfg.path` will be derived from [`Dbay.C.autolocation`](#automatic-location) and a [randomly
+  specified, `cfg.path` will be derived from [`DBay.C.autolocation`](#automatic-location) and a [randomly
   chosen filename](#randomly-chosen-filename).
 
 * **`cfg.temporary`** (`?boolean`): Specifies whether DB file is to be removed when process exits or
@@ -147,12 +147,12 @@ XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXX
 #### Executing SQL
 
 One thing that sets DBay apart from other database adapters is the fact that the object returned from `new
-Dbay()` is both the representative of the database opened *and* a callable function. This makes executing
+DBay()` is both the representative of the database opened *and* a callable function. This makes executing
 statements and running queries very concise. This is an excerpt from the [DBay test suite]():
 
 ```coffee
-{ Dbay }            = require H.dbay_path
-db                  = new Dbay()
+{ DBay }            = require H.dbay_path
+db                  = new DBay()
 db ->
   db SQL"drop table if exists texts;"
   db SQL"create table texts ( nr integer not null primary key, text text );"
@@ -318,17 +318,17 @@ dbay`, both package managers work fine.*
   mounting a RAM disk which needs `sudo` rights, so might as well just instruct users to mount RAM disk,
   then use that path? Still, it would be preferrable to have some automatic copy-to-durable in place.
 * **[–]** implement context handler for discardable / temporary file
-* **[+]** implement `Dbay::do()` as a method that unifies all of `better-sqlite3`'s `Statement::run()`,
+* **[+]** implement `DBay::do()` as a method that unifies all of `better-sqlite3`'s `Statement::run()`,
   `Statement::iterate()`, and `Database::execute()`.
-* **[+]** allow to call `Dbay::do -> ...` with a synchronous function with the same semantics as
-  `Dbay::with_transaction -> ...`.
-* **[+]** allow to call `Dbay::do { mode: 'deferred', }, -> ...`.
-* **[–]** allow to call `Dbay::do -> ...` with an asynchronous function
-* **[+]** make `db = new Dbay()` an instance of `Function` that, when called, runs `Dbay::do()`
+* **[+]** allow to call `DBay::do -> ...` with a synchronous function with the same semantics as
+  `DBay::with_transaction -> ...`.
+* **[+]** allow to call `DBay::do { mode: 'deferred', }, -> ...`.
+* **[–]** allow to call `DBay::do -> ...` with an asynchronous function
+* **[+]** make `db = new DBay()` an instance of `Function` that, when called, runs `DBay::do()`
   `Database::execute()`.
-* **[–]** implement `Dbay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }` and
-  `statement = Dbay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
-* **[–]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
-* **[–]** implement `Dbay::open()`, `Dbay::close()`
+* **[–]** implement `DBay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }` and
+  `statement = DBay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
+* **[–]** change classname(s) from `DBay` to `DBay` to avoid spelling variant proliferation
+* **[–]** implement `DBay::open()`, `DBay::close()`
 * **[–]** ensure how cross-schema foreign keys work when re-attaching DBs / schemas one by one
 * **[–]** demote `random` from a mixin to functions in `helpers`.
