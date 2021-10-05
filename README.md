@@ -20,8 +20,8 @@
   - [Query](#query)
     - [Executing SQL](#executing-sql)
   - [User-Defined Functions (UDFs)](#user-defined-functions-udfs)
-  - [Stdlib](#stdlib)
-  - [Sql](#sql)
+  - [Standard Library of SQL Functions (StdLib)](#standard-library-of-sql-functions-stdlib)
+  - [Safe Escaping for SQL Values and Identifiers](#safe-escaping-for-sql-values-and-identifiers)
     - [Purpose](#purpose)
     - [Escaping Identifiers, General Values, and List Values](#escaping-identifiers-general-values-and-list-values)
     - [Statement Interpolation](#statement-interpolation)
@@ -211,11 +211,11 @@ db ->
 ------------------------------------------------------------------------------------------------------------
 
 
-### Stdlib
+### Standard Library of SQL Functions (StdLib)
 
 ------------------------------------------------------------------------------------------------------------
 
-### Sql
+### Safe Escaping for SQL Values and Identifiers
 
 
 #### Purpose
