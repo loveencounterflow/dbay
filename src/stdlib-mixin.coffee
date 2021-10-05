@@ -17,7 +17,7 @@ echo                      = CND.echo.bind CND
   lets }                  = require 'letsfreezethat'
 
 #-----------------------------------------------------------------------------------------------------------
-@Dbay_stdlib = ( clasz = Object ) => class extends clasz
+@DBay_stdlib = ( clasz = Object ) => class extends clasz
   ### TAINT use `cfg` ###
 
   #---------------------------------------------------------------------------------------------------------

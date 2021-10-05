@@ -13,7 +13,7 @@ E                         = require './errors'
 
 
 #===========================================================================================================
-@Dbay_query = ( clasz = Object ) => class extends clasz
+@DBay_query = ( clasz = Object ) => class extends clasz
 
   #---------------------------------------------------------------------------------------------------------
   _$query_initialize: ->
@@ -30,7 +30,7 @@ E                         = require './errors'
     return switch ( type = @types.type_of first )
       when 'text'               then @_query_run_or_execute first, P...
       when 'object', 'function' then @with_transaction first, P...
-    throw new E.Dbay_wrong_type '^dbay/query@1^', 'a text, an object, or a function', type
+    throw new E.DBay_wrong_type '^dbay/query@1^', 'a text, an object, or a function', type
 
   #---------------------------------------------------------------------------------------------------------
   _query_run_or_execute: ( sql, P... ) ->
@@ -77,19 +77,19 @@ E                         = require './errors'
   #---------------------------------------------------------------------------------------------------------
   single_row: ( sql, P... ) ->
     unless ( rows = ( @all_rows sql, P... ) ).length is 1
-      throw new E.Dbay_expected_single_row '^dbay/query@2^', rows.length
+      throw new E.DBay_expected_single_row '^dbay/query@2^', rows.length
     return rows[ 0 ]
 
   #---------------------------------------------------------------------------------------------------------
   single_value: ( sql, P... ) ->
     row = @single_row sql, P...
     unless ( keys = Object.keys row ).length is 1
-      throw new E.Dbay_expected_single_value '^dbay/query@4^', keys
+      throw new E.DBay_expected_single_value '^dbay/query@4^', keys
     return row[ keys[ 0 ] ]
 
   #---------------------------------------------------------------------------------------------------------
   execute: ( sql, P... ) ->
-    throw new E.Dbay_argument_not_allowed '^dbay/query@5^', "extra", rpr P if P.length > 0
+    throw new E.DBay_argument_not_allowed '^dbay/query@5^', "extra", rpr P if P.length > 0
     @sqlt1.exec sql
     return null
 

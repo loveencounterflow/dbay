@@ -48,11 +48,11 @@ class @Sql
       when 'float'      then return x.toString()
       when 'boolean'    then return ( if x then '1' else '0' )
       # when 'list'       then throw new Error "^dba@23^ use `X()` for lists"
-    throw new E.Dbay_sql_value_error '^dbay/sql@1^', type, x
+    throw new E.DBay_sql_value_error '^dbay/sql@1^', type, x
 
   #---------------------------------------------------------------------------------------------------------
   V: ( x ) =>
-    throw new E.Dbay_sql_not_a_list_error '^dbay/sql@2^', type, x unless ( type = type_of x ) is 'list'
+    throw new E.DBay_sql_not_a_list_error '^dbay/sql@2^', type, x unless ( type = type_of x ) is 'list'
     return '( ' + ( ( @L e for e in x ).join ', ' ) + ' )'
 
   #---------------------------------------------------------------------------------------------------------
@@ -71,5 +71,5 @@ class @Sql
         when '', 'I'  then return @I value
         when 'L'      then return @L value
         when 'V'      then return @V value
-      throw new E.Dbay_interpolation_format_unknown '^dbay/sql@3^', format
+      throw new E.DBay_interpolation_format_unknown '^dbay/sql@3^', format
   _interpolation_pattern: /(?<opener>[$?])(?<format>.?):(?<name>\w*)/g

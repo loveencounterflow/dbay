@@ -23,23 +23,23 @@ new_bsqlt3_connection     = require 'better-sqlite3'
 #...........................................................................................................
 E                         = require './errors'
 H                         = require './helpers'
-{ Dbay_query            } = require './query-mixin'
-{ Dbay_ctx              } = require './ctx-mixin'
-{ Dbay_openclose        } = require './open-close-mixin'
-{ Dbay_stdlib           } = require './stdlib-mixin'
-{ Dbay_random           } = require './random-mixin'
-{ Dbay_udf              } = require './udf-mixin'
+{ DBay_query            } = require './query-mixin'
+{ DBay_ctx              } = require './ctx-mixin'
+{ DBay_openclose        } = require './open-close-mixin'
+{ DBay_stdlib           } = require './stdlib-mixin'
+{ DBay_random           } = require './random-mixin'
+{ DBay_udf              } = require './udf-mixin'
 { Sql                   } = require './sql'
 
 
 #===========================================================================================================
-class @Dbay extends   \
-  Dbay_query          \
-  Dbay_ctx            \
-  Dbay_openclose      \
-  Dbay_stdlib         \
-  Dbay_random         \
-  Dbay_udf            \
+class @DBay extends   \
+  DBay_query          \
+  DBay_ctx            \
+  DBay_openclose      \
+  DBay_stdlib         \
+  DBay_random         \
+  DBay_udf            \
   Function
 
   #---------------------------------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ guy                       = require 'guy'
 
 
 #===========================================================================================================
-@Dbay_random = ( clasz = Object ) => class extends clasz
+@DBay_random = ( clasz = Object ) => class extends clasz
 
   #=========================================================================================================
   # RANDOM NUMBER GENERATION
