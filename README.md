@@ -353,9 +353,12 @@ dbay`, both package managers work fine.*
 * **[–]** allow to call `DBay::do -> ...` with an asynchronous function
 * **[+]** make `db = new DBay()` an instance of `Function` that, when called, runs `DBay::do()`
   `Database::execute()`.
-* **[–]** implement `DBay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }` and
   `statement = DBay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
-* **[–]** change classname(s) from `DBay` to `DBay` to avoid spelling variant proliferation
+* **[+]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
 * **[–]** implement `DBay::open()`, `DBay::close()`
 * **[–]** ensure how cross-schema foreign keys work when re-attaching DBs / schemas one by one
 * **[–]** demote `random` from a mixin to functions in `helpers`.
+* **[–]** implement `db.truncate()` / `db.delete()`; allow to retrieve SQL.
+* **[–]** implement `DBay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }`;
+  allow to retrieve SQL.
+
