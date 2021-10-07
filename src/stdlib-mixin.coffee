@@ -17,6 +17,17 @@ echo                      = CND.echo.bind CND
   lets }                  = require 'letsfreezethat'
 
 #-----------------------------------------------------------------------------------------------------------
+walk_split_parts = ( text, splitter, omit_empty ) ->
+  parts = text.split splitter
+  parts = ( part for part in parts when ( not omit_empty ) or ( part isnt '' ) )
+  count = parts.length
+  for part, idx in parts
+    lnr = idx + 1
+    rnr = count - idx
+    yield { lnr, rnr, part, }
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
 @DBay_stdlib = ( clasz = Object ) => class extends clasz
   ### TAINT use `cfg` ###
 
@@ -48,19 +59,19 @@ echo                      = CND.echo.bind CND
     #-------------------------------------------------------------------------------------------------------
     @create_table_function
       name:           prefix + 'str_split'
-      columns:        [ 'part', ]
+      columns:        [ 'lnr', 'rnr', 'part', ]
       parameters:     [ 'text', 'splitter', 'omit_empty', ]
       deterministic:  true
       varargs:        false
       rows:           ( text, splitter, omit_empty = false ) ->
-        if omit_empty then  yield { part, } for part in text.split splitter when part.length > 0
-        else                yield { part, } for part in text.split splitter
+        omit_empty = !!omit_empty
+        yield from walk_split_parts text, splitter, omit_empty
         return null
 
     #-------------------------------------------------------------------------------------------------------
     @create_table_function
       name:           prefix + 'str_split_re'
-      columns:        [ 'part', ]
+      columns:        [ 'lnr', 'rnr', 'part', ]
       parameters:     [ 'text', 'splitter', 'flags', 'omit_empty', ]
       deterministic:  false
       varargs:        true
@@ -68,8 +79,7 @@ echo                      = CND.echo.bind CND
         omit_empty = !!omit_empty
         if flags?     then  re = new RegExp splitter, flags
         else                re = new RegExp splitter
-        if omit_empty then  yield { part, } for part in text.split re when part.length > 0
-        else                yield { part, } for part in text.split re
+        yield from walk_split_parts text, re, omit_empty
         return null
 
     #-------------------------------------------------------------------------------------------------------
