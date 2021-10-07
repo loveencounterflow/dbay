@@ -102,6 +102,7 @@ guy                       = require 'guy'
       @execute SQL"commit;"   if @sqlt1.inTransaction
     catch error
       @execute SQL"rollback;" if @sqlt1.inTransaction
+      # try @execute SQL"rollback;" if @sqlt1.inTransaction catch error then null
     return null
 
   #---------------------------------------------------------------------------------------------------------
