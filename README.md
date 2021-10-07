@@ -361,4 +361,8 @@ dbay`, both package managers work fine.*
 * **[–]** implement `db.truncate()` / `db.delete()`; allow to retrieve SQL.
 * **[–]** implement `DBay::insert_into.<table> [ 'field1', 'field2', ..., ], { field1, field2, ..., }`;
   allow to retrieve SQL.
+* **[–]** clarify whether UDFs get called at all when any argument is `null` b/c it looks like they
+  don't get called which would be unfortunate
+
+
 
