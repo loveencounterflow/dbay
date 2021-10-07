@@ -47,6 +47,36 @@ echo                      = CND.echo.bind CND
 
     #-------------------------------------------------------------------------------------------------------
     @create_table_function
+      name:           prefix + 'str_split'
+      columns:        [ 'part', ]
+      parameters:     [ 'text', 'splitter', 'omit_empty', ]
+      deterministic:  true
+      varargs:        false
+      rows:           ( text, splitter, omit_empty = false ) ->
+        if omit_empty then  yield { part, } for part in text.split splitter when part.length > 0
+        else                yield { part, } for part in text.split splitter
+        return null
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_table_function
+      name:           prefix + 'str_split_re'
+      columns:        [ 'part', ]
+      parameters:     [ 'text', 'splitter', 'flags', 'omit_empty', ]
+      deterministic:  false
+      varargs:        true
+      rows:           ( text, splitter, flags = null, omit_empty = false ) ->
+        omit_empty = !!omit_empty
+        if flags?     then  re = new RegExp splitter, flags
+        else                re = new RegExp splitter
+        debug '^3341^', { text, splitter, flags, omit_empty, re, result: text.split re}
+        if omit_empty # then
+          for part in text.split re when part.length > 0
+            yield { part, }
+        else                yield { part, } for part in text.split re
+        return null
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_table_function
       name:           prefix + 'str_split_first'
       columns:        [ 'prefix', 'suffix', ]
       parameters:     [ 'text', 'splitter', ]
