@@ -68,10 +68,7 @@ echo                      = CND.echo.bind CND
         omit_empty = !!omit_empty
         if flags?     then  re = new RegExp splitter, flags
         else                re = new RegExp splitter
-        debug '^3341^', { text, splitter, flags, omit_empty, re, result: text.split re}
-        if omit_empty # then
-          for part in text.split re when part.length > 0
-            yield { part, }
+        if omit_empty then  yield { part, } for part in text.split re when part.length > 0
         else                yield { part, } for part in text.split re
         return null
 
