@@ -363,6 +363,8 @@ dbay`, both package managers work fine.*
   allow to retrieve SQL.
 * **[–]** clarify whether UDFs get called at all when any argument is `null` b/c it looks like they
   don't get called which would be unfortunate
+* **[–]** add schematic to clarify terms like *database*, *schema*, *connection*; hilite that UDFs are
+  defined on *connections* (not *schemas* or *databases* as would be the case in e.g. PostgreSQL).
 
 
 
