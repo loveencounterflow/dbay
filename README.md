@@ -27,6 +27,7 @@
       - [Purpose](#purpose)
       - [Escaping Identifiers, General Values, and List Values](#escaping-identifiers-general-values-and-list-values)
       - [Statement Interpolation](#statement-interpolation)
+    - [SQL Statement Generation](#sql-statement-generation)
     - [Random](#random)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -287,6 +288,36 @@ result  = db.sql.interpolate sql, d
 # throws "unknown interpolation format 'X'"
 ```
 
+------------------------------------------------------------------------------------------------------------
+
+
+### SQL Statement Generation
+
+DBay offers limited support for the declarative generation of a small number of recurring classes of SQL
+statements. These facilities are in no way intended to constitute or grow into a full-blown
+Object-Relational Mapper (ORM); instead, they are meant to make working with relational data less of a
+chore. To pick one case in point, SQL `insert` statements when called from a procedural language have a
+nasty habit of demanding not two, but *three* copies of a table's column names:
+
+```coffee
+db SQL"""
+  create table xy (
+    a   integer not null primary key,
+    b   text not null,
+    c   boolean not null );"""
+db SQL"insert into xy ( b, c ) values ( $b, $c )", { b, c, }
+#                     ^^^^^^^^        ^^^^^^^^^^   ^^^^^^^^^
+```
+
+```coffee
+insert_into_xy = db.prepare_insert { into: 'xy', }
+db insert_into_xy { a, b, c, }
+```
+
+```coffee
+insert_into_xy = db.prepare_insert { into: 'xy', fields: [ 'b', 'c', ], include: false, }
+db insert_into_xy { b, c, }
+```
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -365,6 +396,8 @@ dbay`, both package managers work fine.*
   don't get called which would be unfortunate
 * **[–]** add schematic to clarify terms like *database*, *schema*, *connection*; hilite that UDFs are
   defined on *connections* (not *schemas* or *databases* as would be the case in e.g. PostgreSQL).
+* **[–]** allow to transparently treat key/value tables as caches
+* **[–]** let `db.do()` accept prepared statement objects.
 
 
 
