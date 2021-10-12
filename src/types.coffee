@@ -443,5 +443,26 @@ Dba                       = null
 # @declare 'dba_format', ( x ) -> _import_formats.has x
 
 
+#===========================================================================================================
+# SQLGEN
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_insert_cfg', tests:
+  "@isa.object x":                                ( x ) -> @isa.object x
+  "@isa.dbay_schema x.schema":                    ( x ) -> @isa.dbay_schema x.schema
+  "@isa.dbay_name x.into":                        ( x ) -> @isa.dbay_name x.into
+  "@isa_optional.nonempty_text x.on_conflict":    ( x ) -> @isa_optional.nonempty_text x.on_conflict
+  "either x.fields or x.exclude may be a nonempty list of nonempty_texts": ( x ) ->
+    if x.fields?
+      return false if x.exclude?
+      return false unless @isa.list x.fields
+      return false unless x.fields.length is 0
+      return false unless x.fields.all ( e ) => @isa.nonempty_text e
+      return true
+    if x.exclude?
+      return false unless @isa.list x.exclude
+      return false unless x.exclude.length is 0
+      return false unless x.exclude.all ( e ) => @isa.nonempty_text e
+      return true
+    return true
 
 

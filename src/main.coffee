@@ -27,6 +27,7 @@ H                         = require './helpers'
 { DBay_ctx              } = require './ctx-mixin'
 { DBay_openclose        } = require './open-close-mixin'
 { DBay_stdlib           } = require './stdlib-mixin'
+{ DBay_sqlgen           } = require './sqlgen-mixin'
 { DBay_random           } = require './random-mixin'
 { DBay_udf              } = require './udf-mixin'
 { Sql                   } = require './sql'
@@ -38,6 +39,7 @@ class @DBay extends   \
   DBay_ctx            \
   DBay_openclose      \
   DBay_stdlib         \
+  DBay_sqlgen         \
   DBay_random         \
   DBay_udf            \
   Function
@@ -90,6 +92,12 @@ class @DBay extends   \
         directOnly:     false
       #.....................................................................................................
       dbay_create_virtual_table_cfg: {}
+      #.....................................................................................................
+      dbay_create_insert_cfg:
+        schema:         'main'
+        into:           null
+        fields:         null
+        exclude:        null
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->
@@ -132,6 +140,7 @@ class @DBay extends   \
     @_$ctx_initialize?()
     @_$openclose_initialize?()
     @_$stdlib_initialize?()
+    @_$sqlgen_initialize?()
     @_$random_initialize?()
     @_$udf_initialize?()
     guy.cfg.configure_with_types @_me, cfg, types
