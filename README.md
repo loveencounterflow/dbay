@@ -309,14 +309,33 @@ db SQL"insert into xy ( b, c ) values ( $b, $c )", { b, c, }
 #                     ^^^^^^^^        ^^^^^^^^^^   ^^^^^^^^^
 ```
 
-```coffee
-insert_into_xy = db.prepare_insert { into: 'xy', }
-db insert_into_xy { a, b, c, }
-```
+Often, when an `insert` statement is being called for, one wants to insert full rows into tables. This is
+the default that DBay makes easy: A call to `db.prepare_insert()` with the insertion target identified with
+`into` will return a prepared statement that can then be used as first argument to the `db` callable:
 
 ```coffee
-insert_into_xy = db.prepare_insert { into: 'xy', fields: [ 'b', 'c', ], include: false, }
-db insert_into_xy { b, c, }
+insert_into_xy = db.prepare_insert { into: 'xy', }
+db insert_into_xy, { a, b, c, }
+```
+
+Observe that named parameters (as opposed to positional ones) are used, so values must be passed as an
+object (as opposed to a list). In case the actual SQL text of the statement is needed, call
+`db.create_insert { into: 'xy', }` instead.
+
+Also quite frequent is the case where the values of a few fields need not or should not be explicitly set;
+this is commonly the case with [(implicit) `autoincrement` fields](https://sqlite.org/autoinc.html), `a` in
+this case. `db.prepare_insert()` allows to either explicitly name the `fields` to be set: —
+
+```coffee
+insert_into_xy = db.prepare_insert { into: 'xy', fields: [ 'b', 'c', ], }
+db insert_into_xy, { b, c, }
+```
+
+— or, alternatively, to specify which fields to `exclude`:
+
+```coffee
+insert_into_xy = db.prepare_insert { into: 'xy', exclude: [ 'a', ], }
+db insert_into_xy, { b, c, }
 ```
 
 ------------------------------------------------------------------------------------------------------------
