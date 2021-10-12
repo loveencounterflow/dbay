@@ -42,25 +42,32 @@ SQL                       = String.raw
     return R.join ' '
 
   #---------------------------------------------------------------------------------------------------------
-  _get_field_names: ( schema, name ) -> ( d.name for d in @_get_fields schema, name )
-
-  #---------------------------------------------------------------------------------------------------------
-  _get_fields: ( schema, name ) ->
-    # @types.validate.dbay_fields_of_cfg ( cfg = { @constructor.C.defaults.dbay_fields_of_cfg..., cfg..., } )
-    schema_i          = @sql.I schema
-    R                 = []
-    for d from @all_rows SQL"select * from #{schema_i}.pragma_table_info( $name );", { name, }
-      # { cid: 0, name: 'id', type: 'integer', notnull: 1, dflt_value: null, pk: 1 }
-      type = if d.type is '' then null else d.type
-      R.push {
-        idx:      d.cid
-        type:     type
-        name:     d.name
-        optional: !d.notnull
-        default:  d.dflt_value
-        is_pk:    !!d.pk }
+  _get_field_names: ( schema, name ) ->
+    schema_i  = @sql.I schema
+    statement = @prepare SQL"select name from #{schema_i}.pragma_table_info( $name );"
+    statement.raw true
+    R         = ( row[ 0 ] for row from statement.iterate { name, } )
     throw new E.DBay_object_unknown '^dbay/sqlgen@1^', schema, name if R.length is 0
     return R
+
+  # #---------------------------------------------------------------------------------------------------------
+  # _get_fields: ( schema, name ) ->
+  #   ### TAINT rewrite; see above ###
+  #   # @types.validate.dbay_fields_of_cfg ( cfg = { @constructor.C.defaults.dbay_fields_of_cfg..., cfg..., } )
+  #   schema_i          = @sql.I schema
+  #   R                 = []
+  #   for d from @all_rows SQL"select * from #{schema_i}.pragma_table_info( $name );", { name, }
+  #     # { cid: 0, name: 'id', type: 'integer', notnull: 1, dflt_value: null, pk: 1 }
+  #     type = if d.type is '' then null else d.type
+  #     R.push {
+  #       idx:      d.cid
+  #       type:     type
+  #       name:     d.name
+  #       optional: !d.notnull
+  #       default:  d.dflt_value
+  #       is_pk:    !!d.pk }
+  #   throw new E.DBay_object_unknown '^dbay/sqlgen@1^', schema, name if R.length is 0
+  #   return R
 
 
 
