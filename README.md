@@ -325,9 +325,10 @@ src=https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.ra
 Instead, we implement facilities to cover the most frequent use cases and offer opportunities to insert SQL
 fragments at strategic points.
 
-Often, when an `insert` statement is being called for, one wants to insert full rows into tables. This is
-the default that DBay makes easy: A call to `db.prepare_insert()` with the insertion target identified with
-`into` will return a prepared statement that can then be used as first argument to the `db` callable:
+Often, when an `insert` statement is being called for, one wants to insert full rows (minus `generate`d
+columns, for which see below) into tables. This is the default that DBay makes easy: A call to
+`db.prepare_insert()` with the insertion target identified with `into` will return a prepared statement that
+can then be used as first argument to the `db` callable:
 
 ```coffee
 insert_into_xy = db.prepare_insert { into: 'xy', }
@@ -360,14 +361,16 @@ db SQL"""
     e text generated always as (substr(c,b,b+1)) stored );"""
 insert_into_t1 = db.create_insert { into: 't1', }
 
-### Observe `d` and `e` left out because they're generated, but `a` is present: ###
+### Observe `d` and `e` are left out because they're generated, but `a` is present: ###
 # 'insert into "main"."t1" ( "a", "b", "c" ) values ( $a, $b, $c );'
 
 ### You probably want either this: ###
 insert_into_t1 = db.create_insert { into: 't1', fields: [ 'b', 'c', ], }
+# 'insert into "main"."t1" ( "b", "c" ) values ( $b, $c );'
 
 ### Or this: ###
 insert_into_t1 = db.create_insert { into: 't1', exclude: [ 'a', ], }
+# 'insert into "main"."t1" ( "b", "c" ) values ( $b, $c );'
 ```
 
 The next important thing one often wants in inserts is resolving conflicts. SQLite implements `on conflict
