@@ -335,23 +335,39 @@ db insert_into_xy, { a, b, c, }
 ```
 
 Observe that named parameters (as opposed to positional ones) are used, so values must be passed as an
-object (as opposed to a list). In case the actual SQL text of the statement is needed, call
-`db.create_insert { into: 'xy', }` instead.
+object (as opposed to a list).
 
-Also quite frequent is the case where the values of a few fields need not or should not be explicitly set;
-this is commonly the case with [(implicit) `autoincrement` fields](https://sqlite.org/autoinc.html), `a` in
-this case. `db.prepare_insert()` allows to either explicitly name the `fields` to be set: —
+In case the actual SQL text of the statement is needed, call `db.create_insert()` instead:
 
 ```coffee
-insert_into_xy = db.prepare_insert { into: 'xy', fields: [ 'b', 'c', ], }
-db insert_into_xy, { b, c, }
+insert_sql = db.create_insert { into: 'xy', }
+# 'insert into "main"."xy" ( "a", "b", "c" ) values ( $a, $b, $c );'
 ```
 
-— or, alternatively, to specify which fields to `exclude`:
+When one or more columns in a table are [`autoincrement`ed](https://sqlite.org/autoinc.html) or have a
+`default` value, then those columns are often intended not to be set explicitly. What's more, [columns with
+`generate`d values]() *must not* be set explicitly. For this reason, **`db.create_insert()` (and, by
+extension, `db.prepare_insert()`) will skip `generate`d columns** and allow to explicitly specify either
+*included* columns (as `fields`) or else *excluded* columns (as `exclude`):
 
 ```coffee
-insert_into_xy = db.prepare_insert { into: 'xy', exclude: [ 'a', ], }
-db insert_into_xy, { b, c, }
+db SQL"""
+  create table t1(
+    a integer primary key,
+    b integer,
+    c text,
+    d integer generated always as (a*abs(b)) virtual,
+    e text generated always as (substr(c,b,b+1)) stored );"""
+insert_into_t1 = db.create_insert { into: 't1', }
+
+### Observe `d` and `e` left out because they're generated, but `a` is present: ###
+# 'insert into "main"."t1" ( "a", "b", "c" ) values ( $a, $b, $c );'
+
+### You probably want either this: ###
+insert_into_t1 = db.create_insert { into: 't1', fields: [ 'b', 'c', ], }
+
+### Or this: ###
+insert_into_t1 = db.create_insert { into: 't1', exclude: [ 'a', ], }
 ```
 
 The next important thing one often wants in inserts is resolving conflicts. SQLite implements `on conflict
