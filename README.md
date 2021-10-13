@@ -344,9 +344,9 @@ do` clauses:
 ![](artwork/upsert.railroad.svg)
 
 
-<details><summary>While the SQL `insert` statement may seem simple at first sight, its complexity is
+<details><summary>While the SQL <code>insert</code> statement may seem simple at first sight, its complexity is
 significantly increased by an `on conflict` clause.</summary>
-![](https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png)
+<img alt='SQLite Insert Statement Railroad Diagram' src=https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png>
 </details>
 
 ------------------------------------------------------------------------------------------------------------
