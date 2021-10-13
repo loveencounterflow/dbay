@@ -33,7 +33,6 @@ SQL                       = String.raw
       fields = ( field for field in fields when field not in cfg.exclude ) if cfg.exclude?
     R             = []
     R.push "insert into #{I cfg.schema}.#{I cfg.into} ("
-    debug '^34937534^', fields
     R.push ( ( I field ) for field in fields ).join ', '
     R.push ") values ("
     ### TAINT how to escape dollar placeholders??? ###
