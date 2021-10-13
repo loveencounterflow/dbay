@@ -297,7 +297,7 @@ result  = db.sql.interpolate sql, d
 DBay offers limited support for the declarative generation of a small number of recurring classes of SQL
 statements. These facilities are in no way intended to constitute or grow into a full-blown
 Object-Relational Mapper (ORM); instead, they are meant to make working with relational data less of a
-chore.
+repetitive chore.
 
 #### Insert Statement Generation
 
@@ -318,7 +318,7 @@ db SQL"insert into xy ( b, c ) values ( $b, $c )", { b, c, }
 if one wanted to only generate SQL <code>insert</code> statements, one would still have to implement almost
 all of SQL, as is evidenced by the screenshot of the <a href=https://sqlite.org/lang_insert.html>SQLite
 <code>insert</code> Statement Railroad Diagram</a> that will be displayed when clicking/tapping on this
-paragraph.</summary> <img alt='SQLite Insert Statement Railroad Diagram'
+paragraph. <ins>Click here to open.</ins></summary> <img alt='SQLite Insert Statement Railroad Diagram'
 src=https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png> </details>
 
 Instead, we implement facilities to cover the most frequent use cases and offer opportunities to insert SQL
