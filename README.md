@@ -343,6 +343,9 @@ do` clauses:
 
 ![](artwork/upsert.railroad.svg)
 
+
+![](https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png)
+
 ------------------------------------------------------------------------------------------------------------
 
 ### Random
