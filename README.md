@@ -338,10 +338,10 @@ insert_into_xy = db.prepare_insert { into: 'xy', exclude: [ 'a', ], }
 db insert_into_xy, { b, c, }
 ```
 
+The next important thing one often wants in inserts is resolving conflicts. SQLite implements `on conflict
+do` clauses:
+
 ![](artwork/upsert.railroad.svg)
-![](artwork/upsert-column-name-list.railroad.svg)
-![](artwork/upsert-expr.railroad.svg)
-![](artwork/upsert-indexed-column.railroad.svg)
 
 ------------------------------------------------------------------------------------------------------------
 
