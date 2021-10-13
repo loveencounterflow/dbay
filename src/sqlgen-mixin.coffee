@@ -30,7 +30,7 @@ SQL                       = String.raw
       fields = cfg.fields
     else
       fields = @_get_field_names cfg.schema, cfg.into
-      fields = ( field for field in fields when not field in cfg.exclude ) if cfg.exclude?
+      fields = ( field for field in fields when field not in cfg.exclude ) if cfg.exclude?
     R             = []
     R.push "insert into #{I cfg.schema}.#{I cfg.into} ("
     debug '^34937534^', fields
