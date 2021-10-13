@@ -214,7 +214,7 @@ fall back on to `better-sqlite3` explicitly:
 ```coffee
 insert = db.prepare SQL"insert into texts values ( ?, ? );" # returns a `better-sqlite3` `Statement` instance
 db ->
-  insert [ 2, 'second', ]
+  insert.run [ 2, 'second', ]
 ```
 
 
@@ -457,7 +457,7 @@ dbay`, both package managers work fine.*
 * **[–]** add schematic to clarify terms like *database*, *schema*, *connection*; hilite that UDFs are
   defined on *connections* (not *schemas* or *databases* as would be the case in e.g. PostgreSQL).
 * **[–]** allow to transparently treat key/value tables as caches
-* **[–]** let `db.do()` accept prepared statement objects.
+* **[+]** let `db.do()` accept prepared statement objects.
 * **[–]** implement escaping of dollar-prefixed SQL placeholders (needed by `create_insert()`).
 
 
