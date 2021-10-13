@@ -150,7 +150,7 @@ class @DBay extends   \
     unless @constructor._skip_sqlt
       guy.props.def @_me, 'sqlt1', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
       guy.props.def @_me, 'sqlt2', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
-    # @_compile_sql()
+    @_compile_sql?()
     # @_create_sql_functions()
     # @_create_db_structure()
     guy.process.on_exit => @_me.destroy()
@@ -166,6 +166,14 @@ class @DBay extends   \
     process exit. ###
     @_dbs[ schema ] = { path, temporary, }
     return null
+
+  #=========================================================================================================
+  # PREPARED STATEMENTS
+  #---------------------------------------------------------------------------------------------------------
+  # _compile_sql: ->
+  #   sql =
+  #     _get_field_names: @prepare SQL"select name from #{schema_i}.pragma_table_info( $name );"
+  #     statement.raw true
 
   #=========================================================================================================
   # CLEANUP ON DEMAND, ON PROCESS EXIT
