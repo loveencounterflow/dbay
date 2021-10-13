@@ -339,6 +339,9 @@ db insert_into_xy, { b, c, }
 ```
 
 ![](artwork/upsert.railroad.svg)
+![](artwork/upsert-column-name-list.railroad.svg)
+![](artwork/upsert-expr.railroad.svg)
+![](artwork/upsert-indexed-column.railroad.svg)
 
 ------------------------------------------------------------------------------------------------------------
 
