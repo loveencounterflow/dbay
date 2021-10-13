@@ -314,11 +314,12 @@ db SQL"insert into xy ( b, c ) values ( $b, $c )", { b, c, }
 #                     ^^^^^^^^        ^^^^^^^^^^   ^^^^^^^^^
 ```
 
-<details><summary>As stated above, DBay does not strive to implement full SQL statement generation. And even
-if one wanted to only generate SQL <code>insert</code> statements, one would still have to implement almost
-all of SQL, as is evidenced by the screenshot of the <a href=https://sqlite.org/lang_insert.html>SQLite
-<code>insert</code> Statement Railroad Diagram</a> that will be displayed when clicking/tapping on this
-paragraph. <ins>Click here to open.</ins></summary> <img alt='SQLite Insert Statement Railroad Diagram'
+<details><summary><ins>As stated above, DBay does not strive to implement full SQL statement generation. And
+even if one wanted to only generate SQL <code>insert</code> statements, one would still have to implement
+almost all of SQL, as is evidenced by the screenshot of the <a
+href=https://sqlite.org/lang_insert.html>SQLite <code>insert</code> Statement Railroad Diagram</a> that will
+be displayed when clicking/tapping on this paragraph.</ins></summary> <img alt='SQLite Insert Statement
+Railroad Diagram'
 src=https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png> </details>
 
 Instead, we implement facilities to cover the most frequent use cases and offer opportunities to insert SQL
