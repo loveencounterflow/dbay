@@ -30,6 +30,9 @@ E                         = require './errors'
     return switch ( type = @types.type_of first )
       when 'text'               then @_query_run_or_execute first, P...
       when 'object', 'function' then @with_transaction first, P...
+      when 'statement'
+        statement = first
+        return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
     throw new E.DBay_wrong_type '^dbay/query@1^', 'a text, an object, or a function', type
 
   #---------------------------------------------------------------------------------------------------------
