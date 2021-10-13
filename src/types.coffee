@@ -117,13 +117,13 @@ Dba                       = null
     if x.fields?
       return false if x.exclude?
       return false unless @isa.list x.fields
-      return false unless x.fields.length is 0
-      return false unless x.fields.all ( e ) => @isa.nonempty_text e
+      return false unless x.fields.length > 0
+      return false unless x.fields.every ( e ) => @isa.nonempty_text e
       return true
     if x.exclude?
       return false unless @isa.list x.exclude
-      return false unless x.exclude.length is 0
-      return false unless x.exclude.all ( e ) => @isa.nonempty_text e
+      return false unless x.exclude.length > 0
+      return false unless x.exclude.every ( e ) => @isa.nonempty_text e
       return true
     return true
 
