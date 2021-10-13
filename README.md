@@ -28,6 +28,7 @@
       - [Escaping Identifiers, General Values, and List Values](#escaping-identifiers-general-values-and-list-values)
       - [Statement Interpolation](#statement-interpolation)
     - [SQL Statement Generation](#sql-statement-generation)
+      - [Insert Statement Generation](#insert-statement-generation)
     - [Random](#random)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -296,8 +297,12 @@ result  = db.sql.interpolate sql, d
 DBay offers limited support for the declarative generation of a small number of recurring classes of SQL
 statements. These facilities are in no way intended to constitute or grow into a full-blown
 Object-Relational Mapper (ORM); instead, they are meant to make working with relational data less of a
-chore. To pick one case in point, SQL `insert` statements when called from a procedural language have a
-nasty habit of demanding not two, but *three* copies of a table's column names:
+chore.
+
+#### Insert Statement Generation
+
+To pick one case in point, SQL `insert` statements when called from a procedural language have a nasty habit
+of demanding not two, but *three* copies of a table's column names:
 
 ```coffee
 db SQL"""
@@ -308,6 +313,16 @@ db SQL"""
 db SQL"insert into xy ( b, c ) values ( $b, $c )", { b, c, }
 #                     ^^^^^^^^        ^^^^^^^^^^   ^^^^^^^^^
 ```
+
+<details><summary>As stated above, DBay does not strive to implement full SQL statement generation. And even
+if one wanted to only generate SQL <code>insert</code> statements, one would still have to implement almost
+all of SQL, as is evidenced by the screenshot of the <a href=https://sqlite.org/lang_insert.html>SQLite
+<code>insert</code> Statement Railroad Diagram</a> that will be displayed when clicking/tapping on this
+paragraph.</summary> <img alt='SQLite Insert Statement Railroad Diagram'
+src=https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png> </details>
+
+Instead, we implement facilities to cover the most frequent use cases and offer opportunities to insert SQL
+fragments at strategic points.
 
 Often, when an `insert` statement is being called for, one wants to insert full rows into tables. This is
 the default that DBay makes easy: A call to `db.prepare_insert()` with the insertion target identified with
@@ -343,11 +358,6 @@ do` clauses:
 
 ![](artwork/upsert.railroad.svg)
 
-
-<details><summary>While the SQL <code>insert</code> statement may seem simple at first sight, its complexity is
-significantly increased by an `on conflict` clause.</summary>
-<img alt='SQLite Insert Statement Railroad Diagram' src=https://loveencounterflow.github.io/hengist/sqlite-syntax-diagrams/insert.railroad.png>
-</details>
 
 ------------------------------------------------------------------------------------------------------------
 
