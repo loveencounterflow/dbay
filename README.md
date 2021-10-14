@@ -376,15 +376,45 @@ insert_into_t1 = db.create_insert { into: 't1', exclude: [ 'a', ], }
 The next important thing one often wants in inserts is resolving conflicts. DBay `create_insert()` supports
 setting `on_conflict` to either **(1)** an arbitrary string that should spell out a syntactically valid SQL
 `on conflict` clause, or **(2)** an object `{ update: true, }` to generate SQL that updates the explicitly
-or implicitly selected columns.
+or implicitly selected columns. This form has been chosen to leave the door open to future expansions of
+supported features.
 
 When choosing the first option, observe that whatever string is passed in, `create_insert()` will prepend
-`'on conflict '` to it; therefore, to create an insert statement that ignores insert conflicts, and according
-to the [`upsert` syntax railroad diagram](https://sqlite.org/lang_upsert.html): —
+`'on conflict '` to it; therefore, to create an insert statement that ignores insert conflicts, and
+according to the [`upsert` syntax railroad diagram](https://sqlite.org/lang_upsert.html): —
 
 ![](artwork/upsert.railroad.svg)
 
-— the right thing to do is to call `db.create_insert { into: 't1', on_conflict: 'do nothing', }`.
+— the right thing to do is to call `db.create_insert { into: table_name, on_conflict: 'do nothing', }`. Assuming table `t1`
+has been declared as above, calling
+
+```coffee
+db.create_insert { into: 't1', exclude: [ 'a', ], on_conflict: "do nothing", }
+```
+
+will generate the (unformatted but properly escaped) equivalent to:
+
+```sql
+insert into main.t1 ( b, c )
+  values ( $b, $c )
+  on conflict do nothing;
+```
+
+while calling
+
+```coffee
+db.create_insert { into: 't1', exclude: [ 'a', ], on_conflict: { update: true, }, }
+```
+
+wiil generate the (unformatted but properly escaped) equivalent to:
+
+```sql
+insert into main.t1 ( b, c )
+  values ( $b, $c )
+  on conflict do update set
+    b = excluded.b,
+    c = excluded.c;
+```
 
 
 ------------------------------------------------------------------------------------------------------------
