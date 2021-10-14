@@ -32,13 +32,26 @@ SQL                       = String.raw
       fields = @_get_field_names cfg.schema, cfg.into
       fields = ( field for field in fields when field not in cfg.exclude ) if cfg.exclude?
     R             = []
-    R.push "insert into #{I cfg.schema}.#{I cfg.into} ("
+    R.push "insert into #{I cfg.schema}.#{I cfg.into} ( "
     R.push ( ( I field ) for field in fields ).join ', '
-    R.push ") values ("
+    R.push " ) values ( "
     ### TAINT how to escape dollar placeholders??? ###
     R.push ( ( "$#{field}" ) for field in fields ).join ', '
-    R.push ");"
-    return R.join ' '
+    if cfg.on_conflict
+      R.push " ) "
+      switch ( type = @types.type_of cfg.on_conflict )
+        when 'text'
+          R.push "on conflict #{cfg.on_conflict}"
+        when 'object'
+          ### `cfg.on_conflict.update` is `true` ###
+          R.push "on conflict do update set "
+          R.push ( "#{I field} = excluded.#{I field}" for field in fields ).join ', '
+          R.push ";"
+        else
+          throw new E.DBay_wrong_type '^dbay/sqlgen@1^', "a nonempty_text or an object", type
+    else
+      R.push " );"
+    return R.join ''
 
   #---------------------------------------------------------------------------------------------------------
   _get_field_names: ( schema, name ) ->

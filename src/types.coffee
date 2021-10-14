@@ -108,11 +108,19 @@ Dba                       = null
 #===========================================================================================================
 # SQLGEN
 #-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_create_insert_on_conflict_cfg', ( x ) ->
+
+#-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_create_insert_cfg', tests:
-  "@isa.object x":                                ( x ) -> @isa.object x
-  "@isa.dbay_schema x.schema":                    ( x ) -> @isa.dbay_schema x.schema
-  "@isa.dbay_name x.into":                        ( x ) -> @isa.dbay_name x.into
-  "@isa_optional.nonempty_text x.on_conflict":    ( x ) -> @isa_optional.nonempty_text x.on_conflict
+  "@isa.object x":                                          ( x ) -> @isa.object x
+  "@isa.dbay_schema x.schema":                              ( x ) -> @isa.dbay_schema x.schema
+  "@isa.dbay_name x.into":                                  ( x ) -> @isa.dbay_name x.into
+  "x.on_conflict is an optional nonempty_text or suitable object":  ( x ) ->
+    return true unless x.on_conflict?
+    return true if @isa.nonempty_text x.on_conflict
+    return false unless @isa.object x.on_conflict
+    return false unless x.on_conflict.update is true
+    return true
   "either x.fields or x.exclude may be a nonempty list of nonempty_texts": ( x ) ->
     if x.fields?
       return false if x.exclude?
