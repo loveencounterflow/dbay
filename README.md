@@ -373,10 +373,18 @@ insert_into_t1 = db.create_insert { into: 't1', exclude: [ 'a', ], }
 # 'insert into "main"."t1" ( "b", "c" ) values ( $b, $c );'
 ```
 
-The next important thing one often wants in inserts is resolving conflicts. SQLite implements `on conflict
-do` clauses:
+The next important thing one often wants in inserts is resolving conflicts. DBay `create_insert()` supports
+setting `on_conflict` to either **(1)** an arbitrary string that should spell out a syntactically valid SQL
+`on conflict` clause, or **(2)** an object `{ update: true, }` to generate SQL that updates the explicitly
+or implicitly selected columns.
+
+When choosing the first option, observe that whatever string is passed in, `create_insert()` will prepend
+`'on conflict '` to it; therefore, to create an insert statement that ignores insert conflicts, and according
+to the [`upsert` syntax railroad diagram](https://sqlite.org/lang_upsert.html): —
 
 ![](artwork/upsert.railroad.svg)
+
+— the right thing to do is to call `db.create_insert { into: 't1', on_conflict: 'do nothing', }`.
 
 
 ------------------------------------------------------------------------------------------------------------
@@ -459,5 +467,10 @@ dbay`, both package managers work fine.*
 * **[–]** allow to transparently treat key/value tables as caches
 * **[+]** let `db.do()` accept prepared statement objects.
 * **[–]** implement escaping of dollar-prefixed SQL placeholders (needed by `create_insert()`).
+* **[–]** implement
+  * **[–]** `db.commit()`
+  * **[–]** `db.rollback()`
+
+
 
 
