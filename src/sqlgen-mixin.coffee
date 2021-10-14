@@ -41,7 +41,7 @@ SQL                       = String.raw
       R.push " ) "
       switch ( type = @types.type_of cfg.on_conflict )
         when 'text'
-          R.push "on conflict #{cfg.on_conflict}"
+          R.push "on conflict #{cfg.on_conflict};"
         when 'object'
           ### `cfg.on_conflict.update` is `true` ###
           R.push "on conflict do update set "
