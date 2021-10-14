@@ -385,8 +385,8 @@ according to the [`upsert` syntax railroad diagram](https://sqlite.org/lang_upse
 
 ![](artwork/upsert.railroad.svg)
 
-— the right thing to do is to call `db.create_insert { into: table_name, on_conflict: 'do nothing', }`. Assuming table `t1`
-has been declared as above, calling
+— the right thing to do is to call `db.create_insert { into: table_name, on_conflict: 'do nothing', }`.
+Assuming table `t1` has been declared as above, calling
 
 ```coffee
 db.create_insert { into: 't1', exclude: [ 'a', ], on_conflict: "do nothing", }
@@ -398,6 +398,8 @@ will generate the (unformatted but properly escaped) equivalent to:
 insert into main.t1 ( b, c )
   values ( $b, $c )
   on conflict do nothing;
+  --          |<------>|
+  --        inserted string
 ```
 
 while calling
@@ -411,9 +413,9 @@ wiil generate the (unformatted but properly escaped) equivalent to:
 ```sql
 insert into main.t1 ( b, c )
   values ( $b, $c )
-  on conflict do update set
-    b = excluded.b,
-    c = excluded.c;
+  on conflict do update set  --| conflict resolution clause
+    b = excluded.b,          --| mandated by { update: true, }
+    c = excluded.c;          --| containing same fields as above
 ```
 
 
