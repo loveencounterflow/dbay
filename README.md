@@ -373,6 +373,13 @@ insert_into_t1 = db.create_insert { into: 't1', exclude: [ 'a', ], }
 # 'insert into "main"."t1" ( "b", "c" ) values ( $b, $c );'
 ```
 
+> There's a subtle yet important semantic difference in how the `fields` and `exclude` settings are handled:
+> When `fields` are explicitly given, the table **does not have to exist** when generating the SQL; however,
+> when `fields` is not given, the table **must already exist** at the time of calling `create_insert()`.
+>
+> In either case, `prepare_insert()` can only succeed when all referenced object in an SQL statement have
+> already been created.
+
 The next important thing one often wants in inserts is resolving conflicts. DBay `create_insert()` supports
 setting `on_conflict` to either **(1)** an arbitrary string that should spell out a syntactically valid SQL
 `on conflict` clause, or **(2)** an object `{ update: true, }` to generate SQL that updates the explicitly
@@ -468,7 +475,7 @@ dbay`, both package managers work fine.*
     https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/threads.md
   * **[–]** implementing **macros** so one could write eg `select * from foo( x ) as d;` to get `select *
     from ( select a, b, c from blah order by 1 ) as d` (i.e. inline expansion)
-  * **[–]** Obeserve that, seemingly, only *table-valued* UDFs hang while with shared-cache we already *can*
+  * **[–]** Observe that, seemingly, only *table-valued* UDFs hang while with shared-cache we already *can*
     issue `select`s from inside UDFs, so maybe there's a teeny, fixable difference between how both are
     implemented that leads to the undesirable behavior
 * **[–]** let users choose between SQLite-only RAM DBs and `tmpfs`-based in-memory DBs (b/c the latter allow
