@@ -39,8 +39,8 @@ SQL                       = String.raw
       ( @sqlt2.prepare SQL"attach ? as ?;" ).run [ path, schema, ]
     catch error
       throw error unless error.code is 'SQLITE_ERROR'
-      throw new E.Dba_sqlite_too_many_dbs '^dba@313^', schema if error.message.startsWith 'too many attached databases'
-      throw new E.Dba_sqlite_error        '^dba@314^', error
+      throw new E.DBay_sqlite_too_many_dbs '^dba@313^', schema if error.message.startsWith 'too many attached databases'
+      throw new E.DBay_sqlite_error        '^dba@314^', error
     @_register_schema schema, path, temporary
     return null
 
