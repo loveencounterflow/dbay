@@ -68,9 +68,9 @@ guy                       = require 'guy'
   # TRANSACTIONS
   #---------------------------------------------------------------------------------------------------------
   within_transaction:   -> @sqlt1.inTransaction
-  begin_transaction:    -> @sqlt1.execute "begin;"
-  commit_transaction:   -> @sqlt1.execute "commit;"
-  rollback_transaction: -> @sqlt1.execute "rollback;"
+  begin_transaction:    -> @sqlt1.exec "begin;"
+  commit_transaction:   -> @sqlt1.exec "commit;"
+  rollback_transaction: -> @sqlt1.exec "rollback;"
 
 
   #=========================================================================================================
