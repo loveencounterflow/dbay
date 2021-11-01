@@ -41,16 +41,17 @@ SQL                       = String.raw
       R.push " ) "
       switch ( type = @types.type_of cfg.on_conflict )
         when 'text'
-          R.push "on conflict #{cfg.on_conflict};"
+          R.push "on conflict #{cfg.on_conflict}"
         when 'object'
           ### `cfg.on_conflict.update` is `true` ###
           R.push "on conflict do update set "
           R.push ( "#{I field} = excluded.#{I field}" for field in fields ).join ', '
-          R.push ";"
         else
           throw new E.DBay_wrong_type '^dbay/sqlgen@1^', "a nonempty_text or an object", type
     else
-      R.push " );"
+      R.push " )"
+    R.push " returning #{cfg.returning}" if cfg.returning?
+    R.push ";"
     return R.join ''
 
   #---------------------------------------------------------------------------------------------------------

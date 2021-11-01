@@ -115,6 +115,7 @@ Dba                       = null
   "@isa.object x":                                          ( x ) -> @isa.object x
   "@isa.dbay_schema x.schema":                              ( x ) -> @isa.dbay_schema x.schema
   "@isa.dbay_name x.into":                                  ( x ) -> @isa.dbay_name x.into
+  "@isa_optional.nonempty_text x.returning":                ( x ) -> @isa_optional.nonempty_text x.returning
   "x.on_conflict is an optional nonempty_text or suitable object":  ( x ) ->
     return true unless x.on_conflict?
     return true if @isa.nonempty_text x.on_conflict

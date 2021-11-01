@@ -98,6 +98,7 @@ class @DBay extends   \
         into:           null
         fields:         null
         exclude:        null
+        returning:      null
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->
