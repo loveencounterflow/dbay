@@ -68,9 +68,9 @@ guy                       = require 'guy'
   # TRANSACTIONS
   #---------------------------------------------------------------------------------------------------------
   within_transaction:   -> @sqlt1.inTransaction
-  begin_transaction:    -> throw new E.DBay_not_implemented '^dbay/ctx@1^', "tx_begin"
-  commit_transaction:   -> throw new E.DBay_not_implemented '^dbay/ctx@2^', "tx_commit"
-  rollback_transaction: -> throw new E.DBay_not_implemented '^dbay/ctx@3^', "tx_rollback"
+  begin_transaction:    -> @sqlt1.execute "begin;"
+  commit_transaction:   -> @sqlt1.execute "commit;"
+  rollback_transaction: -> @sqlt1.execute "rollback;"
 
 
   #=========================================================================================================
