@@ -29,6 +29,7 @@
       - [Statement Interpolation](#statement-interpolation)
     - [SQL Statement Generation](#sql-statement-generation)
       - [Insert Statement Generation](#insert-statement-generation)
+      - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -424,6 +425,28 @@ insert into main.t1 ( b, c )
     b = excluded.b,          --| mandated by { update: true, }
     c = excluded.c;          --| containing same fields as above
 ```
+
+#### Insert Statements with a `returning` Clause
+
+It is sometimes handy to have `insert` statements that return a useful value. Here's a toy example
+that demonstrates how one can have a table with generated columns:
+
+```coffee
+db SQL"""
+  create table xy (
+    a   integer not null primary key,
+    b   text not null,
+    c   text generated always as ( '+' || b || '+' ) );"""
+insert_into_xy_sql = db.create_insert { into: 'xy', on_conflict: SQL"do nothing", returning: '*', }
+# -> 'insert into "main"."xy" ( "a", "b" ) values ( $a, $b ) on conflict do nothing returning *;'
+db.single_row insert_into_xy_sql, { a: 1, b: 'any', } # -> { a: 1, b: 'any', c: '+any+' }
+db.single_row insert_into_xy_sql, { a: 2, b: 'duh', } # -> { a: 2, b: 'duh', c: '+duh+' }
+db.single_row insert_into_xy_sql, { a: 3, b: 'foo', } # -> { a: 3, b: 'foo', c: '+foo+' }
+```
+
+Generally, the `returning` clause must be defined by a non-empty string that is valid SQL for the position
+after `returning` and the end of the statement. A star `*` will return the entire row that has been
+inserted; we here use `db.single_row()` to eschew the result iterator that would be returned by default.
 
 
 ------------------------------------------------------------------------------------------------------------
