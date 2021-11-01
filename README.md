@@ -533,7 +533,7 @@ dbay`, both package managers work fine.*
   * **[–]** `db.commit()`
   * **[–]** `db.rollback()`
 * **[–]** allow to use sets with `sql.V()`
-
+* **[+]** make `first_row()`, `all_rows()` etc accept statements and strings
 
 
 
