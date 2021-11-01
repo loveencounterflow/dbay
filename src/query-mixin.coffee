@@ -50,17 +50,17 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   query: ( sql, P... ) ->
-    statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    statement = if @types.isa.statement sql then sql else ( @_statements[ sql ] ?= @sqlt1.prepare sql )
     return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
 
   #---------------------------------------------------------------------------------------------------------
   walk: ( sql, P... ) ->
-    statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    statement = if @types.isa.statement sql then sql else ( @_statements[ sql ] ?= @sqlt1.prepare sql )
     return statement.iterate P...
 
   #---------------------------------------------------------------------------------------------------------
   all_rows: ( sql, P... ) ->
-    statement = ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    statement = if @types.isa.statement sql then sql else ( @_statements[ sql ] ?= @sqlt1.prepare sql )
     return statement.all P...
 
   #---------------------------------------------------------------------------------------------------------
