@@ -534,6 +534,11 @@ dbay`, both package managers work fine.*
   * **[–]** `db.rollback()`
 * **[–]** allow to use sets with `sql.V()`
 * **[+]** make `first_row()`, `all_rows()` etc accept statements and strings
+* **[+]** at the moment we use `cfg.prefix` for (inherently schema-less) UDF names (and require a trailing
+  underscore to be part of the prefix), and `cfg.schema` for plugin-in-specific DB tables and views; in the
+  future, we should use a single parameter for both (and make the underscore implicit). In addition, it
+  should be possible to choose whether a plugin will create its objects with a prefix (in the same schema as
+  the main DB) or within another schema.
 
 
 
