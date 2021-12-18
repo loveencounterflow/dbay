@@ -15,6 +15,8 @@ whisper                   = CND.get_logger 'whisper',   badge
 echo                      = CND.echo.bind CND
 { freeze
   lets }                  = require 'letsfreezethat'
+E                         = require './errors'
+
 
 #-----------------------------------------------------------------------------------------------------------
 walk_split_parts = ( text, splitter, omit_empty ) ->
@@ -122,5 +124,34 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
           yield [ match[ 0 ], ( match[ 1 ] ? null ), ]
         return null
 
+    #=======================================================================================================
+    # VARIABLES
+    #-------------------------------------------------------------------------------------------------------
+    @variables  = {}
+    self        = @
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function name: prefix + 'getv', deterministic: false, call: @getv.bind @
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_table_function
+      name:           prefix + 'variables',
+      deterministic:  false,
+      columns:        [ 'name', 'value', ]
+      parameters:     []
+      rows:           ( ( name ) -> yield [ name, ( @getv name ), ] for name of @variables ).bind @
+
     #-------------------------------------------------------------------------------------------------------
     return null
+
+  #---------------------------------------------------------------------------------------------------------
+  setv: ( name, value ) -> @variables[ name ] = value
+
+  #---------------------------------------------------------------------------------------------------------
+  getv: ( name ) ->
+    if ( R = @variables[ name ] ) is undefined
+      throw new E.DBay_unknown_variable '^dbay/stdlib@1^', name
+    return switch
+      when R is true  then 1
+      when R is false then 0
+      else R
