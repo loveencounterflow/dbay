@@ -53,12 +53,13 @@ class @DBay extends   \
       #.....................................................................................................
       constructor_cfg:
         # _temp_prefix: '_dba_temp_'
-        readonly:     false
-        create:       true
-        timeout:      5000
+        readonly:       false
+        create:         true
+        timeout:        5000
         #...................................................................................................
-        overwrite:    false
-        path:         null
+        overwrite:      false
+        path:           null
+        # create_stdlib:  true
       #.....................................................................................................
       dbay_with_transaction_cfg:
         mode:         'deferred'
@@ -152,6 +153,7 @@ class @DBay extends   \
       guy.props.def @_me, 'sqlt1', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
       guy.props.def @_me, 'sqlt2', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
     @_compile_sql?()
+    # @create_stdlib() if @_me.cfg.create_stdlib
     # @_create_sql_functions()
     # @_create_db_structure()
     guy.process.on_exit => @_me.destroy()

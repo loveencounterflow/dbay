@@ -37,6 +37,7 @@ Dba                       = null
   "@isa.object x":                            ( x ) -> @isa.object x
   "@isa.nonempty_text x.path":                ( x ) -> @isa.nonempty_text x.path
   "@isa.boolean x.temporary":                 ( x ) -> @isa.boolean x.temporary
+  # "@isa.boolean x.create_stdlib":             ( x ) -> @isa.boolean x.create_stdlib
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_with_transaction_cfg', tests:
