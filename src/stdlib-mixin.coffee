@@ -124,6 +124,42 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
           yield [ match[ 0 ], ( match[ 1 ] ? null ), ]
         return null
 
+
+    #=======================================================================================================
+    # ASSERTS AND EXCEPTIONS
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'raise'
+      deterministic:  true
+      varargs:        false
+      call: ( message ) ->
+        throw new Error message
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'raise_json'
+      deterministic:  true
+      varargs:        false
+      call: ( facets_json ) ->
+        try facets = JSON.parse facets_json catch error
+          throw new Error "not a valid argument for std_raise_json: #{rpr facets}"
+        error = new Error facets.message ? "(no error message given)"
+        for k, v of facets
+          continue if k is 'message'
+          error[ k ] = v
+        throw error
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'assert'
+      deterministic:  true
+      varargs:        false
+      call:           ( test, message ) ->
+        if ( not test? ) or ( test is 0 )
+          throw new Error message
+        return test
+
+
     #=======================================================================================================
     # VARIABLES
     #-------------------------------------------------------------------------------------------------------
