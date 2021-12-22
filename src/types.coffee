@@ -38,6 +38,8 @@ Dba                       = null
   "@isa.nonempty_text x.path":                ( x ) -> @isa.nonempty_text x.path
   "@isa.boolean x.temporary":                 ( x ) -> @isa.boolean x.temporary
   # "@isa.boolean x.create_stdlib":             ( x ) -> @isa.boolean x.create_stdlib
+  "x.random_seed  may be set":                ( x ) -> true
+  "x.random_delta may be set":                ( x ) -> true
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_with_transaction_cfg', tests:

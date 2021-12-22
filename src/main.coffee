@@ -28,7 +28,7 @@ H                         = require './helpers'
 { DBay_openclose        } = require './open-close-mixin'
 { DBay_stdlib           } = require './stdlib-mixin'
 { DBay_sqlgen           } = require './sqlgen-mixin'
-{ DBay_random           } = require './random-mixin'
+{ Random                } = require './random'
 { DBay_udf              } = require './udf-mixin'
 { Sql                   } = require './sql'
 
@@ -40,7 +40,6 @@ class @DBay extends   \
   DBay_openclose      \
   DBay_stdlib         \
   DBay_sqlgen         \
-  DBay_random         \
   DBay_udf            \
   Function
 
@@ -59,6 +58,8 @@ class @DBay extends   \
         #...................................................................................................
         overwrite:      false
         path:           null
+        random_seed:    null
+        random_delta:   null
         # create_stdlib:  true
       #.....................................................................................................
       dbay_with_transaction_cfg:
@@ -118,7 +119,7 @@ class @DBay extends   \
       R.path        = PATH.resolve R.path
     else
       R.temporary  ?= true
-      filename        = me._get_random_filename()
+      filename      = me.rnd.get_random_filename()
       R.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
     return R
 
@@ -138,12 +139,12 @@ class @DBay extends   \
     @_me        = @bind @
     @_me.state  = guy.lft.freeze {}
     @_me.sql    = new Sql()
+    guy.props.hide @_me, 'rnd',  new Random { seed: cfg?.random_seed ? null, delta: cfg?.random_delta ? null, }
     @_$query_initialize?()
     @_$ctx_initialize?()
     @_$openclose_initialize?()
     @_$stdlib_initialize?()
     @_$sqlgen_initialize?()
-    @_$random_initialize?()
     @_$udf_initialize?()
     guy.cfg.configure_with_types @_me, cfg, types
     #.......................................................................................................
