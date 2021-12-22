@@ -147,11 +147,11 @@ class @DBay extends   \
     @_$udf_initialize?()
     guy.cfg.configure_with_types @_me, cfg, types
     #.......................................................................................................
-    guy.props.def @_me, '_dbs', { enumerable: false, value: {}, }
+    guy.props.hide @_me, '_dbs', {}
     @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
     unless @constructor._skip_sqlt
-      guy.props.def @_me, 'sqlt1', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
-      guy.props.def @_me, 'sqlt2', { enumerable: false, value: @_me._new_bsqlt3_connection(), }
+      guy.props.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
+      guy.props.hide @_me, 'sqlt2', @_me._new_bsqlt3_connection()
     @_compile_sql?()
     # @create_stdlib() if @_me.cfg.create_stdlib
     # @_create_sql_functions()
