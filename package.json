@@ -27,7 +27,7 @@
   "dependencies": {
     "cnd": "9.2.2",
     "exit-hook": "^2.2.1",
-    "guy": "^2.3.0",
-    "intertype": "7.6.7"
+    "guy": "3.1.0",
+    "intertype": "7.7.0"
   }
 }
