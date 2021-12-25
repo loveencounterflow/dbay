@@ -115,14 +115,45 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
 
     #-------------------------------------------------------------------------------------------------------
     @create_table_function
-      name:         prefix + 're_matches'
-      columns:      [ 'match', 'capture', ]
-      parameters:   [ 'text', 'pattern', ]
+      name:           prefix + 're_matches'
+      columns:        [ 'match', 'capture', ]
+      parameters:     [ 'text', 'pattern', ]
       rows: ( text, pattern ) ->
         regex = new RegExp pattern, 'g'
         while ( match = regex.exec text )?
           yield [ match[ 0 ], ( match[ 1 ] ? null ), ]
         return null
+
+
+    #=======================================================================================================
+    # ASSERTS AND EXCEPTIONS
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'echo'
+      deterministic:  false
+      varargs:        false
+      call:           ( message ) -> echo message; return message
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'debug'
+      deterministic:  false
+      varargs:        false
+      call:           ( message ) -> debug message; return message
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'info'
+      deterministic:  false
+      varargs:        false
+      call:           ( message ) -> info message; return message
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'warn'
+      deterministic:  false
+      varargs:        false
+      call:           ( message ) -> warn message; return message
 
 
     #=======================================================================================================
@@ -159,6 +190,20 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
           throw new Error message
         return test
 
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'warn_if'
+      deterministic:  true
+      varargs:        false
+      call:           ( test, message ) -> warn message if ( test is 1 ); test
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'warn_unless'
+      deterministic:  true
+      varargs:        false
+      call:           ( test, message ) -> warn message if ( not test? ) or ( test is 0 ); test
+
 
     #=======================================================================================================
     # VARIABLES
@@ -167,7 +212,10 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
     self        = @
 
     #-------------------------------------------------------------------------------------------------------
-    @create_function name: prefix + 'getv', deterministic: false, call: @getv.bind @
+    @create_function
+      name:           prefix + 'getv'
+      deterministic:  false
+      call:           @getv.bind @
 
     #-------------------------------------------------------------------------------------------------------
     @create_table_function
