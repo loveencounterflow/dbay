@@ -23,6 +23,9 @@
       - [Executing SQL](#executing-sql)
     - [User-Defined Functions (UDFs)](#user-defined-functions-udfs)
     - [Standard Library of SQL Functions (StdLib)](#standard-library-of-sql-functions-stdlib)
+      - [List of Functions](#list-of-functions)
+      - [Use Case for DBay Exceptions and Assertions: Enforcing Invariables](#use-case-for-dbay-exceptions-and-assertions-enforcing-invariables)
+      - [Use Case for DBay Variables: Parametrized Views](#use-case-for-dbay-variables-parametrized-views)
     - [Safe Escaping for SQL Values and Identifiers](#safe-escaping-for-sql-values-and-identifiers)
       - [Purpose](#purpose)
       - [Escaping Identifiers, General Values, and List Values](#escaping-identifiers-general-values-and-list-values)
@@ -233,10 +236,80 @@ db ->
 
 ### Standard Library of SQL Functions (StdLib)
 
-▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
-▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
-▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
+#### List of Functions
 
+* Strings
+  * **`std_str_reverse()`**
+  * **`std_str_join()`**
+  * **`std_str_split()`**
+  * **`std_str_split_re()`**
+  * **`std_str_split_first()`**
+  * **`std_re_matches()`**
+
+* XXX
+  * **`std_generate_series()`**
+
+* Output
+  * **`std_echo()`**
+  * **`std_debug()`**
+  * **`std_info()`**
+  * **`std_warn()`**
+
+* Exceptions and Assertions
+  * **`std_raise( message )`**—unconditionally throw an error with message given.
+  * **`std_raise_json( facets_json )`**—unconditionally throw an error with informational properties encoded
+    as a JSON string.
+  * **`std_assert( test, message )`**—throw an error with `message` if `test` is falsy.
+  * **`std_warn_if( test, message )`**—print an error `message` if `test` is truthy.
+  * **`std_warn_unless()`**—print an error `message` if `test` is falsy.
+
+* Variables
+  * **`std_getv()`**
+  * **`std_variables()`**
+
+#### Use Case for DBay Exceptions and Assertions: Enforcing Invariables
+
+* `std_assert: ( test, message ) ->` throws error if `test` is false(y)
+* `std_warn_unless: ( test, message ) ->` prints warning if `test` is false(y)
+* often one wants to ensure a given SQL statement returns / affects exactly zero or one rows
+* easy to do if some rows are affected, but more difficult when no rows are affected, because a function in
+  the statement won't be called when there are no rows.
+* The trick is to ensure that at least one row is computed even when no rows match the query, and the way to
+  do that is to include an aggregate function such as `count(*)`.
+* May want to include `limit 1` where appropriate.
+
+```sql
+select
+    *,
+    std_assert(
+      count(*) > 0,
+      '^2734-1^ expected one or more rows, got ' || count(*) ) as _message
+  from nnt
+  where true
+    and ( n != 0 );
+```
+
+```sql
+select
+    *,
+    std_assert(
+      count(*) > 0, -- using `count(*)` will cause the function to be called
+                    -- even in case there are no matching rows
+      '^2734-2^ expected one or more rows, got ' || count(*) ) as _message
+  from nnt
+  where true
+    and ( n != 0 )
+    and ( t = 'nonexistant' ); -- this condition is never fulfilled
+```
+
+#### Use Case for DBay Variables: Parametrized Views
+
+* An alternative for user-defined table functions where those functions would perform queries against the
+  DB, which is tricky.
+* Inside the view definition, use `std_getv( name )` to retrieve variable values *which must have been set
+  immediately prior to accessing the view*.
+* Downside is that it's easy to forget to update a given value, so best done from inside a specialized
+  method in your application.
 
 ------------------------------------------------------------------------------------------------------------
 
