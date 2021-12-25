@@ -68,10 +68,11 @@ guy                       = require 'guy'
     { name
       start
       step
+      result
       directOnly
       deterministic
       varargs }     = cfg
-    @sqlt1.aggregate name, { start, step, deterministic, varargs, directOnly, }
+    @sqlt1.aggregate name, { start, step, result, deterministic, varargs, directOnly, }
     @_register_udf 'aggregate', cfg
     return null
 
