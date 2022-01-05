@@ -612,6 +612,7 @@ dbay`, both package managers work fine.*
   future, we should use a single parameter for both (and make the underscore implicit). In addition, it
   should be possible to choose whether a plugin will create its objects with a prefix (in the same schema as
   the main DB) or within another schema.
+* **[+]** fix generated SQL `insert` statements without explicit fields
 
 
 
