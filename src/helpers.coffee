@@ -18,6 +18,16 @@ PATH                      = require 'path'
 FS                        = require 'fs'
 shm_path                  = '/dev/shm'
 guy                       = require 'guy'
+URL                       = require 'url'
+types                     = new ( require 'intertype' ).Intertype()
+{ isa
+  validate }              = types.export()
+
+#-----------------------------------------------------------------------------------------------------------
+types.declare 'fspath_for_url', tests:
+  "@isa.nonempty_text x": ( x ) -> @isa.nonempty_text x
+  "x.startsWith '/'":     ( x ) -> x.startsWith '/'
+
 
 #-----------------------------------------------------------------------------------------------------------
 @is_directory = ( path ) ->
@@ -45,6 +55,16 @@ guy                       = require 'guy'
 
 #-----------------------------------------------------------------------------------------------------------
 @autolocation = if @is_directory shm_path then shm_path else ( require 'os' ).tmpdir()
+
+#-----------------------------------------------------------------------------------------------------------
+@url_from_path = ( path ) ->
+  validate.fspath_for_url path
+  return ( URL.pathToFileURL path ).href
+
+#-----------------------------------------------------------------------------------------------------------
+@path_from_url = ( url  ) ->
+  return URL.fileURLToPath url
+
 
 
 
