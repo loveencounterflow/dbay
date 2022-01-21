@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 realpath() {
+  # thx to https://github.com/whatwg/html-build/issues/90
   OURPWD=$PWD
   cd "$(dirname "$1")"
   LINK=$(readlink "$(basename "$1")")
