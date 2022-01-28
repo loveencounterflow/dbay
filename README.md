@@ -613,6 +613,9 @@ dbay`, both package managers work fine.*
   should be possible to choose whether a plugin will create its objects with a prefix (in the same schema as
   the main DB) or within another schema.
 * **[+]** fix generated SQL `insert` statements without explicit fields
-
+* **[–]** implement export/snapshot function that generates a DB with a simplified structure:
+  * replace generated fields, results from function calls by constants
+  * remove `strict` and similar newer attributes
+  * DB should be readable by tools like `sqlite3` command line, [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
 
 
