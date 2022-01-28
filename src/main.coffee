@@ -30,6 +30,7 @@ H                         = require './helpers'
 { DBay_sqlgen           } = require './sqlgen-mixin'
 { Random                } = require './random'
 { DBay_udf              } = require './udf-mixin'
+{ DBay_reify            } = require './reify-mixin'
 { Sql                   } = require './sql'
 
 
@@ -41,6 +42,7 @@ class @DBay extends   \
   DBay_stdlib         \
   DBay_sqlgen         \
   DBay_udf            \
+  DBay_reify          \
   Function
 
   #---------------------------------------------------------------------------------------------------------
@@ -146,6 +148,7 @@ class @DBay extends   \
     @_$stdlib_initialize?()
     @_$sqlgen_initialize?()
     @_$udf_initialize?()
+    @_$reify_initialize?()
     guy.cfg.configure_with_types @_me, cfg, types
     #.......................................................................................................
     guy.props.hide @_me, '_dbs', {}
