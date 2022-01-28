@@ -46,6 +46,13 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
 
     #-------------------------------------------------------------------------------------------------------
     @create_function
+      name:           prefix + 'sql_i'
+      deterministic:  true
+      varargs:        false
+      call:           ( name ) => @sql.I name
+
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
       name:           prefix + 'str_reverse'
       deterministic:  true
       varargs:        false
