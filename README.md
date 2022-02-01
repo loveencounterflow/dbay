@@ -20,6 +20,7 @@
       - [Closing / Detaching DBs](#closing--detaching-dbs)
     - [Transactions and Context Handlers](#transactions-and-context-handlers)
     - [Query](#query)
+      - [`SQL` Tag Function for Better Embedded Syntax](#sql-tag-function-for-better-embedded-syntax)
       - [Executing SQL](#executing-sql)
     - [User-Defined Functions (UDFs)](#user-defined-functions-udfs)
     - [Standard Library of SQL Functions (StdLib)](#standard-library-of-sql-functions-stdlib)
@@ -162,6 +163,51 @@ fields:
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
+
+#### `SQL` Tag Function for Better Embedded Syntax
+
+Mixing SQL and application code has the drawback that instead of editing SQL
+in your SQL-aware text editor, now you are editing bland string literals in
+your SQL-aware editor. If there only was a way to tell the editor that some
+strings contain SQL and should be treated as such!—Well, now there is. The
+combined power of [JavaScript Tagged Templates]
+(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_template_literals)
+and an (exprimental proof-of-concept level) [set of Sublime Text syntax
+definitions called `coffeeplus`]
+(https://github.com/loveencounterflow/coffeeplus) makes it possible to embed
+SQL into JavaScript (and CoffeeScript) source code. The way this works is by
+providing a 'tag function' that can be prepended to string literals. The name
+of the function together with the ensuing quotes can be recognized by the editor's
+hiliter so that constructs like `SQL"..."`, `SQL"""..."""` and so will trigger
+switching languages. The tag function does next to nothing; here is its definition:
+
+```coffee
+class DBay
+  @SQL: ( parts, expressions... ) ->
+    R = parts[ 0 ]
+    for expression, idx in expressions
+      R += expression.toString() + parts[ idx + 1 ]
+    return R
+```
+
+It can be used like this:
+
+```coffee
+{ DBay } = require 'dbay'
+{ SQL  } = DBay
+
+db = new DBay { path: 'path/to/db.sqlite', }
+
+for row from db SQL"select id, name, price from products order by 1;"
+              #    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              #    imagine proper embedded hiliting etc here
+  console.log row.id, row.name, row.price
+```
+
+Be aware that `coffeeplus` is more of an MVP than a polished package. As such, not
+even reckognizing backticks has been implemented yet so is probably best used
+with CoffeeScript.
+
 
 #### Executing SQL
 
