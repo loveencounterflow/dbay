@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "",
+  "sourceRoot": "",
+  "sources": [
+    "../src/trash-mixin.coffee"
+  ],
+  "names": [],
+  "mappings": "AACA;EAAA;AAAA,MAAA,GAAA,EAAA,CAAA,EAAA,KAAA,EAAA,KAAA,EAAA,IAAA,EAAA,MAAA,EAAA,IAAA,EAAA,IAAA,EAAA,IAAA,EAAA,GAAA,EAAA,IAAA,EAAA,IAAA,EAAA,OAAA;;;EAIA,GAAA,GAA4B,OAAA,CAAQ,KAAR;;EAC5B,GAAA,GAA4B,GAAG,CAAC;;EAChC,KAAA,GAA4B;;EAC5B,KAAA,GAA4B,GAAG,CAAC,UAAJ,CAAe,OAAf,EAA4B,KAA5B;;EAC5B,IAAA,GAA4B,GAAG,CAAC,UAAJ,CAAe,MAAf,EAA4B,KAA5B;;EAC5B,IAAA,GAA4B,GAAG,CAAC,UAAJ,CAAe,MAAf,EAA4B,KAA5B;;EAC5B,IAAA,GAA4B,GAAG,CAAC,UAAJ,CAAe,MAAf,EAA4B,KAA5B;;EAC5B,IAAA,GAA4B,GAAG,CAAC,UAAJ,CAAe,MAAf,EAA4B,KAA5B;;EAC5B,OAAA,GAA4B,GAAG,CAAC,UAAJ,CAAe,SAAf,EAA4B,KAA5B;;EAC5B,IAAA,GAA4B,GAAG,CAAC,IAAI,CAAC,IAAT,CAAc,GAAd;;EAC5B,CAAA,CAAE,MAAF,EACE,IADF,CAAA,GAC4B,OAAA,CAAQ,gBAAR,CAD5B;;EAEA,CAAA,GAA4B,OAAA,CAAQ,UAAR,EAhB5B;;;EAoBA,IAAC,CAAA,UAAD,GAAc,CAAE,QAAQ,MAAV,CAAA,GAAA;WAAsB,MAAA,QAAc,MAAd,CAAA;;MAGlC,kBAAoB,CAAA,CAAA;QAClB,IAAC,CAAA,cAAD,GAAkB;AAClB,eAAO;MAFW;;IAHc;EAAtB;AApBd",
+  "sourcesContent": [
+    "\n'use strict'\n\n\n############################################################################################################\nCND                       = require 'cnd'\nrpr                       = CND.rpr\nbadge                     = 'DBAY/MIXIN/TRASH'\ndebug                     = CND.get_logger 'debug',     badge\nwarn                      = CND.get_logger 'warn',      badge\ninfo                      = CND.get_logger 'info',      badge\nurge                      = CND.get_logger 'urge',      badge\nhelp                      = CND.get_logger 'help',      badge\nwhisper                   = CND.get_logger 'whisper',   badge\necho                      = CND.echo.bind CND\n{ freeze\n  lets }                  = require 'letsfreezethat'\nE                         = require './errors'\n\n\n#-----------------------------------------------------------------------------------------------------------\n@DBay_trash = ( clasz = Object ) => class extends clasz\n\n  #---------------------------------------------------------------------------------------------------------\n  _$trash_initialize: ->\n    @_trash_created = false\n    return null\n\n\n"
+  ]
+}
