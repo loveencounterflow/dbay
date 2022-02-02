@@ -113,6 +113,11 @@ Dba                       = null
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_trash_cfg', ( x ) ->
   "@isa.object x":                                          ( x ) -> @isa.object x
+  "@isa_optional.nonempty_text x.path or a boolean":        ( x ) ->
+    return true unless x.path?
+    return true if @isa.boolean x.path
+    return true if @isa.nonempty_text x.path
+    return false
 
 
 #===========================================================================================================

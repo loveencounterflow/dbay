@@ -32,6 +32,7 @@ H                         = require './helpers'
   trash: ( cfg ) ->
     @types.validate.dbay_trash_cfg ( cfg = { @constructor.C.defaults.dbay_trash_cfg..., cfg..., } )
     @_implement_trash()
+    return @_trash_to_file cfg.path if cfg.path? and cfg.path isnt false
     return @ SQL"select * from dbay_create_table_statements;"
 
   #---------------------------------------------------------------------------------------------------------
@@ -41,6 +42,17 @@ H                         = require './helpers'
     @_trash_created = true
     return null
 
+  #---------------------------------------------------------------------------------------------------------
+  _trash_to_file: ( path ) ->
+    FS    = require 'fs'
+    PATH  = require 'path'
+    clasz = @constructor
+    if path is true
+      path = PATH.join clasz.C.autolocation, ( new ( require './random' ).Random() ).get_random_filename()
+    fd = FS.openSync path, 'ax'
+    for row from @ SQL"select * from dbay_create_table_statements;"
+      FS.writeSync fd, row.txt + '\n'
+    return path
 
 #-----------------------------------------------------------------------------------------------------------
 add_views = ( db ) ->
