@@ -663,5 +663,7 @@ dbay`, both package managers work fine.*
   * replace generated fields, results from function calls by constants
   * remove `strict` and similar newer attributes
   * DB should be readable by tools like `sqlite3` command line, [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
+* **[–]** consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()` (`path`
+  optional), `trash_to_rows()` (no `path`)
 
 
