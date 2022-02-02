@@ -65,6 +65,8 @@ class @DBay_no_arguments_allowed      extends @DBay_error
   constructor: ( ref, name, arity ) -> super ref, "method #{name} doesn't take arguments, got #{arity}"
 class @DBay_argument_not_allowed      extends @DBay_error
   constructor: ( ref, name, value ) -> super ref, "argument #{name} not allowed, got #{rpr value}"
+class @DBay_argument_missing          extends @DBay_error
+  constructor: ( ref, name )        -> super ref, "expected value for #{name}, got nothing"
 class @DBay_wrong_type                extends @DBay_error
   constructor: ( ref, types, type ) -> super ref, "expected #{types}, got a #{type}"
 class @DBay_wrong_arity               extends @DBay_error

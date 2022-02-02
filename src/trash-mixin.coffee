@@ -18,6 +18,7 @@ echo                      = CND.echo.bind CND
 E                         = require './errors'
 H                         = require './helpers'
 { SQL }                   = H
+guy                       = require 'guy'
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -30,10 +31,24 @@ H                         = require './helpers'
 
   #---------------------------------------------------------------------------------------------------------
   trash: ( cfg ) ->
+    unless @_trash_select_from_statements?
+      guy.props.hide @, '_trash_select_from_statements', SQL"select * from dbay_create_table_statements;"
     @types.validate.dbay_trash_cfg ( cfg = { @constructor.C.defaults.dbay_trash_cfg..., cfg..., } )
     @_implement_trash()
-    return @_trash_to_file cfg.path if cfg.path? and cfg.path isnt false
-    return @ SQL"select * from dbay_create_table_statements;"
+    switch cfg.format
+      when 'rows'
+        if cfg.path? and cfg.path isnt false
+          throw new E.DBay_argument_not_allowed '^dbay/trash@1^', 'path', cfg.path
+        return @query @_trash_select_from_statements
+      when 'sql'
+        unless cfg.path?
+          throw new E.DBay_argument_missing '^dbay/trash@2^', 'path'
+        if cfg.path is false
+          return ( @query @_trash_select_from_statements ).join '\n'
+        return @_trash_to_file cfg.path
+      when 'sqlite'
+        throw "not implemented"
+    return null
 
   #---------------------------------------------------------------------------------------------------------
   _implement_trash: ->

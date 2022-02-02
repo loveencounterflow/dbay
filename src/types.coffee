@@ -113,6 +113,7 @@ Dba                       = null
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_trash_cfg', ( x ) ->
   "@isa.object x":                                          ( x ) -> @isa.object x
+  "x.format in [ 'rows', 'sql', 'sqlite', ]":               ( x ) -> x.format in [ 'rows', 'sql', 'sqlite', ]
   "@isa_optional.nonempty_text x.path or a boolean":        ( x ) ->
     return true unless x.path?
     return true if @isa.boolean x.path
