@@ -49,11 +49,7 @@ class @DBay extends   \
   ### This function is meant to be used to explicitly mark up SQL literals as in
   constructs like `for row from db SQL"select * from ..."`. The markup can help text editors to provided
   syntax hiliting and other language-specific features for embedded SQL strings. ###
-  @SQL: ( parts, expressions... ) ->
-    R = parts[ 0 ]
-    for expression, idx in expressions
-      R += expression.toString() + parts[ idx + 1 ]
-    return R
+  @SQL: H.SQL
 
   #---------------------------------------------------------------------------------------------------------
   @C: guy.lft.freeze

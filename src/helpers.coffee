@@ -47,6 +47,10 @@ guy                       = require 'guy'
 #-----------------------------------------------------------------------------------------------------------
 @autolocation = if @is_directory shm_path then shm_path else ( require 'os' ).tmpdir()
 
-
-
+#-----------------------------------------------------------------------------------------------------------
+@SQL = ( parts, expressions... ) ->
+  R = parts[ 0 ]
+  for expression, idx in expressions
+    R += expression.toString() + parts[ idx + 1 ]
+  return R
 
