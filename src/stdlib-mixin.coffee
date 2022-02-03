@@ -131,6 +131,13 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
           yield [ match[ 0 ], ( match[ 1 ] ? null ), ]
         return null
 
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 're_is_match'
+      deterministic:  false
+      varargs:        false
+      call:           ( text, pattern ) -> if ( new RegExp pattern, 'g' ).test text then 1 else 0
+
 
     #=======================================================================================================
     # ASSERTS AND EXCEPTIONS
