@@ -34,6 +34,10 @@
     - [SQL Statement Generation](#sql-statement-generation)
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
+    - [Trash Your DB for Fun and Profit](#trash-your-db-for-fun-and-profit)
+      - [Motivation](#motivation)
+      - [Properties of Trashed DBs](#properties-of-trashed-dbs)
+      - [API](#api)
     - [Random](#random)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -373,16 +377,16 @@ select
 
 #### Escaping Identifiers, General Values, and List Values
 
-* **`db.sql.I: ( name ): ->`**: returns a properly quoted and escaped SQL **I**dentifier.
-* **`db.sql.L: ( x ): ->`**: returns a properly quoted and escaped SQL **V**alue. Note that booleans
+* **`db.sql.I: ( name ) ->`**: returns a properly quoted and escaped SQL **I**dentifier.
+* **`db.sql.L: ( x ) ->`**: returns a properly quoted and escaped SQL **V**alue. Note that booleans
   (`true`, `false`) will be converted to `1` and `0`, respectively.
-* **`db.sql.V: ( x ): ->`**: returns a bracketed SQL list of values (using `db.sql.V()` for each list
+* **`db.sql.V: ( x ) ->`**: returns a bracketed SQL list of values (using `db.sql.V()` for each list
   element).
 
 
 #### Statement Interpolation
 
-**`db.interpolate( sql, values ): ->`** accepts a template (a string with placeholder formulas) and a list
+**`db.interpolate( sql, values ) ->`** accepts a template (a string with placeholder formulas) and a list
 or object of values. It returns a string with the placeholder formulas replaced with the escaped values.
 
 ```coffee
@@ -570,6 +574,51 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 ------------------------------------------------------------------------------------------------------------
 
+### Trash Your DB for Fun and Profit
+
+#### Motivation
+
+**The Problem**—you have a great SQLite3 database with all the latest features (like `strict` tables,
+`generate`d columns, user-defined function calls in views and so on), and now you would like to use a tool
+like [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite) or
+[SchemaCrawler](https://www.schemacrawler.com/diagramming.html) to get a nice ER diagram for your many
+tables. Well, now you have two problems.
+
+Thing is, the moment you use UDFs in your DDL (as in, `create view v as select myfunction( x ) as x1 from
+t;`) your `*.sqlite` file stops being viable as a stand-alone DB; because UDFs are declared on the
+connection and defined in the host app's environment, they are not stored inside `*.sqlite` files, nor are
+they present in an SQL dump file. Your database and your application have become an inseparable unit with a
+mutual dependency on each other. But the way the common visualizers work is they require a standalone DB or
+an SQL dump to generate output from, and they will choke on stuff they don't understand (even though the ER
+relationships might not even be affected by the use of a user-defined function).
+
+**The solution** to this conundrum that I've come up with is to prepare a copy of a given DB with all the
+fancy stuff removed but all the essential building blocks—tables, views, primary keys, secondary keys,
+uniqueness constraints—preserved.
+
+I call this functionality `trash` which is both a pun on `dump` (as in 'dump the DB to an SQL file') and a
+warning to the user that this is not a copy. You *do* trash your DB using this feature.
+
+#### Properties of Trashed DBs
+
+#### API
+
+**`trash_to_sql: ( { path, overwrite: false, walk: false, } ) ->`**
+  * renders DB as SQL text
+  * if `path` is given and a valid FS path, writes the SQL to that file and returns `null`
+  * if `path` exists, will fail unless `overwrite: true` is specified
+  * if `path` is not given,
+    * will return a string if `walk` is not `true`,
+    * otherwise, will return an iterator over the lines of the produced SQL source
+
+
+**`trash_to_sqlite: ( { path, } ) ->`**
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+
 ### Random
 
 
@@ -664,6 +713,6 @@ dbay`, both package managers work fine.*
   * remove `strict` and similar newer attributes
   * DB should be readable by tools like `sqlite3` command line, [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
 * **[–]** consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()` (`path`
-  optional), `trash_to_rows()` (no `path`)
+  optional)
 
 
