@@ -609,11 +609,16 @@ warning to the user that this is not a copy. You *do* trash your DB using this f
   * if `path` exists, will fail unless `overwrite: true` is specified
   * if `path` is not given,
     * will return a string if `walk` is not `true`,
-    * otherwise, will return an iterator over the lines of the produced SQL source
+    * otherwise, will return an iterator over the lines of the produced SQL source.
 
+**`trash_to_sqlite: ( { path, overwrite: false, } ) ->`**
+  * renders DB as an SQLite3 binary representation
+  * if `path` is given and a valid FS path, writes the binary representation to that location
+  * if `path` exists, will fail unless `overwrite: true` is specified
+  * if `path` is not given, will return a `Buffer` (or a `TypedArray`???)
 
-**`trash_to_sqlite: ( { path, } ) ->`**
-
+In any event, parameters that make no sense in the given combination (such as omitting `path` but specifying
+`overwrite: true`) will be silently ignored.
 
 
 
