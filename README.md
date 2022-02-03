@@ -642,19 +642,22 @@ The following invariants of trashed DBs hold:
 
 #### API
 
-**`trash_to_sql: ( { path, overwrite: false, walk: false, } ) ->`**
+**`trash_to_sql: ( { path: false, overwrite: false, walk: false, } ) ->`**
   * renders DB as SQL text
-  * if `path` is given and a valid FS path, writes the SQL to that file and returns `null`
+  * if `path` is given...
+    * ... and a valid FS path, writes the SQL to that file and returns the path.
+    * ... and `true`, a random path in DBay's `autolocation` will be chosen, written to, and returned.
+    * ... and `false`, it will be treated as not given, see below.
   * if `path` exists, will fail unless `overwrite: true` is specified
-  * if `path` is not given,
+  * if `path` is not given or `false`,
     * will return a string if `walk` is not `true`,
     * otherwise, will return an iterator over the lines of the produced SQL source.
 
-**`trash_to_sqlite: ( { path, overwrite: false, } ) ->`**
+**`trash_to_sqlite: ( { path: false, overwrite: false, } ) ->`**
   * renders DB as an SQLite3 binary representation
-  * if `path` is given and a valid FS path, writes the binary representation to that location
-  * if `path` exists, will fail unless `overwrite: true` is specified
-  * if `path` is not given, will return a `Buffer` (or a `TypedArray`???)
+  * handling of `path`, `overwrite`, and the return value is done as described above for `trash_to_sql()`.
+  * instead of writing or returning an SQL string, this method will write or return a `Buffer` (or a
+    `TypedArray`???)
 
 In any event, parameters that make no sense in the given combination (such as omitting `path` but specifying
 `overwrite: true`) will be silently ignored.
