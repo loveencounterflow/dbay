@@ -25,7 +25,7 @@
     - [User-Defined Functions (UDFs)](#user-defined-functions-udfs)
     - [Standard Library of SQL Functions (StdLib)](#standard-library-of-sql-functions-stdlib)
       - [List of Functions](#list-of-functions)
-      - [Use Case for DBay Exceptions and Assertions: Enforcing Invariables](#use-case-for-dbay-exceptions-and-assertions-enforcing-invariables)
+      - [Use Case for DBay Exceptions and Assertions: Enforcing Invariants](#use-case-for-dbay-exceptions-and-assertions-enforcing-invariants)
       - [Use Case for DBay Variables: Parametrized Views](#use-case-for-dbay-variables-parametrized-views)
     - [Safe Escaping for SQL Values and Identifiers](#safe-escaping-for-sql-values-and-identifiers)
       - [Purpose](#purpose)
@@ -317,7 +317,7 @@ db ->
   * **`std_getv()`**
   * **`std_variables()`**
 
-#### Use Case for DBay Exceptions and Assertions: Enforcing Invariables
+#### Use Case for DBay Exceptions and Assertions: Enforcing Invariants
 
 * `std_assert: ( test, message ) ->` throws error if `test` is false(y)
 * `std_warn_unless: ( test, message ) ->` prints warning if `test` is false(y)
@@ -600,6 +600,8 @@ I call this functionality `trash` which is both a pun on `dump` (as in 'dump the
 warning to the user that this is not a copy. You *do* trash your DB using this feature.
 
 #### Properties of Trashed DBs
+
+The following Invariables
 
 #### API
 
