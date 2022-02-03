@@ -111,14 +111,11 @@ Dba                       = null
 #===========================================================================================================
 # TRASH
 #-----------------------------------------------------------------------------------------------------------
-@declare 'dbay_trash_cfg', ( x ) ->
-  "@isa.object x":                                          ( x ) -> @isa.object x
-  "x.format in [ 'rows', 'sql', 'sqlite', ]":               ( x ) -> x.format in [ 'rows', 'sql', 'sqlite', ]
-  "@isa_optional.nonempty_text x.path or a boolean":        ( x ) ->
-    return true unless x.path?
-    return true if @isa.boolean x.path
-    return true if @isa.nonempty_text x.path
-    return false
+@declare 'dbay_trash_to_sql_cfg', ( x ) ->
+  "@isa.object x":                                      ( x ) -> @isa.object x
+  "@type_of x.path in [ 'boolean', 'nonempty_text', ]": ( x ) -> \
+    @type_of x.path in [ 'boolean', 'nonempty_text', ]
+  "@isa.boolean x.overwrite":                           ( x ) -> @isa.boolean x.overwrite
 
 
 #===========================================================================================================

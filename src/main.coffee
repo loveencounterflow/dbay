@@ -110,9 +110,14 @@ class @DBay extends   \
         exclude:        null
         returning:      null
       #.....................................................................................................
-      dbay_trash_cfg:
-        format:         'rows'
-        path:           null
+      dbay_trash_to_sql_cfg:
+        path:           false
+        overwrite:      false
+        walk:           false
+      #.....................................................................................................
+      dbay_trash_to_sqlite_cfg:
+        path:           false
+        overwrite:      false
 
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->
