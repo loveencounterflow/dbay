@@ -57,25 +57,26 @@ PATH                      = require 'path'
     sqlt.exec sql
     return ( buffer = sqlt.serialize() ) if ( not cfg.path? ) or ( cfg.path is false )
     return @_trash_with_fs_open_do path, overwrite, ( { path, fd, } ) =>
+    return @_trash_with_fs_open_do path, 'sqlite', overwrite, ( { path, fd, } ) =>
       FS.writeSync fd, buffer
       debug '^35784^', { fd, }
       return path
 
   #---------------------------------------------------------------------------------------------------------
-  _trash_with_fs_open_do: ( path, overwrite, fn ) ->
+  _trash_with_fs_open_do: ( path, extension, overwrite, fn ) ->
     ### TAINT implement `overwrite` ###
-    path  = @_trash_get_path path
+    path  = @_trash_get_path path, extension
     fd    = FS.openSync path, 'ax'
     try ( R = fn { path, fd, } ) finally FS.closeSync fd
     return R
 
   #---------------------------------------------------------------------------------------------------------
-  _trash_get_path: ( path ) ->
+  _trash_get_path: ( path, extension ) ->
     return path if ( type = @types.type_of path ) is 'text'
     unless path is true
       throw new E.DBay_internal_error '^dbay/trash@1^', "expected a text or `true`, got a #{type}"
     clasz = @constructor
-    return PATH.join clasz.C.autolocation, ( new ( require './random' ).Random() ).get_random_filename 'sql'
+    return PATH.join clasz.C.autolocation, @rnd.get_random_filename extension
 
   #---------------------------------------------------------------------------------------------------------
   _implement_trash: ->
