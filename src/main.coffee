@@ -210,4 +210,6 @@ class @DBay extends   \
       H.unlink_file d.path if d.temporary
     return null
 
+guy.props.hide @DBay, 'new_bsqlt3_connection', new_bsqlt3_connection
+
 
