@@ -66,7 +66,7 @@ PATH                      = require 'path'
   _trash_with_fs_open_do: ( path, extension, overwrite, fn ) ->
     ### TAINT implement `overwrite` ###
     path  = @_trash_get_path path, extension
-    fd    = FS.openSync path, 'ax'
+    fd    = FS.openSync path, if overwrite then 'a' else 'ax'
     try ( R = fn { path, fd, } ) finally FS.closeSync fd
     return R
 
