@@ -34,7 +34,7 @@ PATH                      = require 'path'
   #---------------------------------------------------------------------------------------------------------
   trash_to_sql: ( cfg ) ->
     @types.validate.dbay_trash_to_sql_cfg ( cfg = { @constructor.C.defaults.dbay_trash_to_sql_cfg..., cfg..., } )
-    @_implement_trash()
+    @create_trashlib()
     @setv '_use_dot_cmds', cfg._use_dot_cmds
     { path
       overwrite } = cfg
@@ -79,7 +79,7 @@ PATH                      = require 'path'
     return PATH.join clasz.C.autolocation, @rnd.get_random_filename extension
 
   #---------------------------------------------------------------------------------------------------------
-  _implement_trash: ->
+  create_trashlib: ->
     return null if @_trash_created
     add_views @
     @_trash_created = true
@@ -88,6 +88,7 @@ PATH                      = require 'path'
 #-----------------------------------------------------------------------------------------------------------
 add_views = ( db ) ->
   db.create_stdlib()
+  db.setv '_use_dot_cmds', true
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
     -- ### NOTE this is a best-effort approach to recover the correct ordering for DDL statements
