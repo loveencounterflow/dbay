@@ -117,6 +117,7 @@ Dba                       = null
     @type_of x.path in [ 'boolean', 'nonempty_text', ]
   "@isa.boolean x.overwrite":                           ( x ) -> @isa.boolean x.overwrite
   "@isa.boolean x.walk":                                ( x ) -> @isa.boolean x.walk
+  "@isa.boolean x._use_dot_cmds":                       ( x ) -> @isa.boolean x._use_dot_cmds
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_trash_to_sqlite_cfg', ( x ) ->
