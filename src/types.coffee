@@ -116,6 +116,14 @@ Dba                       = null
   "@type_of x.path in [ 'boolean', 'nonempty_text', ]": ( x ) -> \
     @type_of x.path in [ 'boolean', 'nonempty_text', ]
   "@isa.boolean x.overwrite":                           ( x ) -> @isa.boolean x.overwrite
+  "@isa.boolean x.walk":                                ( x ) -> @isa.boolean x.walk
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_trash_to_sqlite_cfg', ( x ) ->
+  "@isa.object x":                                      ( x ) -> @isa.object x
+  "@type_of x.path in [ 'boolean', 'nonempty_text', ]": ( x ) -> \
+    @type_of x.path in [ 'boolean', 'nonempty_text', ]
+  "@isa.boolean x.overwrite":                           ( x ) -> @isa.boolean x.overwrite
 
 
 #===========================================================================================================

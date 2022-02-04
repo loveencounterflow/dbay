@@ -30,24 +30,29 @@ guy                       = require 'guy'
     return null
 
   #---------------------------------------------------------------------------------------------------------
-  trash: ( cfg ) ->
-    unless @_trash_select_from_statements?
-      guy.props.hide @, '_trash_select_from_statements', SQL"select * from dbay_create_table_statements;"
-    @types.validate.dbay_trash_cfg ( cfg = { @constructor.C.defaults.dbay_trash_cfg..., cfg..., } )
+  trash_to_sql: ( cfg ) ->
+    @types.validate.dbay_trash_to_sql_cfg ( cfg = { @constructor.C.defaults.dbay_trash_to_sql_cfg..., cfg..., } )
     @_implement_trash()
-    switch cfg.format
-      when 'rows'
-        if cfg.path? and cfg.path isnt false
-          throw new E.DBay_argument_not_allowed '^dbay/trash@1^', 'path', cfg.path
-        return @query @_trash_select_from_statements
-      when 'sql'
-        unless cfg.path?
-          throw new E.DBay_argument_missing '^dbay/trash@2^', 'path'
-        if cfg.path is false
-          return ( @query @_trash_select_from_statements ).join '\n'
-        return @_trash_to_file cfg.path
-      when 'sqlite'
-        throw "not implemented"
+    return @_trash_sql_to_file cfg.path if cfg.path? and ( cfg.path isnt false )
+    return @query @_trash_select_from_statements if cfg.walk
+    return ( row.txt for row from @query @_trash_select_from_statements ).join '\n'
+
+  #---------------------------------------------------------------------------------------------------------
+  _trash_sql_to_file: ( path ) ->
+    FS    = require 'fs'
+    PATH  = require 'path'
+    clasz = @constructor
+    if path is true
+      path = PATH.join clasz.C.autolocation, ( new ( require './random' ).Random() ).get_random_filename()
+    fd = FS.openSync path, 'ax'
+    for row from @query @_trash_select_from_statements
+      FS.writeSync fd, row.txt + '\n'
+    return path
+
+  #---------------------------------------------------------------------------------------------------------
+  trash_to_sqlite: ( cfg ) ->
+    @types.validate.dbay_trash_to_sqlite_cfg ( cfg = { @constructor.C.defaults.dbay_trash_to_sqlite_cfg..., cfg..., } )
+    @_implement_trash()
     return null
 
   #---------------------------------------------------------------------------------------------------------
@@ -56,18 +61,6 @@ guy                       = require 'guy'
     add_views @
     @_trash_created = true
     return null
-
-  #---------------------------------------------------------------------------------------------------------
-  _trash_to_file: ( path ) ->
-    FS    = require 'fs'
-    PATH  = require 'path'
-    clasz = @constructor
-    if path is true
-      path = PATH.join clasz.C.autolocation, ( new ( require './random' ).Random() ).get_random_filename()
-    fd = FS.openSync path, 'ax'
-    for row from @ SQL"select * from dbay_create_table_statements;"
-      FS.writeSync fd, row.txt + '\n'
-    return path
 
 #-----------------------------------------------------------------------------------------------------------
 add_views = ( db ) ->
@@ -421,5 +414,6 @@ add_views = ( db ) ->
       dbay_trash_merge_lines( r1.txt, nxt_txt )  as r2
       order by r1.lnr, r1.tail, r2.vnr2;"""
   #-------------------------------------------------------------------------------------------------------
+  guy.props.hide db, '_trash_select_from_statements', SQL"select * from dbay_create_table_statements;"
   return db
 
