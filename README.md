@@ -761,5 +761,6 @@ dbay`, both package managers work fine.*
   * DB should be readable by tools like `sqlite3` command line, [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
 * **[–]** consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()` (`path`
   optional)
+* **[–]** consider to implement iterating over statements instead of lines in `trash_to_sql()`
 
 
