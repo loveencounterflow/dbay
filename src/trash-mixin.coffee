@@ -42,10 +42,9 @@ PATH                      = require 'path'
     if ( not cfg.path? ) or ( cfg.path is false )
       return iterator if cfg.walk
       return ( row.txt for row from iterator ).join '\n'
-    { path
-      fd        } = @_trash_open path, overwrite
-    try FS.writeSync fd, row.txt + '\n' for row from iterator finally FS.closeSync fd
-    return path
+    return @_trash_with_fs_open_do path, overwrite, ( { path, fd, } ) =>
+      FS.writeSync fd, row.txt + '\n' for row from iterator
+      return path
 
   #---------------------------------------------------------------------------------------------------------
   trash_to_sqlite: ( cfg ) ->
@@ -59,15 +58,18 @@ PATH                      = require 'path'
     return ( buffer = sqlt.serialize() ) if ( not cfg.path? ) or ( cfg.path is false )
     { path
       fd        } = @_trash_open path, overwrite
-    try FS.writeSync fd, buffer finally FS.closeSync fd
-    return path
+    return @_trash_with_fs_open_do path, overwrite, ( { path, fd, } ) =>
+      FS.writeSync fd, buffer
+      debug '^35784^', { fd, }
+      return path
 
   #---------------------------------------------------------------------------------------------------------
-  _trash_open: ( path, overwrite ) ->
+  _trash_with_fs_open_do: ( path, overwrite, fn ) ->
     ### TAINT implement `overwrite` ###
     path  = @_trash_get_path path
     fd    = FS.openSync path, 'ax'
-    return { path, fd, }
+    try ( R = fn { path, fd, } ) finally FS.closeSync fd
+    return R
 
   #---------------------------------------------------------------------------------------------------------
   _trash_get_path: ( path ) ->
