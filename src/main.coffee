@@ -114,6 +114,7 @@ class @DBay extends   \
         path:           false
         overwrite:      false
         walk:           false
+        _use_dot_cmds:  true
       #.....................................................................................................
       dbay_trash_to_sqlite_cfg:
         path:           false
