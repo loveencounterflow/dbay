@@ -42,7 +42,7 @@ PATH                      = require 'path'
     if ( not cfg.path? ) or ( cfg.path is false )
       return iterator if cfg.walk
       return ( row.txt for row from iterator ).join '\n'
-    return @_trash_with_fs_open_do path, overwrite, ( { path, fd, } ) =>
+    return @_trash_with_fs_open_do path, 'sql', overwrite, ( { path, fd, } ) =>
       FS.writeSync fd, row.txt + '\n' for row from iterator
       return path
 
