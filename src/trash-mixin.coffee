@@ -43,7 +43,7 @@ guy                       = require 'guy'
     PATH  = require 'path'
     clasz = @constructor
     if path is true
-      path = PATH.join clasz.C.autolocation, ( new ( require './random' ).Random() ).get_random_filename()
+      path = PATH.join clasz.C.autolocation, ( new ( require './random' ).Random() ).get_random_filename 'sql'
     fd = FS.openSync path, 'ax'
     for row from @query @_trash_select_from_statements
       FS.writeSync fd, row.txt + '\n'

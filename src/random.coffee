@@ -53,9 +53,9 @@ class @Random
     return undefined
 
   #---------------------------------------------------------------------------------------------------------
-  get_random_filename: ->
+  get_random_filename: ( extension = 'sqlite' ) ->
     n10 = @get_random_integer 1_000_000_000, 9_999_999_999
-    return "dbay-#{n10}.sqlite"
+    return "dbay-#{n10}.#{extension}"
 
 
 
