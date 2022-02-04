@@ -56,8 +56,6 @@ PATH                      = require 'path'
     sqlt          = @constructor.new_bsqlt3_connection()
     sqlt.exec sql
     return ( buffer = sqlt.serialize() ) if ( not cfg.path? ) or ( cfg.path is false )
-    { path
-      fd        } = @_trash_open path, overwrite
     return @_trash_with_fs_open_do path, overwrite, ( { path, fd, } ) =>
       FS.writeSync fd, buffer
       debug '^35784^', { fd, }
