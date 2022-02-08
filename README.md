@@ -762,5 +762,7 @@ dbay`, both package managers work fine.*
 * **[+]** consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()` (`path`
   optional)
 * **[–]** consider to implement iterating over statements instead of lines in `trash_to_sql()`
+* **[–]** consider to refactor trash into project `dbay-trash` b/c either it or (an additional module)
+  will be in need of an SQL parser to provide in-depth structural insights
 
 
