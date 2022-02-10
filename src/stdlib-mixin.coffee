@@ -66,6 +66,13 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
       call:           ( joiner, P... ) -> P.join joiner
 
     #-------------------------------------------------------------------------------------------------------
+    @create_function
+      name:           prefix + 'str_is_blank'
+      deterministic:  true
+      varargs:        false
+      call:           ( s ) -> if ( /^\s+$/ ).test s then 1 else 0
+
+    #-------------------------------------------------------------------------------------------------------
     @create_table_function
       name:           prefix + 'str_split'
       columns:        [ 'lnr', 'rnr', 'part', ]
