@@ -1,6 +1,6 @@
 {
   "name": "dbay",
-  "version": "11.1.1",
+  "version": "11.2.0",
   "description": "In-Process, In-Memory & File-Based Relational Data Processing with SQLite, BetterSQLite3",
   "main": "lib/main.js",
   "scripts": {
