@@ -114,6 +114,7 @@ add_views = ( db ) ->
         and ( type in ( 'table', 'view' ) )
         and ( table_name not like 'sqlite_%' )
         and ( table_name not like 'dbay_%' )
+        and ( table_name not like '_dbay_%' )
       order by table_nr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
@@ -132,8 +133,8 @@ add_views = ( db ) ->
       ;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_fields_1;
-    create view dbay_fields_1 as select
+    drop view if exists _dbay_fields_1;
+    create view _dbay_fields_1 as select
         tb.table_nr                                                               as table_nr,
         ti.cid + 1                                                                as field_nr,
         tb.table_name                                                             as table_name,
@@ -149,11 +150,11 @@ add_views = ( db ) ->
       order by table_nr, field_nr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_fields_2;
-    create view dbay_fields_2 as select
+    drop view if exists _dbay_fields_2;
+    create view _dbay_fields_2 as select
         fd.*,
         case when uf.field_name is null then 0 else 1 end                         as is_unique
-      from dbay_fields_1 as fd
+      from _dbay_fields_1 as fd
       left join dbay_unique_fields as uf using ( table_name, field_name )
       order by table_nr, field_nr;"""
   #---------------------------------------------------------------------------------------------------------
@@ -172,13 +173,13 @@ add_views = ( db ) ->
         pk_nr                                                                     as pk_nr,
         hidden                                                                    as hidden,
         is_unique                                                                 as is_unique
-      from dbay_fields_2
+      from _dbay_fields_2
       window w as ( partition by table_name )
       order by table_nr, field_nr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_foreign_key_clauses_1;
-    create view dbay_foreign_key_clauses_1 as select
+    drop view if exists _dbay_foreign_key_clauses_1;
+    create view _dbay_foreign_key_clauses_1 as select
         fk.id                                                                     as fk_id,
         fk.seq                                                                    as fk_idx,
         tb.table_nr                                                               as from_table_nr,
@@ -191,15 +192,15 @@ add_views = ( db ) ->
       order by from_table_name, fk_id, fk_idx;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_foreign_key_clauses_2;
-    create view dbay_foreign_key_clauses_2 as select distinct
+    drop view if exists _dbay_foreign_key_clauses_2;
+    create view _dbay_foreign_key_clauses_2 as select distinct
         fk_id                                                                     as fk_id,
         from_table_nr                                                             as from_table_nr,
         from_table_name                                                           as from_table_name,
         group_concat( std_sql_i( from_field_name ), ', ' ) over w                 as from_field_names,
         to_table_name                                                             as to_table_name,
         group_concat( std_sql_i(   to_field_name ), ', ' ) over w                 as to_field_names
-      from dbay_foreign_key_clauses_1
+      from _dbay_foreign_key_clauses_1
       window w as (
         partition by from_table_name, fk_id
         order by fk_idx
@@ -207,11 +208,11 @@ add_views = ( db ) ->
       order by from_table_name, fk_id, fk_idx;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_foreign_key_clauses_3;
-    create view dbay_foreign_key_clauses_3 as select
+    drop view if exists _dbay_foreign_key_clauses_3;
+    create view _dbay_foreign_key_clauses_3 as select
         *,
         count(*) over w                                                           as line_count
-      from dbay_foreign_key_clauses_2
+      from _dbay_foreign_key_clauses_2
       window w as (
         partition by from_table_name );"""
   #---------------------------------------------------------------------------------------------------------
@@ -225,7 +226,7 @@ add_views = ( db ) ->
           || std_sql_i( to_table_name )
           || ' ( ' || to_field_names || ' )'
           || case when row_number() over w = line_count then '' else ',' end      as fk_clause
-      from dbay_foreign_key_clauses_3
+      from _dbay_foreign_key_clauses_3
       window w as (
         partition by from_table_name
         order by fk_id desc
@@ -233,8 +234,8 @@ add_views = ( db ) ->
       order by from_table_name, fk_nr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_primary_key_clauses_1;
-    create view dbay_primary_key_clauses_1 as select distinct
+    drop view if exists _dbay_primary_key_clauses_1;
+    create view _dbay_primary_key_clauses_1 as select distinct
         table_nr                                                                  as table_nr,
         table_name                                                                as table_name,
         group_concat( std_sql_i( field_name ), ', ' ) over w                      as field_names
@@ -253,13 +254,13 @@ add_views = ( db ) ->
         p1.table_name                                                             as table_name,
         '  primary key ( ' || p1.field_names || ' )'
           || case when fc.fk_clause is null then '' else ',' end                  as pk_clause
-      from dbay_primary_key_clauses_1     as p1
+      from _dbay_primary_key_clauses_1     as p1
       left join dbay_foreign_key_clauses  as fc on ( p1.table_name = fc.table_name and fc.fk_nr = 1 )
       order by p1.table_nr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_field_clauses_1;
-    create view dbay_field_clauses_1 as select
+    drop view if exists _dbay_field_clauses_1;
+    create view _dbay_field_clauses_1 as select
         table_nr                                                                  as table_nr,
         field_nr                                                                  as field_nr,
         field_rnr                                                                 as field_rnr,
@@ -283,7 +284,7 @@ add_views = ( db ) ->
           || case when f1.field_rnr > 1 then ','
              else case when fc.fk_clause is null and pc.pk_clause is null then ''
              else ',' end end                                                     as field_clause
-      from dbay_field_clauses_1           as f1
+      from _dbay_field_clauses_1           as f1
       left join dbay_foreign_key_clauses  as fc on ( f1.table_name = fc.table_name and fc.fk_nr = 1 )
       left join dbay_primary_key_clauses  as pc on ( f1.table_name = pc.table_name )
       order by f1.table_nr, f1.field_nr;"""
@@ -306,8 +307,8 @@ add_views = ( db ) ->
       from dbay_tables;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_create_table_statements_1;
-    create view dbay_create_table_statements_1 as
+    drop view if exists _dbay_create_table_statements_1;
+    create view _dbay_create_table_statements_1 as
       with x as ( select * from dbay_create_table_clauses )
       -- ...................................................................................................
       select
@@ -385,32 +386,32 @@ add_views = ( db ) ->
       order by section_nr, table_nr, part_nr, lnr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_create_table_statements_2;
-    create view dbay_create_table_statements_2 as select
+    drop view if exists _dbay_create_table_statements_2;
+    create view _dbay_create_table_statements_2 as select
         row_number() over ()                                                      as lnr,
         1                                                                         as tail,
         txt                                                                       as txt
-      from dbay_create_table_statements_1 as r1
+      from _dbay_create_table_statements_1 as r1
       order by section_nr, table_nr, part_nr, r1.lnr;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_create_table_statements_3;
-    create view dbay_create_table_statements_3 as select
+    drop view if exists _dbay_create_table_statements_3;
+    create view _dbay_create_table_statements_3 as select
         r1.lnr                                                                    as lnr,
         r2.lnr                                                                    as tail,
         r2.part                                                                   as txt
-      from dbay_create_table_statements_2 as r1,
+      from _dbay_create_table_statements_2 as r1,
       std_str_split( r1.txt, '\n' )       as r2
       order by lnr, tail;"""
   #---------------------------------------------------------------------------------------------------------
   db SQL"""
-    drop view if exists dbay_create_table_statements_4;
-    create view dbay_create_table_statements_4 as select
+    drop view if exists _dbay_create_table_statements_4;
+    create view _dbay_create_table_statements_4 as select
         r1.lnr                                                                    as lnr,
         r1.tail                                                                   as tail,
         lead( r1.txt ) over ()                                                    as nxt_txt,
         r1.txt                                                                    as txt
-      from dbay_create_table_statements_3 as r1
+      from _dbay_create_table_statements_3 as r1
       order by lnr, tail;"""
   #---------------------------------------------------------------------------------------------------------
   do =>
@@ -435,7 +436,7 @@ add_views = ( db ) ->
     create view dbay_create_table_statements as select
         row_number() over ( order by r1.lnr, r1.tail, r2.vnr2 )                   as lnr,
         r2.txt                                                                    as txt
-      from dbay_create_table_statements_4     as r1,
+      from _dbay_create_table_statements_4     as r1,
       dbay_trash_merge_lines( r1.txt, nxt_txt )  as r2
       order by r1.lnr, r1.tail, r2.vnr2;"""
   #-------------------------------------------------------------------------------------------------------
