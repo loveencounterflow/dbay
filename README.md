@@ -664,9 +664,22 @@ dbay`, both package managers work fine.*
 * **[–]** implement export/snapshot function that generates a DB with a simplified structure:
   * replace generated fields, results from function calls by constants
   * remove `strict` and similar newer attributes
-  * DB should be readable by tools like `sqlite3` command line, [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
+  * DB should be readable by tools like `sqlite3` command line,
+    [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
 * **[+]** <del>consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()`
-    (`path` optional)</del> <ins>trash functionality now moved to [DeSQL]
-    (https://github.com/loveencounterflow/desql)
+  (`path` optional)</del> trash functionality now moved to
+  [DeSQL](https://github.com/loveencounterflow/desql)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
