@@ -34,10 +34,6 @@
     - [SQL Statement Generation](#sql-statement-generation)
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
-    - [Trash Your DB for Fun and Profit](#trash-your-db-for-fun-and-profit)
-      - [Motivation](#motivation)
-      - [Properties of Trashed DBs](#properties-of-trashed-dbs)
-      - [API](#api)
     - [Random](#random)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -572,96 +568,6 @@ after `returning` and the end of the statement. A star `*` will return the entir
 inserted; we here use `db.single_row()` to eschew the result iterator that would be returned by default.
 
 
-------------------------------------------------------------------------------------------------------------
-
-### Trash Your DB for Fun and Profit
-
-#### Motivation
-
-**The Problem**—you have a great SQLite3 database with all the latest features (like `strict` tables,
-`generate`d columns, user-defined function calls in views and so on), and now you would like to use a tool
-like [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite) or
-[SchemaCrawler](https://www.schemacrawler.com/diagramming.html) to get a nice ER diagram for your many
-tables. Well, now you have two problems.
-
-Thing is, the moment you use UDFs in your DDL (as in, `create view v as select myfunction( x ) as x1 from
-t;`) your `*.sqlite` file stops being viable as a stand-alone DB; because UDFs are declared on the
-connection and defined in the host app's environment, they are not stored inside `*.sqlite` files, nor are
-they present in an SQL dump file. Your database and your application have become an inseparable unit with a
-mutual dependency on each other. But the way the common visualizers work is they require a standalone DB or
-an SQL dump to generate output from, and they will choke on stuff they don't understand (even though the ER
-relationships might not even be affected by the use of a user-defined function).
-
-**The solution** to this conundrum that I've come up with is to prepare a copy of a given DB with all the
-fancy stuff removed but all the essential building blocks—tables, views, primary keys, secondary keys,
-uniqueness constraints—preserved.
-
-I call this functionality `trash` which is both a pun on `dump` (as in 'dump the DB to an SQL file') and a
-warning to the user that this is not a copy. You *do* trash your DB using this feature.
-
-#### Properties of Trashed DBs
-
-The following invariants of trashed DBs hold:
-
-* To trash a DB, an SQL script is computed that replicates the DB's salient structural features.
-* This script is either returned, written to a file, or used to produce a binary representation which is,
-  again, either returned or written to a file.
-* The SQL script runs in a single transaction.
-* It starts by removing all relations, should they exist. This means one can always do `sqlite3 path/to/db <
-  mytrasheddb.sql` even on an existing `path/to/db`.
-* All fields of all relations will be present in the trashed copy.
-* All trashed fields will have the same type declaration as the original DB (in the sense that they will use
-  the same text used in the original DDL). However, depending on meta data as provided by SQLite3's internal
-  tables and pragmas, some views may miss some type information.
-* Empty type declarations and the missing type declaration of view fields will be rendered as `any` in the
-  trash DDL.
-* The trashed DB will contain no data (but see below).
-
-**Discussion and Possible Enhancements**
-
-* It is both trivial to show that, on the one hand, in a properly structured RDB, views can always be
-  materialized to a table, complete with field names, data, and at least partial type information. However,
-  on the other hand, it is also trivial to show that any given view (and any generated field, for that
-  matter) may use arbitrarily complex computations in its definition—imagine a UDF that fetches content from
-  the network as an example.
-  * In SQLite, not all fields of all views have an explicit type (and even fields of tables can lack an
-    explicit type or be of type `any`)
-* There's somewhat of a grey zone between the two extremes of a view just being a join of two tables or an
-  excerpt of a single one—something that would probably be reproducible in a trash DB with some effort
-  towards SQL parsing. Whether this would be worth the effort—tackle SQL parsing with the goal to preserve
-  views as views in a trash DB—is questionable. Observe that not even all built-in functions of SQLite3 are
-  guaranteed to be present in a given compiled library or command line tool because those can be (and often
-  are) configured to be left out; in this area there's also a certain variation across SQLite versions.
-* An alternative to tackling the generally inattainable goal of leaving views as views would be to use
-  user-defined prefixes for views (a view `"comedy_shows"` could be rendered as `"(view) comedy_shows"`).
-  In light of the complications outlined here, this option looks vastly superior.
-
-* The trashed DB will contain no data, but this could conceivably be changed in the future. When
-  implemented, this will allow to pass around DBs 'for your information and pleasure only'. When this
-  feature is implemented, a way to include/exclude specific relations will likely also be implemented.
-
-#### API
-
-**`trash_to_sql: ( { path: false, overwrite: false, walk: false, } ) ->`**
-  * renders DB as SQL text
-  * if `path` is given...
-    * ... and a valid FS path, writes the SQL to that file and returns the path.
-    * ... and `true`, a random path in DBay's `autolocation` will be chosen, written to, and returned.
-    * ... and `false`, it will be treated as not given, see below.
-  * if `path` exists, will fail unless `overwrite: true` is specified
-  * if `path` is not given or `false`,
-    * will return a string if `walk` is not `true`,
-    * otherwise, will return an iterator over the lines of the produced SQL source.
-
-**`trash_to_sqlite: ( { path: false, overwrite: false, } ) ->`**
-  * renders DB as an SQLite3 binary representation
-  * handling of `path`, `overwrite`, and the return value is done as described above for `trash_to_sql()`.
-  * instead of writing or returning an SQL string, this method will write or return a `Buffer` (or a
-    `TypedArray`???)
-
-In any event, parameters that make no sense in the given combination (such as omitting `path` but specifying
-`overwrite: true`) will be silently ignored.
-
 
 
 ------------------------------------------------------------------------------------------------------------
@@ -759,10 +665,8 @@ dbay`, both package managers work fine.*
   * replace generated fields, results from function calls by constants
   * remove `strict` and similar newer attributes
   * DB should be readable by tools like `sqlite3` command line, [`visualize-sqlite`](https://lib.rs/crates/visualize-sqlite)
-* **[+]** consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()` (`path`
-  optional)
-* **[–]** consider to implement iterating over statements instead of lines in `trash_to_sql()`
-* **[–]** consider to refactor trash into project `dbay-trash` b/c either it or (an additional module)
-  will be in need of an SQL parser to provide in-depth structural insights
+* **[+]** <del>consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()`
+    (`path` optional)</del> <ins>trash functionality now moved to [DeSQL]
+    (https://github.com/loveencounterflow/desql)
 
 
