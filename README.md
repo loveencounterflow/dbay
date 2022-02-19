@@ -669,6 +669,13 @@ dbay`, both package managers work fine.*
 * **[+]** <del>consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()`
   (`path` optional)</del> trash functionality now moved to
   [DeSQL](https://github.com/loveencounterflow/desql)
+* **[+]** add hidden `E` attribute to instance giving access to error classes (mainly for plugin use)
+* **[–]** rewrite all uses of plain `E` to `@E`
+* **[–]** limit support for schemas, especially in plugins; require a separate instance of DBay for each DB
+  file (so that all DB objects are in the default `main` namespace and the `SQL"#{schema}.xxx"` constructs
+  can become `SQL"xxx"`). Complex DBs can still be assembled with `db.open()`, but one must keep in mind
+  that in SQLite, `foreign key`s do not work across schemas, only `join`s so, so that limits the usefulness
+  of multi-schema connections.
 
 
 
