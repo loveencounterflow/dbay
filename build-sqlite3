@@ -72,6 +72,6 @@ export CFLAGS
 
 echo "$CFLAGS"
 
-npm install better-sqlite3@'^7.4.6' --production --no-save --build-from-source --sqlite3="$home/sqlite-snapshot-202201112328"
+npm install better-sqlite3@'^7.5.0' --production --no-save --build-from-source --sqlite3="$home/sqlite-amalgamation-3380000"
 # npm install better-sqlite3@'^7.4.3' --no-save --build-from-source --sqlite3="$(pwd)/sqlite-snapshot-202107191400"
 
