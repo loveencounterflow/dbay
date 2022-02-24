@@ -216,7 +216,7 @@ insertion; this works:
 
 ```coffee
 #.................................................................................
-# (A)
+# (1)
 db.with_transaction =>
   for { n, } from db.alt SQL"select * from foo order by n;"
     #             ^^^^^^
@@ -224,16 +224,19 @@ db.with_transaction =>
   return null
 ```
 
-It's good practice to explicitly use prepared statements when doing lots of inserts (explicit transaction
-and explicit prepared statements are they key factors for speedy `insert`s):
+The following points should be kept in mind: **Explicit transactions and explicit prepared statements are
+they key factors for speedy `insert`s. Since explicit transactions are crucial for concurrent inserts, it's
+recommended to do *all* inserts within explicit transactions.**
+
+Therefore, because it's good practice to use explicit transactions and explicit prepared statements when
+doing inserts, most of the time inserts should take on the form shown in snippets `(2)` or `(4)`:
 
 ```coffee
 #.................................................................................
-# (B)
+# (2)
 insert_into_bar = db.prepare SQL"insert into bar values ( $n ) returning *;"
 db.with_transaction =>
   for { n, } from db.alt SQL"select * from foo order by n;"
-    #             ^^^^^^
     insert_into_bar.run { n: n ** 2, }
   return null
 ```
@@ -244,21 +247,19 @@ statements; to do so, either use `db.first_row()` or call a prepared statement's
 
 ```coffee
 #.................................................................................
-# (A)
+# (3)
 db.with_transaction =>
   for { n, } from db.alt SQL"select * from foo order by n;"
-    #             ^^^^^^
     new_row = db.first_row SQL"insert into bar values ( $n ) returning *;", { n: n ** 2, }
   return null
 ```
 
 ```coffee
 #.................................................................................
-# (B)
+# (4)
 insert_into_bar = db.prepare SQL"insert into bar values ( $n ) returning *;"
 db.with_transaction =>
   for { n, } from db.alt SQL"select * from foo order by n;"
-    #             ^^^^^^
     new_row = insert_into_bar.get { n: n ** 2, }
   return null
 ```
