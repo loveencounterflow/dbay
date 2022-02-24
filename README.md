@@ -87,7 +87,7 @@ db        = new DBay()
 <del>The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
 connections to the same temporary DB in the ['automatic location'](#automatic-location).</del>
 
-The `db` object will then have a (non-enumerable) property `db.sqlt` which is a `better-sqlite3` connection
+The `db` object will then have a (non-enumerable) property `db.sqlt1` which is a `better-sqlite3` connection
 to a temporary DB in the ['automatic location'](#automatic-location).
 
 #### Automatic Location
@@ -127,7 +127,7 @@ fields:
 #### Opening / Attaching DBs
 
 * **`db.open cfg`**: [Attach](https://www.sqlite.org/lang_attach.html) a new or existing DB to the `db`'s
-  connection<del>s (`db.sqlt1`, `db.sqlt1`).</del> (`db.sqlt`).
+  connection<del>s (`db.sqlt1`, `db.sqlt1`).</del> (`db.sqlt1`).
 * `cfg`:
   * `schema` (non-empty string): Required property that specifies the name under which the newly attached
     DB's objects can be accessed as; having attached a DB as, say, `db.open { schema: 'foo', path:
