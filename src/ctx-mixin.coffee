@@ -59,7 +59,6 @@ guy                       = require 'guy'
   set_unsafe_mode: ( onoff ) ->
     @types.validate.boolean onoff
     @sqlt1.unsafeMode onoff
-    @sqlt2.unsafeMode onoff
     @state = guy.lft.lets @state, ( d ) -> d.in_unsafe_mode = onoff
     return null
 

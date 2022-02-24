@@ -164,7 +164,6 @@ class @DBay extends   \
     @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
     unless @constructor._skip_sqlt
       guy.props.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
-      guy.props.hide @_me, 'sqlt2', @_me._new_bsqlt3_connection()
     @_compile_sql?()
     ### make `alt` an on-demand clone of present instance: ###
     guy.props.def_oneoff @_me, 'alt', { enumerable: false, }, => new @constructor @_me.cfg
@@ -200,7 +199,6 @@ class @DBay extends   \
     ### To be called on progress exit or explicitly by client code. Removes all DB files marked 'temporary'
     in `@_dbs`. ###
     try @sqlt1?.close() catch error then warn '^dbay/main@1^', error.message
-    try @sqlt2?.close() catch error then warn '^dbay/main@2^', error.message
     for schema, d of @_dbs
       H.unlink_file d.path if d.temporary
     return null

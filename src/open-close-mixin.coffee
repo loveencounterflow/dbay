@@ -36,7 +36,6 @@ SQL                       = String.raw
     #.......................................................................................................
     try
       ( @sqlt1.prepare SQL"attach ? as ?;" ).run [ path, schema, ]
-      ( @sqlt2.prepare SQL"attach ? as ?;" ).run [ path, schema, ]
     catch error
       throw error unless error.code is 'SQLITE_ERROR'
       throw new E.DBay_sqlite_too_many_dbs '^dba@313^', schema if error.message.startsWith 'too many attached databases'
