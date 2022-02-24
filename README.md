@@ -191,7 +191,7 @@ integer field each:
 
 ```coffee
 #.................................................................................
-db.execute SQL"""
+db SQL"""
   create table foo ( n integer );
   create table bar ( n integer );"""
 for n in [ 10 .. 12 ]
