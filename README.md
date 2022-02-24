@@ -20,6 +20,7 @@
       - [Closing / Detaching DBs](#closing--detaching-dbs)
     - [Transactions and Context Handlers](#transactions-and-context-handlers)
     - [Query](#query)
+      - [Use the `alt`ernative Connection to Avoid Connection Busy Errors](#use-the-alternative-connection-to-avoid-connection-busy-errors)
       - [`SQL` Tag Function for Better Embedded Syntax](#sql-tag-function-for-better-embedded-syntax)
       - [Executing SQL](#executing-sql)
     - [User-Defined Functions (UDFs)](#user-defined-functions-udfs)
@@ -83,8 +84,11 @@ In order to construct (instantiate) a DBay object, you can call the constructor 
 db        = new DBay()
 ```
 
-The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
-connections to the same temporary DB in the ['automatic location'](#automatic-location).
+<del>The `db` object will then have two properties `db.sqlt1` and `db.sqlt2` that are `better-sqlite3`
+connections to the same temporary DB in the ['automatic location'](#automatic-location).</del>
+
+The `db` object will then have a (non-enumerable) property `db.sqlt` which is a `better-sqlite3` connection
+to a temporary DB in the ['automatic location'](#automatic-location).
 
 #### Automatic Location
 
@@ -123,7 +127,7 @@ fields:
 #### Opening / Attaching DBs
 
 * **`db.open cfg`**: [Attach](https://www.sqlite.org/lang_attach.html) a new or existing DB to the `db`'s
-  connections (`db.sqlt1`, `db.sqlt1`).
+  connection<del>s (`db.sqlt1`, `db.sqlt1`).</del> (`db.sqlt`).
 * `cfg`:
   * `schema` (non-empty string): Required property that specifies the name under which the newly attached
     DB's objects can be accessed as; having attached a DB as, say, `db.open { schema: 'foo', path:
@@ -163,6 +167,101 @@ fields:
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
+
+#### Use the `alt`ernative Connection to Avoid Connection Busy Errors
+
+SQLite imposes certain restrictions on what one can and cannot do in a concurrent fashion, one restriction
+being that within the same connection, one cannot at the same time iterate over query results and insert
+values—not even into a completely unrelated table. There are ways to get around that limitation. For one,
+the standard recommendation of the maker of `better-sqlite3` is to just fetch all the needed rows from the
+DB and then iterate over the list of values. This is totally doable and the simplest and most transparent
+solution, but of course a nagging thought remains—what if the dataset gets really huge? In reality, this may
+turn out *never* to be a problem, realistically, but that consideration won't make that nagging thought
+vanish.
+
+There's a (seemingly) better way. [Commit `57e062a`: make `alt` an on-demand clone of present
+instance](https://github.com/loveencounterflow/dbay/commit/57e062a941c9a6d3b589bcdddebbdf82e7088812)
+introduces the new (non-enumerable) property `db.alt` which represents a clone of the `db` object. Previous
+versions had two underlying DB connections `sqlt1` and `sqlt2` which could be used for the purposes
+described in this section, but their drawback was that one falls back to the underlying `better-sqlite3` API
+which can be a little confusing.
+
+Let's have a look at a toy DB and see how to use `db.alt`. This is the definition, two tables with one
+integer field each:
+
+```coffee
+#.................................................................................
+db.execute SQL"""
+  create table foo ( n integer );
+  create table bar ( n integer );"""
+for n in [ 10 .. 12 ]
+  db SQL"insert into foo ( n ) values ( $n );", { n, }
+```
+
+And here's what we want to accomplish: read data from one table and, based on that data, insert records into
+another one. Naïvely one would perhaps write it this way (the transaction being added because we need it
+later anyway):
+
+```coffee
+db.with_transaction =>
+  for row from db SQL"select * from foo order by n;"
+    info '^806-2^', row
+    db SQL"insert into bar values ( $n );", { n: n ** 2, }
+    return null
+```
+
+This will not run, however, but fail with `TypeError: This database connection is busy executing a query`.
+This is where `db.alt` comes in: we have to use one connection for the iteration and another one for the
+insertion; this works:
+
+```coffee
+#.................................................................................
+# (A)
+db.with_transaction =>
+  for { n, } from db.alt SQL"select * from foo order by n;"
+    #             ^^^^^^
+    db SQL"insert into bar values ( $n ) returning *;", { n: n ** 2, }
+  return null
+```
+
+It's good practice to explicitly use prepared statements when doing lots of inserts (explicit transaction
+and explicit prepared statements are they key factors for speedy `insert`s):
+
+```coffee
+#.................................................................................
+# (B)
+insert_into_bar = db.prepare SQL"insert into bar values ( $n ) returning *;"
+db.with_transaction =>
+  for { n, } from db.alt SQL"select * from foo order by n;"
+    #             ^^^^^^
+    insert_into_bar.run { n: n ** 2, }
+  return null
+```
+
+Observe that we have to explicitly exhaust the iterator that is returned from `insert ... returning`
+statements; to do so, either use `db.first_row()` or call a prepared statement's `.get()` (instead of
+`.run()`) method:
+
+```coffee
+#.................................................................................
+# (A)
+db.with_transaction =>
+  for { n, } from db.alt SQL"select * from foo order by n;"
+    #             ^^^^^^
+    new_row = db.first_row SQL"insert into bar values ( $n ) returning *;", { n: n ** 2, }
+  return null
+```
+
+```coffee
+#.................................................................................
+# (B)
+insert_into_bar = db.prepare SQL"insert into bar values ( $n ) returning *;"
+db.with_transaction =>
+  for { n, } from db.alt SQL"select * from foo order by n;"
+    #             ^^^^^^
+    new_row = insert_into_bar.get { n: n ** 2, }
+  return null
+```
 
 #### `SQL` Tag Function for Better Embedded Syntax
 
