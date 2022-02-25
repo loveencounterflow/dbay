@@ -97,6 +97,11 @@ E                         = require './errors'
     return null
 
   #---------------------------------------------------------------------------------------------------------
+  execute_file: ( cfg ) ->
+    @types.validate.dbay_execute_file_cfg ( cfg = { @constructor.C.defaults.dbay_execute_file_cfg..., cfg..., } )
+    return @execute ( require 'fs' ).readFileSync cfg.path, { encoding: cfg.encoding, }
+
+  #---------------------------------------------------------------------------------------------------------
   prepare: ( sql ) ->
     return ( @_statements[ sql ] ?= @sqlt1.prepare sql )
 

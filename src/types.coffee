@@ -106,6 +106,12 @@ intertype                 = new Intertype module.exports
   "@isa.nonempty_text x.name":        ( x ) -> @isa.nonempty_text x.name
   "@isa.function x.create":           ( x ) -> @isa.function x.create
 
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_execute_file_cfg', tests:
+  "@isa.object x":                    ( x ) -> @isa.object x
+  "@isa.nonempty_text x.path":        ( x ) -> @isa.nonempty_text x.path
+  "@isa.nonempty_text x.encoding":    ( x ) -> @isa.nonempty_text x.encoding
+
 
 
 #===========================================================================================================
