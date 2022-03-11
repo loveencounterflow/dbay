@@ -776,6 +776,7 @@ dbay`, both package managers work fine.*
   can become `SQL"xxx"`). Complex DBs can still be assembled with `db.open()`, but one must keep in mind
   that in SQLite, `foreign key`s do not work across schemas, only `join`s so, so that limits the usefulness
   of multi-schema connections.
+* **[+]** implement `as_object: ( key, sql, P... ) ->`
 
 
 
