@@ -777,8 +777,20 @@ dbay`, both package managers work fine.*
   that in SQLite, `foreign key`s do not work across schemas, only `join`s so, so that limits the usefulness
   of multi-schema connections.
 * **[+]** implement `as_object: ( key, sql, P... ) ->`
+* **[–]** add fields to `std_re_matches()`:
 
-
+  ```coffee
+    db.create_table_function
+      name:           prefix + '_re_matches'
+      columns:        [ 'match', 'capture', 'start', 'stop', ]
+      parameters:     [ 'text', 'pattern', ]
+      rows: ( text, pattern ) ->
+        regex = new RegExp pattern, 'g'
+        while ( match = regex.exec text )?
+          [ m, c, ] = match
+          yield [ m, ( c ? null ), start: match.index, stop: match.index + m.length, ]
+        return null
+  ```
 
 
 
