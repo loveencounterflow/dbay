@@ -13,8 +13,6 @@ urge                      = CND.get_logger 'urge',      badge
 help                      = CND.get_logger 'help',      badge
 whisper                   = CND.get_logger 'whisper',   badge
 echo                      = CND.echo.bind CND
-{ freeze
-  lets }                  = require 'letsfreezethat'
 E                         = require './errors'
 
 
