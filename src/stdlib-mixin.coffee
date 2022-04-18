@@ -14,6 +14,13 @@ help                      = CND.get_logger 'help',      badge
 whisper                   = CND.get_logger 'whisper',   badge
 echo                      = CND.echo.bind CND
 E                         = require './errors'
+#-----------------------------------------------------------------------------------------------------------
+### https://day.js.org ###
+dayjs                     = require 'dayjs'
+do =>
+  utc           = require 'dayjs/plugin/utc';           dayjs.extend utc
+  relativeTime  = require 'dayjs/plugin/relativeTime';  dayjs.extend relativeTime
+  toObject      = require 'dayjs/plugin/toObject';      dayjs.extend toObject
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -243,9 +250,41 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
       parameters:     []
       rows:           ( ( name ) -> yield [ name, ( @getv name ), ] for name of @variables ).bind @
 
+    #=======================================================================================================
+    # DATETIME
+    #-------------------------------------------------------------------------------------------------------
+    @types.declare 'dbay_dt_valid_dayjs', tests:
+      "( @type_of x ) is 'm'":  ( x ) -> ( @type_of x ) is 'm'
+      "@isa.float x.$y":        ( x ) -> @isa.float x.$y
+      "@isa.float x.$M":        ( x ) -> @isa.float x.$M
+      "@isa.float x.$D":        ( x ) -> @isa.float x.$D
+      "@isa.float x.$W":        ( x ) -> @isa.float x.$W
+      "@isa.float x.$H":        ( x ) -> @isa.float x.$H
+      "@isa.float x.$m":        ( x ) -> @isa.float x.$m
+      "@isa.float x.$s":        ( x ) -> @isa.float x.$s
+      "@isa.float x.$ms":       ( x ) -> @isa.float x.$ms
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      ### Returns a DBay_timestamp representing the present point in time. ###
+      name:           prefix + 'dt_now'
+      deterministic:  false
+      varargs:        false
+      call:           => @dt_now()
+    #-------------------------------------------------------------------------------------------------------
+    @create_function
+      ### Given a DBay_timestamp, returns an English human-readable text indicating the remoteness of that
+      time relative to now, like 'four minutes ago' or 'in a week'. ###
+      name:           prefix + 'dt_from_now'
+      deterministic:  false
+      varargs:        false
+      call:           ( dbay_timestamp ) => @dt_from_now dbay_timestamp
+
     #-------------------------------------------------------------------------------------------------------
     return null
 
+
+  #=========================================================================================================
+  # VARIABLES (2)
   #---------------------------------------------------------------------------------------------------------
   setv: ( name, value ) -> @variables[ name ] = value
 
@@ -257,3 +296,24 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
       when R is true  then 1
       when R is false then 0
       else R
+
+  #=========================================================================================================
+  # DATETIME (2)
+  #---------------------------------------------------------------------------------------------------------
+  _dt_dbay_timestamp_template: 'YYYY-MM-DD,HH:mm:ss[Z]'
+
+  #---------------------------------------------------------------------------------------------------------
+  dt_from_now: ( dbay_timestamp ) ->
+    return ( @dt_parse dbay_timestamp ).fromNow()
+
+  #---------------------------------------------------------------------------------------------------------
+  dt_now: -> dayjs().utc().format @_dt_dbay_timestamp_template
+
+  #---------------------------------------------------------------------------------------------------------
+  dt_parse: ( dbay_timestamp ) ->
+    unless /^\d\d\d\d-\d\d-\d\d,\d\d:\d\d:\d\dZ$/.test dbay_timestamp
+      throw new Error "not a valid dbay_timestamp: #{rpr dbay_timestamp}"
+    R = dayjs.utc dbay_timestamp
+    unless @types.isa.dbay_dt_valid_dayjs R
+      throw new Error "not a valid dbay_timestamp: #{rpr dbay_timestamp}"
+    return R
