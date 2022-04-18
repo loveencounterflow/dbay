@@ -2,12 +2,14 @@ lockfileVersion: 5.3
 
 specifiers:
   cnd: 9.2.2
+  dayjs: ^1.11.1
   exit-hook: ^2.2.1
   guy: 4.0.0
   intertype: 7.7.0
 
 dependencies:
   cnd: 9.2.2
+  dayjs: 1.11.1
   exit-hook: 2.2.1
   guy: 4.0.0
   intertype: 7.7.0
@@ -19,6 +21,10 @@ packages:
     hasBin: true
     dependencies:
       jsx-number-format: 0.1.5
+    dev: false
+
+  /dayjs/1.11.1:
+    resolution: {integrity: sha512-ER7EjqVAMkRRsxNCC5YqJ9d9VQYuWdGt7aiH2qA5R5wt8ZmWaP2dLUSIK6y/kVzLMlmh1Tvu5xUf4M/wdGJ5KA==}
     dev: false
 
   /exit-hook/2.2.1:
