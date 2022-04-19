@@ -145,4 +145,18 @@ intertype                 = new Intertype module.exports
       return true
     return true
 
+#===========================================================================================================
+# DT
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_dt_valid_dayjs', tests:
+  "( @type_of x ) is 'm'":  ( x ) -> ( @type_of x ) is 'm'
+  "@isa.float x.$y":        ( x ) -> @isa.float x.$y
+  "@isa.float x.$M":        ( x ) -> @isa.float x.$M
+  "@isa.float x.$D":        ( x ) -> @isa.float x.$D
+  "@isa.float x.$W":        ( x ) -> @isa.float x.$W
+  "@isa.float x.$H":        ( x ) -> @isa.float x.$H
+  "@isa.float x.$m":        ( x ) -> @isa.float x.$m
+  "@isa.float x.$s":        ( x ) -> @isa.float x.$s
+  "@isa.float x.$ms":       ( x ) -> @isa.float x.$ms
+
 
