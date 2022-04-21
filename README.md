@@ -38,7 +38,6 @@
     - [Random](#random)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
-  - [Use npm, Not pnpm](#use-npm-not-pnpm)
   - [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -792,6 +791,9 @@ dbay`, both package managers work fine.*</del>
         return null
   ```
 
+* **[–]** update to an SQLite version that includes
+  [`#9430ead7ba433cbf`](https://sqlite.org/src/info/9430ead7ba433cbf) to fix [an issue with window
+  functions](https://sqlite.org/forum/forumpost/ba160cf2fe)
 
 
 
