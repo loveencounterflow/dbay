@@ -159,4 +159,8 @@ intertype                 = new Intertype module.exports
   "@isa.float x.$s":        ( x ) -> @isa.float x.$s
   "@isa.float x.$ms":       ( x ) -> @isa.float x.$ms
 
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_dt_timestamp', tests:
+  "@isa.text x":                    ( x ) -> @isa.text x
+  "( /^\\d{8}-\\d{6}Z$/ ).test x":  ( x ) -> ( /^\d{8}-\d{6}Z$/ ).test x
 

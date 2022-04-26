@@ -18,9 +18,10 @@ E                         = require './errors'
 ### https://day.js.org ###
 dayjs                     = require 'dayjs'
 do =>
-  utc           = require 'dayjs/plugin/utc';           dayjs.extend utc
-  relativeTime  = require 'dayjs/plugin/relativeTime';  dayjs.extend relativeTime
-  toObject      = require 'dayjs/plugin/toObject';      dayjs.extend toObject
+  utc               = require 'dayjs/plugin/utc';               dayjs.extend utc
+  relativeTime      = require 'dayjs/plugin/relativeTime';      dayjs.extend relativeTime
+  toObject          = require 'dayjs/plugin/toObject';          dayjs.extend toObject
+  customParseFormat = require 'dayjs/plugin/customParseFormat'; dayjs.extend customParseFormat
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -289,7 +290,7 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   #=========================================================================================================
   # DATETIME (2)
   #---------------------------------------------------------------------------------------------------------
-  _dt_dbay_timestamp_template: 'YYYY-MM-DD,HH:mm:ss[Z]'
+  _dt_dbay_timestamp_template: 'YYYYMMDD-HHmmssZ'
 
   #---------------------------------------------------------------------------------------------------------
   dt_from_now: ( dbay_timestamp ) ->
@@ -300,9 +301,7 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
 
   #---------------------------------------------------------------------------------------------------------
   dt_parse: ( dbay_timestamp ) ->
-    unless /^\d\d\d\d-\d\d-\d\d,\d\d:\d\d:\d\dZ$/.test dbay_timestamp
-      throw new Error "not a valid dbay_timestamp: #{rpr dbay_timestamp}"
-    R = dayjs.utc dbay_timestamp
-    unless @types.isa.dbay_dt_valid_dayjs R
-      throw new Error "not a valid dbay_timestamp: #{rpr dbay_timestamp}"
+    @types.validate.dbay_dt_timestamp dbay_timestamp
+    R = ( dayjs dbay_timestamp, @_dt_dbay_timestamp_template ).utc()
+    throw new E.DBay_invalid_timestamp '^dbay/stdlib@1^', dbay_timestamp unless @types.isa.dbay_dt_valid_dayjs R
     return R

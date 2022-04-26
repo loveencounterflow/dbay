@@ -81,6 +81,8 @@ class @DBay_no_deferred_fks_in_tx     extends @DBay_error
   constructor: ( ref )              -> super ref, "cannot defer foreign keys inside a transaction"
 class @DBay_unknown_variable          extends @DBay_error
   constructor: ( ref, name )        -> super ref, "unknown variable #{rpr name}"
+class @DBay_invalid_timestamp         extends @DBay_error
+  constructor: ( ref, x )           -> super ref, "not a valid DBay timestamp: #{rpr x}"
 
 ### TAINT replace with more specific error, like below ###
 class @DBay_format_unknown extends @DBay_error
