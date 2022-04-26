@@ -39,6 +39,7 @@
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
   - [To Do](#to-do)
+  - [Is Done](#is-done)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -726,16 +727,7 @@ dbay`, both package managers work fine.*</del>
   mounting a RAM disk which needs `sudo` rights, so might as well just instruct users to mount RAM disk,
   then use that path? Still, it would be preferrable to have some automatic copy-to-durable in place.
 * **[–]** implement context handler for discardable / temporary file
-* **[+]** implement `DBay::do()` as a method that unifies all of `better-sqlite3`'s `Statement::run()`,
-  `Statement::iterate()`, and `Database::execute()`.
-* **[+]** allow to call `DBay::do -> ...` with a synchronous function with the same semantics as
-  `DBay::with_transaction -> ...`.
-* **[+]** allow to call `DBay::do { mode: 'deferred', }, -> ...`.
 * **[–]** allow to call `DBay::do -> ...` with an asynchronous function
-* **[+]** make `db = new DBay()` an instance of `Function` that, when called, runs `DBay::do()`
-  `Database::execute()`.
-  `statement = DBay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
-* **[+]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
 * **[–]** implement `DBay::open()`, `DBay::close()`
 * **[–]** ensure how cross-schema foreign keys work when re-attaching DBs / schemas one by one
 * **[–]** demote `random` from a mixin to functions in `helpers`.
@@ -747,19 +739,11 @@ dbay`, both package managers work fine.*</del>
 * **[–]** add schematic to clarify terms like *database*, *schema*, *connection*; hilite that UDFs are
   defined on *connections* (not *schemas* or *databases* as would be the case in e.g. PostgreSQL).
 * **[–]** allow to transparently treat key/value tables as caches
-* **[+]** let `db.do()` accept prepared statement objects.
 * **[–]** implement escaping of dollar-prefixed SQL placeholders (needed by `create_insert()`).
 * **[–]** implement
   * **[–]** `db.commit()`
   * **[–]** `db.rollback()`
 * **[–]** allow to use sets with `sql.V()`
-* **[+]** make `first_row()`, `all_rows()` etc accept statements and strings
-* **[+]** at the moment we use `cfg.prefix` for (inherently schema-less) UDF names (and require a trailing
-  underscore to be part of the prefix), and `cfg.schema` for plugin-in-specific DB tables and views; in the
-  future, we should use a single parameter for both (and make the underscore implicit). In addition, it
-  should be possible to choose whether a plugin will create its objects with a prefix (in the same schema as
-  the main DB) or within another schema.
-* **[+]** fix generated SQL `insert` statements without explicit fields
 * **[–]** implement export/snapshot function that generates a DB with a simplified structure:
   * replace generated fields, results from function calls by constants
   * remove `strict` and similar newer attributes
@@ -768,14 +752,12 @@ dbay`, both package managers work fine.*</del>
 * **[+]** <del>consider to implement `trash()` as `trash_to_sql()` (`path` optional), `trash_to_sqlite()`
   (`path` optional)</del> trash functionality now moved to
   [DeSQL](https://github.com/loveencounterflow/desql)
-* **[+]** add hidden `E` attribute to instance giving access to error classes (mainly for plugin use)
 * **[–]** rewrite all uses of plain `E` to `@E`
 * **[–]** limit support for schemas, especially in plugins; require a separate instance of DBay for each DB
   file (so that all DB objects are in the default `main` namespace and the `SQL"#{schema}.xxx"` constructs
   can become `SQL"xxx"`). Complex DBs can still be assembled with `db.open()`, but one must keep in mind
   that in SQLite, `foreign key`s do not work across schemas, only `join`s so, so that limits the usefulness
   of multi-schema connections.
-* **[+]** implement `as_object: ( key, sql, P... ) ->`
 * **[–]** add fields to `std_re_matches()`:
 
   ```coffee
@@ -795,7 +777,29 @@ dbay`, both package managers work fine.*</del>
   [`#9430ead7ba433cbf`](https://sqlite.org/src/info/9430ead7ba433cbf) to fix [an issue with window
   functions](https://sqlite.org/forum/forumpost/ba160cf2fe)
 
+## Is Done
 
+* **[+]** implement `DBay::do()` as a method that unifies all of `better-sqlite3`'s `Statement::run()`,
+  `Statement::iterate()`, and `Database::execute()`.
+* **[+]** allow to call `DBay::do -> ...` with a synchronous function with the same semantics as
+  `DBay::with_transaction -> ...`.
+* **[+]** allow to call `DBay::do { mode: 'deferred', }, -> ...`.
+* **[+]** make `db = new DBay()` an instance of `Function` that, when called, runs `DBay::do()`
+  `Database::execute()`.
+  `statement = DBay::prepare.insert_into.<table> [ 'field1', 'field2', ..., ]`
+* **[+]** change classname(s) from `Dbay` to `DBay` to avoid spelling variant proliferation
+* **[+]** let `db.do()` accept prepared statement objects.
+* **[+]** make `first_row()`, `all_rows()` etc accept statements and strings
+* **[+]** at the moment we use `cfg.prefix` for (inherently schema-less) UDF names (and require a trailing
+  underscore to be part of the prefix), and `cfg.schema` for plugin-in-specific DB tables and views; in the
+  future, we should use a single parameter for both (and make the underscore implicit). In addition, it
+  should be possible to choose whether a plugin will create its objects with a prefix (in the same schema as
+  the main DB) or within another schema.
+* **[+]** fix generated SQL `insert` statements without explicit fields
+* **[+]** add hidden `E` attribute to instance giving access to error classes (mainly for plugin use)
+* **[+]** implement `as_object: ( key, sql, P... ) ->`
+* **[+]** modify time stamp format to make it viable for use in file names on most systems
+  * new format is `YYYYMMDD-HHmmssZ`, e.g. `20220426-171916Z` is the time of this writing
 
 
 
