@@ -800,6 +800,8 @@ dbay`, both package managers work fine.*</del>
 * **[+]** implement `as_object: ( key, sql, P... ) ->`
 * **[+]** modify time stamp format to make it viable for use in file names on most systems
   * new format is `YYYYMMDD-HHmmssZ`, e.g. `20220426-171916Z` is the time of this writing
+* **[+]** fix datetime output to use different formats for input, output so output contains literal `Z`
+  instead of numerical offset
 
 
 
