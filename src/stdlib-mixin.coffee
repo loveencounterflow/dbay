@@ -290,18 +290,19 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   #=========================================================================================================
   # DATETIME (2)
   #---------------------------------------------------------------------------------------------------------
-  _dt_dbay_timestamp_template: 'YYYYMMDD-HHmmssZ'
+  _dt_dbay_timestamp_input_template:  'YYYYMMDD-HHmmssZ'
+  _dt_dbay_timestamp_output_template: 'YYYYMMDD-HHmmss[Z]'
 
   #---------------------------------------------------------------------------------------------------------
   dt_from_now: ( dbay_timestamp ) ->
     return ( @dt_parse dbay_timestamp ).fromNow()
 
   #---------------------------------------------------------------------------------------------------------
-  dt_now: -> dayjs().utc().format @_dt_dbay_timestamp_template
+  dt_now: -> dayjs().utc().format @_dt_dbay_timestamp_output_template
 
   #---------------------------------------------------------------------------------------------------------
   dt_parse: ( dbay_timestamp ) ->
     @types.validate.dbay_dt_timestamp dbay_timestamp
-    R = ( dayjs dbay_timestamp, @_dt_dbay_timestamp_template ).utc()
+    R = ( dayjs dbay_timestamp, @_dt_dbay_timestamp_input_template ).utc()
     throw new E.DBay_invalid_timestamp '^dbay/stdlib@1^', dbay_timestamp unless @types.isa.dbay_dt_valid_dayjs R
     return R
