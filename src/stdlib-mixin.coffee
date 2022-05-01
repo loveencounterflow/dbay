@@ -42,8 +42,8 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   ### TAINT use `cfg` ###
 
   #---------------------------------------------------------------------------------------------------------
-  constructor: ->
-    super()
+  constructor: ( P... ) ->
+    super P...
     GUY.props.hide @, '_dayjs', dayjs
     return undefined
 
