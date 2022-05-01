@@ -15,6 +15,7 @@ whisper                   = CND.get_logger 'whisper',   badge
 echo                      = CND.echo.bind CND
 E                         = require './errors'
 #-----------------------------------------------------------------------------------------------------------
+GUY                       = require 'guy'
 ### https://day.js.org ###
 dayjs                     = require 'dayjs'
 do =>
@@ -22,6 +23,7 @@ do =>
   relativeTime      = require 'dayjs/plugin/relativeTime';      dayjs.extend relativeTime
   toObject          = require 'dayjs/plugin/toObject';          dayjs.extend toObject
   customParseFormat = require 'dayjs/plugin/customParseFormat'; dayjs.extend customParseFormat
+  duration          = require 'dayjs/plugin/duration';          dayjs.extend duration
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -42,6 +44,7 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   #---------------------------------------------------------------------------------------------------------
   _$stdlib_initialize: ->
     @_stdlib_created = false
+    GUY.props.hide @, '_dayjs', dayjs
     return null
 
   #---------------------------------------------------------------------------------------------------------
@@ -298,11 +301,11 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
     return ( @dt_parse dbay_timestamp ).fromNow()
 
   #---------------------------------------------------------------------------------------------------------
-  dt_now: -> dayjs().utc().format @_dt_dbay_timestamp_output_template
+  dt_now: -> @_dayjs().utc().format @_dt_dbay_timestamp_output_template
 
   #---------------------------------------------------------------------------------------------------------
   dt_parse: ( dbay_timestamp ) ->
     @types.validate.dbay_dt_timestamp dbay_timestamp
-    R = ( dayjs dbay_timestamp, @_dt_dbay_timestamp_input_template ).utc()
+    R = ( @_dayjs dbay_timestamp, @_dt_dbay_timestamp_input_template ).utc()
     throw new E.DBay_invalid_timestamp '^dbay/stdlib@1^', dbay_timestamp unless @types.isa.dbay_dt_valid_dayjs R
     return R
