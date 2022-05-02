@@ -758,6 +758,7 @@ dbay`, both package managers work fine.*</del>
   can become `SQL"xxx"`). Complex DBs can still be assembled with `db.open()`, but one must keep in mind
   that in SQLite, `foreign key`s do not work across schemas, only `join`s so, so that limits the usefulness
   of multi-schema connections.
+* **[–]** consider to change `call` argument in UDFs to `callee`
 * **[–]** add fields to `std_re_matches()`:
 
   ```coffee
