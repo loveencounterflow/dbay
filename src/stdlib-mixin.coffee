@@ -42,14 +42,11 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   ### TAINT use `cfg` ###
 
   #---------------------------------------------------------------------------------------------------------
-  constructor: ( P... ) ->
-    super P...
-    GUY.props.hide @, '_dayjs', dayjs
-    return undefined
-
-  #---------------------------------------------------------------------------------------------------------
   _$stdlib_initialize: ->
-    @_stdlib_created = false
+    GUY.props.hide @_me, '_dayjs',                              dayjs
+    GUY.props.hide @_me, '_dt_dbay_timestamp_input_template',   'YYYYMMDD-HHmmssZ'
+    GUY.props.hide @_me, '_dt_dbay_timestamp_output_template',  'YYYYMMDD-HHmmss[Z]'
+    @_me._stdlib_created = false
     return null
 
   #---------------------------------------------------------------------------------------------------------
@@ -297,10 +294,6 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
 
   #=========================================================================================================
   # DATETIME (2)
-  #---------------------------------------------------------------------------------------------------------
-  _dt_dbay_timestamp_input_template:  'YYYYMMDD-HHmmssZ'
-  _dt_dbay_timestamp_output_template: 'YYYYMMDD-HHmmss[Z]'
-
   #---------------------------------------------------------------------------------------------------------
   dt_from_now: ( dbay_timestamp ) ->
     return ( @dt_parse dbay_timestamp ).fromNow()
