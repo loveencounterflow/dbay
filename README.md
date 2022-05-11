@@ -777,6 +777,15 @@ dbay`, both package managers work fine.*</del>
 * **[–]** update to an SQLite version that includes
   [`#9430ead7ba433cbf`](https://sqlite.org/src/info/9430ead7ba433cbf) to fix [an issue with window
   functions](https://sqlite.org/forum/forumpost/ba160cf2fe)
+* **[–]** write a chapter about application architecture best practices, including:
+  * limitations of using UDFs (tools, `sqlite3` CLI will not work)
+  * SQLite, like other popular DBs (i.e. Postgres) are notoriously bad at giving exact error locations.
+    Using triggers (and generated columns) can exacerbate that problem (imagine an `on insert` trigger that
+    performs inserts on another table using `select from t`; ahould an error occur in the last step, SQLite
+    will still attribute it to the original `insert` statement (without giving it any kind of locality or
+    mentioning `t`'s role))
+  * because errors are badly located by SQLite, prefer writing many small steps instead of few big ones
+    (i.e. prefer `db SQL"do this;"`, `db SQL"do that;"` over `db SQL"do this; do that;"`)
 
 ## Is Done
 
