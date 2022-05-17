@@ -786,6 +786,7 @@ dbay`, both package managers work fine.*</del>
     mentioning `t`'s role))
   * because errors are badly located by SQLite, prefer writing many small steps instead of few big ones
     (i.e. prefer `db SQL"do this;"`, `db SQL"do that;"` over `db SQL"do this; do that;"`)
+* **[–]** implement `select * from t` SQL generation
 
 ## Is Done
 
