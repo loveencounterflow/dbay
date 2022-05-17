@@ -307,3 +307,8 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
     R = ( @_dayjs dbay_timestamp, @_dt_dbay_timestamp_input_template ).utc()
     throw new E.DBay_invalid_timestamp '^dbay/stdlib@1^', dbay_timestamp unless @types.isa.dbay_dt_valid_dayjs R
     return R
+
+  #---------------------------------------------------------------------------------------------------------
+  dt_format: ( dbay_timestamp, P... ) ->
+    R = @dt_parse dbay_timestamp
+    return R.format P...
