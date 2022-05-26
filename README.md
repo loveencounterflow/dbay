@@ -761,6 +761,7 @@ END;
 > * Type annotations and the `RETURNS` clause should be optional as in `CREATE TABLE` statements, whereas
 >   `LANGUAGE SQL` should initially be made mandatory to avoid premature fixation of a bad default.
 > * Initially at least, functions should not be multi-dispatch (i.e. a name can only appear at most once).
+> * Nice-to-have: `CREATE OR REPLACE`, `IF NOT EXISTS`, `DROP FUNCTION`.
 
 This form is already useful because now you can bundle and name recurrent expressions—anything that can
 appear in a scalar (single-values) `SELECT` statement can be named and collected into libraries.
@@ -768,7 +769,17 @@ appear in a scalar (single-values) `SELECT` statement can be named and collected
 **Extension** Add to this `RETURNS SETOF $TYPE`, `RETURNS SETOF ROW`, and now you can have table-valued
 functions a.k.a. *parametrized views*!
 
+**Extension** Add to this statement sequences.
 
+**Extension** Add to this branching (`IF`/`THEN` and/or `CASE`/`WHEN`). This extension would cross the line
+where language inside a function declaration is significantly different from that outside. OTOH branching
+could conceivably work outside of functions, much like C's preprocessor directives.
+
+**Extension** Add to this `LOOP/BREAK/BREAK IF` loops.
+
+**Extension** Add to this `YIELD` for use in table-valued functions.
+
+**Extension** Add to this (function-local) variables.
 
 
 ## Note on Package Structure
