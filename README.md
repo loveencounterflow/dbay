@@ -721,8 +721,9 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
     before](https://sqlite.org/forum/info/7f554820209e0d8c) (not listed on the [Open Feature Requests
     page](https://www2.sqlite.org/src/rptview?rn=3)) in 2021 and lead to an extended and informative
     discussion (see triggers, below), but so far nothing has come of it. **Rating: +1** because while
-    everyone is encouraged to do it, hopes are not high IMHO; however see below for a draft that I think
-    could have *some* chances.
+    everyone is encouraged to do it, hopes are not high IMHO; however [see below for a
+    draft](#outline-for-a-draft-for-a-stored-procedure-feature-request) that I think could have *some*
+    chances.
   * *compile your UDFs into a loadable SQLite extension*—this can solve part of the problem, but only just
     so. Most tools simply have no way or concept to load an SQLite extension, one exception being the
     `sqlite3` command line tool, but even then, you must ship the extension alongside with the DB file, and
