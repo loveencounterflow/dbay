@@ -37,6 +37,7 @@
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
   - [Note on User Defined Functions (UDFs)](#note-on-user-defined-functions-udfs)
+    - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
   - [To Do](#to-do)
@@ -714,17 +715,21 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
   * *put all the logic in the application*—this is the most straightforward and classical approach. If a
     prospective generated field can not be readily or reasonably computed using only SQLite's built in
     functions, use an ordinary table field and precompute the value before inserting rows. If the UDF would
-    be called from a view, turn that view into a table and insert the rows from you application.
+    be called from a view, turn that view into a table and insert the rows from you application. **Rating:
+    +1** because it's so straightforward and classical.
   * *open a feature request against SQLite*—this [has been done
     before](https://sqlite.org/forum/info/7f554820209e0d8c) (not listed on the [Open Feature Requests
     page](https://www2.sqlite.org/src/rptview?rn=3)) in 2021 and lead to an extended and informative
-    discussion (see triggers, below), but so far nothing has come of it.
+    discussion (see triggers, below), but so far nothing has come of it. **Rating: +1** because while
+    everyone is encouraged to do it, hopes are not high IMHO; however see below for a draft that I think
+    could have *some* chances.
   * *compile your UDFs into a loadable SQLite extension*—this can solve part of the problem, but only just
     so. Most tools simply have no way or concept to load an SQLite extension, one exception being the
     `sqlite3` command line tool, but even then, you must ship the extension alongside with the DB file, and
     the receiving partner will have to do a bit more work to open the DB (and be willing to use the command
     line). They must also be on a compatible system or your `*.so`/`*.dll` will not work, or else you must
-    compile the extension for multiple system.
+    compile the extension for multiple system. **Rating: -1** because who wants to do the authoring and
+    testing and compiling stuff when so little universal usability comes out of it.
   * *use triggers*—this is a somewhat promising workaround that only occurred to me when reading [the OP of
     the aforementioned feature request](https://sqlite.org/forum/forumpost/78a60bdeec7c1ee9): put your
     functionality inside a trigger. Of course, this makes only sense if your function is readily expressable
@@ -732,6 +737,7 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 All of these solutions suck.
 
+### (Outline for a) Draft for a Stored Procedure Feature Request
 
 ## Note on Package Structure
 
