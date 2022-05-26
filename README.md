@@ -36,6 +36,7 @@
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
+  - [Note on User Defined Functions (UDFs)](#note-on-user-defined-functions-udfs)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
   - [To Do](#to-do)
@@ -682,6 +683,55 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 
 ------------------------------------------------------------------------------------------------------------
+
+## Note on User Defined Functions (UDFs)
+
+* SQLite principally differs from client/server RDBMSes in that it allows User Defined Functions (UDFs)
+  only on the DB connection of the host application
+
+* these UDFs are written in the language and run in the environment of the host application
+
+* I believe UDFs are, as such, a huge boon because they help to push many chores to the DB and allow for
+  such nifty things as having generated columns whose contents are not stored but indexed and that can call
+  into existing code of the hosting app without code duplication and without network roundtrips (both of
+  which are hallmarks of client/server architectures)
+
+* but the downside of connection-defined UDFs is that SQLite DBs created with UDFs will break when the
+  environment changes (e.g. when openening a second connection to the same DB without recreating all UDFs or
+  openening the DB with other tools such as the `sqlite3` command line tool); an abortive error will occur
+  as soon as any function is enountered (one may be able to perform some operations that do not cause a
+  function to be called)
+
+* this means that a DB created with UDFs will not be amenable for *any* of the helpful tools that exist
+  (like ER diagrammers and so on)
+
+* one can also not pass a DB file around for other people to have a gander into the data—using UDFs means
+  your host application (or all the relevant parts of it) has to be reproduced on the other machine, and
+  even then, only the host application can provide access to the data—again, no external tooling here
+
+* because UDFs are so useful, it's probably worthwhile to think about how to work around the limitations.
+  Possible solutions include:
+  * *put all the logic in the application*—this is the most straightforward and classical approach. If a
+    prospective generated field can not be readily or reasonably computed using only SQLite's built in
+    functions, use an ordinary table field and precompute the value before inserting rows. If the UDF would
+    be called from a view, turn that view into a table and insert the rows from you application.
+  * *open a feature request against SQLite*—this [has been done
+    before](https://sqlite.org/forum/info/7f554820209e0d8c) (not listed on the [Open Feature Requests
+    page](https://www2.sqlite.org/src/rptview?rn=3)) in 2021 and lead to an extended and informative
+    discussion (see triggers, below), but so far nothing has come of it.
+  * *compile your UDFs into a loadable SQLite extension*—this can solve part of the problem, but only just
+    so. Most tools simply have no way or concept to load an SQLite extension, one exception being the
+    `sqlite3` command line tool, but even then, you must ship the extension alongside with the DB file, and
+    the receiving partner will have to do a bit more work to open the DB (and be willing to use the command
+    line). They must also be on a compatible system or your `*.so`/`*.dll` will not work, or else you must
+    compile the extension for multiple system.
+  * *use triggers*—this is a somewhat promising workaround that only occurred to me when reading [the OP of
+    the aforementioned feature request](https://sqlite.org/forum/forumpost/78a60bdeec7c1ee9): put your
+    functionality inside a trigger. Of course, this makes only sense if your function is readily expressable
+    in terms of SQLite's built in functions, but potentially you can better bundle your functionalities.
+
+All of these solutions suck.
+
 
 ## Note on Package Structure
 
