@@ -36,7 +36,7 @@
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
-  - [Note on User Defined Functions (UDFs)](#note-on-user-defined-functions-udfs)
+  - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs)
     - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -685,7 +685,7 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 ------------------------------------------------------------------------------------------------------------
 
-## Note on User Defined Functions (UDFs)
+## Notes on User Defined Functions (UDFs)
 
 * SQLite principally differs from client/server RDBMSes in that it allows User Defined Functions (UDFs)
   only on the DB connection of the host application
@@ -720,7 +720,7 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
   * *open a feature request against SQLite*—this [has been done
     before](https://sqlite.org/forum/info/7f554820209e0d8c) (not listed on the [Open Feature Requests
     page](https://www2.sqlite.org/src/rptview?rn=3)) in 2021 and lead to an extended and informative
-    discussion (see triggers, below), but so far nothing has come of it. **Rating: +1** because while
+    discussion (see triggers, below), but so far nothing has come of it. **Rating: +0** because while
     everyone is encouraged to do it, hopes are not high IMHO; however [see below for a
     draft](#outline-for-a-draft-for-a-stored-procedure-feature-request) that I think could have *some*
     chances.
@@ -735,10 +735,41 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
     the aforementioned feature request](https://sqlite.org/forum/forumpost/78a60bdeec7c1ee9): put your
     functionality inside a trigger. Of course, this makes only sense if your function is readily expressable
     in terms of SQLite's built in functions, but potentially you can better bundle your functionalities.
+    **Rating +1** because this is another classical technique; its main downside is that you still have to
+    (re-)produce your functionalities in pure SQL (with built in functions), and in case the same
+    functionality is required in more than one place, there is no other way than to do copy/paste. Maybe
+    code duplication could be avoided with code generation?
 
-All of these solutions suck.
+All of these solutions suck in one or the other way.
 
 ### (Outline for a) Draft for a Stored Procedure Feature Request
+
+* minimal: the extension to SQL consists in introducing a `CREATE FUNCTION` statement; its body would be
+  much like the existing syntax for triggers. The default (and, initially, only) language to be used is SQL.
+
+Example:
+
+```sql
+CREATE FUNCTION product( a number, b number ) RETURNS number LANGUAGE SQL
+  BEGIN
+    SELECT a * b; /* or RETURN a * b; */
+  END;
+END;
+```
+
+> **Notes:**
+> * Type annotations and the `RETURNS` clause should be optional as in `CREATE TABLE` statements, whereas
+>   `LANGUAGE SQL` should initially be made mandatory to avoid premature fixation of a bad default.
+> * Initially at least, functions should not be multi-dispatch (i.e. a name can only appear at most once).
+
+This form is already useful because now you can bundle and name recurrent expressions—anything that can
+appear in a scalar (single-values) `SELECT` statement can be named and collected into libraries.
+
+**Extension** Add to this `RETURNS SETOF $TYPE`, `RETURNS SETOF ROW`, and now you can have table-valued
+functions a.k.a. *parametrized views*!
+
+
+
 
 ## Note on Package Structure
 
