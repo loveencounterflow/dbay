@@ -779,7 +779,12 @@ could conceivably work outside of functions, much like C's preprocessor directiv
 
 **Extension** Add to this `YIELD` for use in table-valued functions.
 
-**Extension** Add to this (function-local) variables.
+**Extension** Add to this (function-local) variables. These are in principle already implemented in the form
+of function parameters.
+
+**Extension** Some support for dynamic SQL that could potentially be much less clunky than what PostgreSQL
+  offers; at first one would only need a syntax to signify safe interpolation as identifier, e.g. `SELECT *
+  FROM @table_name;` or similar.
 
 
 ## Note on Package Structure
@@ -886,6 +891,9 @@ dbay`, both package managers work fine.*</del>
   * because errors are badly located by SQLite, prefer writing many small steps instead of few big ones
     (i.e. prefer `db SQL"do this;"`, `db SQL"do that;"` over `db SQL"do this; do that;"`)
 * **[–]** implement `select * from t` SQL generation
+* **[–]** could the `SQL` string annotation / tagged literal function be syntactically extended to allow
+  simpler interpolation of escaped names? Could we instantiate it with a dictionary of values (implement in
+  [Guy](https://github.com/loveencounterflow/guy))
 
 ## Is Done
 
