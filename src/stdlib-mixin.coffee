@@ -302,6 +302,9 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   dt_now: -> @_dayjs().utc().format @_dt_dbay_timestamp_output_template
 
   #---------------------------------------------------------------------------------------------------------
+  dt_from_iso: ( iso_ts ) -> ( @_dayjs iso_ts ).utc().format @_dt_dbay_timestamp_output_template
+
+  #---------------------------------------------------------------------------------------------------------
   dt_parse: ( dbay_timestamp ) ->
     @types.validate.dbay_dt_timestamp dbay_timestamp
     R = ( @_dayjs dbay_timestamp, @_dt_dbay_timestamp_input_template ).utc()
