@@ -916,6 +916,9 @@ before doing this.
 * **[–]** could the `SQL` string annotation / tagged literal function be syntactically extended to allow
   simpler interpolation of escaped names? Could we instantiate it with a dictionary of values (implement in
   [Guy](https://github.com/loveencounterflow/guy))
+* **[–]** fix `build-sqlite3: Permission denied` bug
+  * occurs when publishing with `pnpm version minor && pnpm publish --access public && git push`
+  * occurs when publishing with `npm version minor && npm publish --access public && git push`
 
 ## Is Done
 
