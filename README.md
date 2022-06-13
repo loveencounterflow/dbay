@@ -918,7 +918,7 @@ before doing this.
   [Guy](https://github.com/loveencounterflow/guy))
 * **[–]** fix `build-sqlite3: Permission denied` bug
   * occurs when publishing with `pnpm version minor && pnpm publish --access public && git push`
-  * occurs when publishing with `npm version minor && npm publish --access public && git push`
+  * does not occur when publishing with `npm version minor && npm publish --access public && git push`
 
 ## Is Done
 
