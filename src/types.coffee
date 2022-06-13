@@ -164,3 +164,7 @@ intertype                 = new Intertype module.exports
   "@isa.text x":                    ( x ) -> @isa.text x
   "( /^\\d{8}-\\d{6}Z$/ ).test x":  ( x ) -> ( /^\d{8}-\d{6}Z$/ ).test x
 
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dba_dt_now_cfg', tests:
+  "@isa.object x":                    ( x ) -> @isa.object x
+

@@ -272,7 +272,7 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
       name:           prefix + 'dt_from_now'
       deterministic:  false
       varargs:        false
-      call:           ( dbay_timestamp ) => @dt_from_now dbay_timestamp
+      call:           ( dbayts ) => @dt_from_now dbayts
 
     #-------------------------------------------------------------------------------------------------------
     return null
@@ -295,23 +295,31 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
   #=========================================================================================================
   # DATETIME (2)
   #---------------------------------------------------------------------------------------------------------
-  dt_from_now: ( dbay_timestamp ) ->
-    return ( @dt_parse dbay_timestamp ).fromNow()
+  dt_from_now: ( dbayts ) ->
+    return ( @dt_parse dbayts ).fromNow()
 
   #---------------------------------------------------------------------------------------------------------
-  dt_now: -> @_dayjs().utc().format @_dt_dbay_timestamp_output_template
+  dt_now: ( cfg ) ->
+    @types.validate.dba_dt_now_cfg ( cfg = { @constructor.C.defaults.dba_dt_now_cfg..., cfg..., } )
+    R = @_dayjs().utc()
+    R = R.subtract cfg.subtract...  if cfg.subtract?
+    R = R.add      cfg.add...       if cfg.add?
+    return R.format @_dt_dbay_timestamp_output_template
 
   #---------------------------------------------------------------------------------------------------------
-  dt_from_iso: ( iso_ts ) -> ( @_dayjs iso_ts ).utc().format @_dt_dbay_timestamp_output_template
+  dt_dbayts_from_isots: ( isots ) -> ( @_dayjs isots ).utc().format @_dt_dbay_timestamp_output_template
 
   #---------------------------------------------------------------------------------------------------------
-  dt_parse: ( dbay_timestamp ) ->
-    @types.validate.dbay_dt_timestamp dbay_timestamp
-    R = ( @_dayjs dbay_timestamp, @_dt_dbay_timestamp_input_template ).utc()
-    throw new E.DBay_invalid_timestamp '^dbay/stdlib@1^', dbay_timestamp unless @types.isa.dbay_dt_valid_dayjs R
+  dt_parse: ( dbayts ) ->
+    @types.validate.dbay_dt_timestamp dbayts
+    R = ( @_dayjs dbayts, @_dt_dbay_timestamp_input_template ).utc()
+    throw new E.DBay_invalid_timestamp '^dbay/stdlib@1^', dbayts unless @types.isa.dbay_dt_valid_dayjs R
     return R
 
   #---------------------------------------------------------------------------------------------------------
-  dt_format: ( dbay_timestamp, P... ) ->
-    R = @dt_parse dbay_timestamp
+  dt_format: ( dbayts, P... ) ->
+    R = @dt_parse dbayts
     return R.format P...
+
+  #---------------------------------------------------------------------------------------------------------
+  dt_isots_from_dbayts: ( dbayts ) -> ( @dt_parse dbayts ).format()

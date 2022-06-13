@@ -415,6 +415,13 @@ db ->
   * **`std_getv()`**
   * **`std_variables()`**
 
+* Dates, Time, Durations, Timestamps
+
+* dt_dbayts_from_isots
+* dt_parse
+* dt_format
+* dt_isots_from_dbayts
+
 #### Use Case for DBay Exceptions and Assertions: Enforcing Invariants
 
 * `std_assert: ( test, message ) ->` throws error if `test` is false(y)
