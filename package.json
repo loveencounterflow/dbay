@@ -1,6 +1,6 @@
 {
   "name": "dbay",
-  "version": "14.11.0",
+  "version": "14.12.0",
   "description": "In-Process, In-Memory & File-Based Relational Data Processing with SQLite, BetterSQLite3",
   "main": "lib/main.js",
   "scripts": {
@@ -24,10 +24,11 @@
     "url": "https://github.com/loveencounterflow/dbay/issues"
   },
   "homepage": "https://github.com/loveencounterflow/dbay#readme",
-"publishConfig": {
+  "publishConfig": {
     "executableFiles": [
       "build-sqlite3"
-    ] },
+    ]
+  },
   "dependencies": {
     "cnd": "9.2.2",
     "dayjs": "^1.11.1",
