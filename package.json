@@ -24,6 +24,10 @@
     "url": "https://github.com/loveencounterflow/dbay/issues"
   },
   "homepage": "https://github.com/loveencounterflow/dbay#readme",
+"publishConfig": {
+    "executableFiles": [
+      "build-sqlite3"
+    ] },
   "dependencies": {
     "cnd": "9.2.2",
     "dayjs": "^1.11.1",
