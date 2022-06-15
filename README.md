@@ -40,8 +40,6 @@
     - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
-  - [Troubleshooting](#troubleshooting)
-    - [Error 'build-sqlite3: Permission denied' when Trying to Upgrade](#error-build-sqlite3-permission-denied-when-trying-to-upgrade)
   - [To Do](#to-do)
   - [Is Done](#is-done)
 
@@ -820,15 +818,6 @@ v16.9.1 on Linux Mint), but it fails using pnpm v6.14.6 with `Unknown options: '
 just want to use DBay as a dependency of their project can both either run `npm install dbay` or `pnpm add
 dbay`, both package managers work fine.*</del>
 
-## Troubleshooting
-
-### Error 'build-sqlite3: Permission denied' when Trying to Upgrade
-
-When trying to upgrade an installed version, installation (with `npm install dbay` or `pnpm add daby`) may
-fail with the message `build-sqlite3: Permission denied`. The deeper reason for this error is unknown,
-however, everything seems to work fine after deleting the `node_modules` folder and running `npm install` or
-`pnpm install` again; you might want to update your `project.json` to include the desired version of `dbay`
-before doing this.
 
 ## To Do
 
@@ -916,9 +905,6 @@ before doing this.
 * **[–]** could the `SQL` string annotation / tagged literal function be syntactically extended to allow
   simpler interpolation of escaped names? Could we instantiate it with a dictionary of values (implement in
   [Guy](https://github.com/loveencounterflow/guy))
-* **[–]** fix `build-sqlite3: Permission denied` bug
-  * occurs when publishing with `pnpm version minor && pnpm publish --access public && git push`
-  * does not occur when publishing with `npm version minor && npm publish --access public && git push`
 
 ## Is Done
 
@@ -945,6 +931,9 @@ before doing this.
   * new format is `YYYYMMDD-HHmmssZ`, e.g. `20220426-171916Z` is the time of this writing
 * **[+]** fix datetime output to use different formats for input, output so output contains literal `Z`
   instead of numerical offset
+* **[+]** fix `build-sqlite3: Permission denied` bug
+  * occurs when publishing with `pnpm version minor && pnpm publish --access public && git push`
+  * does not occur when publishing with `npm version minor && npm publish --access public && git push`
 
 
 
