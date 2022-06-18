@@ -875,6 +875,8 @@ dbay`, both package managers work fine.*</del>
   of multi-schema connections.
 * **[–]** consider to change `call` argument in UDFs to `callee`
 * **[–]** add fields to `std_re_matches()`:
+* **[–]** consider to change construction method of `DBay` instances to returning a proxy over a function
+  (as done in `guy.obj.Strict_proprietor.get()`)
 
   ```coffee
     db.create_table_function
