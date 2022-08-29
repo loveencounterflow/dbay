@@ -907,6 +907,16 @@ dbay`, both package managers work fine.*</del>
 * **[–]** could the `SQL` string annotation / tagged literal function be syntactically extended to allow
   simpler interpolation of escaped names? Could we instantiate it with a dictionary of values (implement in
   [Guy](https://github.com/loveencounterflow/guy))
+* **[–]** implement 'pseudo-functions' / macros:
+  * no internal logic (for now), just function composition
+  * use common prefix e.g. `@` as in `@f := ( a, b ) -> g( a, @h( b ) );` (define function `f()` with two
+    parameters, calls `g()`, `@h()`, where `g()` is a built-in SQLite function and `@h()` is another macro)
+  * use re-writing such that definitions are removed / turned into comments, calls are resolved in-place.
+    Could even consider to implement user-defined datatypes as in `create table d ( name @nonempty_text,
+    email @email );` where data type annotations are replaced with their basic types (both `text` here) and
+    the statement is amended with `check` clauses.
+    * might want to split this out into a separate `dbay-sql` project
+    * consider to use https://github.com/Rich-Harris/code-red for parsing arguments part
 
 ## Is Done
 
