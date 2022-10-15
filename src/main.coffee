@@ -17,7 +17,6 @@ echo                      = CND.echo.bind CND
 PATH                      = require 'path'
 FS                        = require 'fs'
 types                     = require './types'
-SQL                       = String.raw
 guy                       = require 'guy'
 new_bsqlt3_connection     = require 'better-sqlite3'
 #...........................................................................................................
