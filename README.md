@@ -702,8 +702,8 @@ so anything may change without notice.
 
 The working principle of SQLx is to enable users to declare more or less arbitrary character sequences and
 their replacements, together with a simple-minded parsing of formal parameters and actual arguments for
-UDF-like functionality. An example: imagine one has to use the expression $( a^b )b^-1$ over and
-over in SQL queries. With SQLx, this expression can be declared like this:
+UDF-like functionality. An example: imagine one has to use the expression ${a^b\over b}$ over and
+over in SQL queries. With SQLx, one can declare a macro like this:
 
 ```coffee
 db.declare SQL"""@secret_power( @a, @b ) = power( @a, @b ) / @b;"""
