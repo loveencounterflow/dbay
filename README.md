@@ -711,7 +711,25 @@ db.declare SQL"""@secret_power( @a, @b ) = power( @a, @b ) / @b;"""
 
 The left-hand side, `@secret_power( @a, @b )`, declares the name (`@secret_power`) and the parameters (`@a`
 and `@b`) for the macro; the right-hand side declares the parametrized 'body' of the macro, `power( @a, @b )
-/ @b` (where `power()` is a standard SQLite math function).
+/ @b` (where `power()` is a standard SQLite math function). In order to use the macro, write its name and
+the parentheses like in the declaration, substituting values or other expressions for the parameters:
+
+```coffee
+SQL"""select @secret_power( 3, 2 );"""
+```
+
+The macro can then be 'resolved':
+
+```coffee
+db.resolve SQL"""select @secret_power( 3, 2 );"""
+```
+
+which returns the same string, with the macro name and the arguments replaced by the body of the macro and
+the values:
+
+```coffee
+'select power( 3, 2 ) / 2;'
+```
 
 ------------------------------------------------------------------------------------------------------------
 
