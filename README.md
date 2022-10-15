@@ -731,6 +731,40 @@ the values:
 'select power( 3, 2 ) / 2;'
 ```
 
+No syntax checking is performed of any kind, the only requirement being that the parenthized arguments do
+not contain any parentheses themselves (a restriction that can hopefully be lifted soon) and that the
+resulting SQL must, of course, get accepted by the SQLite parser.
+
+Two more examples:
+
+```coffee
+db.declare SQL"""@max( @a, @b ) = case when @a > @b then @a else @b end;"""
+sqlx  = SQL"""select @max( 3, 2 ) as the_bigger_the_better;"""
+sql   = db.resolve sqlx
+```
+
+results in
+
+```coffee
+'select case when 3 > 2 then 3 else 2 end as the_bigger_the_better;'
+```
+
+and
+
+```coffee
+db.declare SQL"""@intnn() = integer not null;"""
+sqlx  = SQL"""
+  create table numbers (
+    n @intnn() primary key );"""
+```
+
+gives
+
+```coffee
+create table numbers (
+  n integer not null primary key );
+```
+
 ------------------------------------------------------------------------------------------------------------
 
 ## Notes on User Defined Functions (UDFs)
