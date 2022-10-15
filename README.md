@@ -36,8 +36,8 @@
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
+  - [SQLx: Function-like Macros for SQL](#sqlx-function-like-macros-for-sql)
   - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs)
-  - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs-1)
     - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -693,7 +693,7 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 ------------------------------------------------------------------------------------------------------------
 
-## Notes on User Defined Functions (UDFs)
+## SQLx: Function-like Macros for SQL
 
 Because User-Defined Functions have several shortcomings in SQLite (as discussed under [*Notes on User
 Defined Functions (UDFs)*](#notes-on-user-defined-functions-udfs), below), an alternative mechanism
@@ -702,9 +702,16 @@ so anything may change without notice.
 
 The working principle of SQLx is to enable users to declare more or less arbitrary character sequences and
 their replacements, together with a simple-minded parsing of formal parameters and actual arguments for
-UDF-like functionality. An example: imagine one use the expression $\over{ ( a^b ) }{ b }$
+UDF-like functionality. An example: imagine one has to use the expression $\frac{ ( a^b ) }{ b }$ over and
+over in SQL queries. With SQLx, this expression can be declared like this:
 
+```coffee
+db.declare SQL"""@secret_power( @a, @b ) = power( @a, @b ) / @b;"""
+```
 
+The left-hand side, `@secret_power( @a, @b )`, declares the name (`@secret_power`) and the parameters (`@a`
+and `@b`) for the macro; the right-hand side declares the parametrized 'body' of the macro, `power( @a, @b )
+/ @b` (where `power()` is a standard SQLite math function).
 
 ------------------------------------------------------------------------------------------------------------
 
