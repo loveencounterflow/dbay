@@ -37,6 +37,7 @@
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
   - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs)
+  - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs-1)
     - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
   - [Note on Package Structure](#note-on-package-structure)
     - [`better-sqlite3` an 'Unsaved' Dependency](#better-sqlite3-an-unsaved-dependency)
@@ -694,6 +695,21 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 ## Notes on User Defined Functions (UDFs)
 
+Because User-Defined Functions have several shortcomings in SQLite (as discussed under [*Notes on User
+Defined Functions (UDFs)*](#notes-on-user-defined-functions-udfs), below), an alternative mechanism
+code-named 'SQLx' has been conceived to work around those issues. SQLx is presently in its pre-alpha stage
+so anything may change without notice.
+
+The working principle of SQLx is to enable users to declare more or less arbitrary character sequences and
+their replacements, together with a simple-minded parsing of formal parameters and actual arguments for
+UDF-like functionality. An example: imagine one use the expression $\over{ ( a^b ) }{ b }$
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+## Notes on User Defined Functions (UDFs)
+
 * SQLite principally differs from client/server RDBMSes in that it allows User Defined Functions (UDFs)
   only on the DB connection of the host application
 
@@ -917,6 +933,10 @@ dbay`, both package managers work fine.*</del>
     the statement is amended with `check` clauses.
     * might want to split this out into a separate `dbay-sql` project
     * consider to use https://github.com/Rich-Harris/code-red for parsing arguments part
+    * decide whether declarations made within an aborted transaction should be undone as well (probably:
+      yes)
+* **[–]** would it be possible to keep the application code in its own tables? one could then ship the
+  application by sending a single DB file and the instruction to run it using a standard DBay installation
 
 ## Is Done
 
