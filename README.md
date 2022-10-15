@@ -702,7 +702,7 @@ so anything may change without notice.
 
 The working principle of SQLx is to enable users to declare more or less arbitrary character sequences and
 their replacements, together with a simple-minded parsing of formal parameters and actual arguments for
-UDF-like functionality. An example: imagine one has to use the expression $\frac{ ( a^b ) }{ b }$ over and
+UDF-like functionality. An example: imagine one has to use the expression $ ( a^b )  b^-1 $ over and
 over in SQL queries. With SQLx, this expression can be declared like this:
 
 ```coffee
