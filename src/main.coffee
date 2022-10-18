@@ -30,6 +30,7 @@ H                         = require './helpers'
 { Random                } = require './random'
 { DBay_udf              } = require './udf-mixin'
 { Sql                   } = require './sql'
+{ DBay_sqlx }             = require 'dbay-sql-macros'
 
 
 #===========================================================================================================
@@ -167,6 +168,7 @@ class @DBay extends   \
     @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
     unless @constructor._skip_sqlt
       guy.props.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
+    guy.props.hide @_me, 'macros', new DBay_sqlx()
     @_compile_sql?()
     ### make `alt` an on-demand clone of present instance: ###
     guy.props.def_oneoff @_me, 'alt', { enumerable: false, }, => new @constructor @_me.cfg
