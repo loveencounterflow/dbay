@@ -22,16 +22,16 @@ types                     = require './types'
   size_of
   type_of }               = types
 E                         = require './errors'
+GUY                       = require 'guy'
 
 
 #===========================================================================================================
 class @Sql
 
-  # #---------------------------------------------------------------------------------------------------------
-  # constructor: ( dba ) ->
-  #   # super()
-  #   @cfg    = cfg ### TAINT freeze ###
-  #   return undefined
+  #---------------------------------------------------------------------------------------------------------
+  constructor: ( hub ) ->
+    GUY.props.hide @, 'hub',    hub
+    return undefined
 
   #---------------------------------------------------------------------------------------------------------
   SQL: String.raw
@@ -73,3 +73,5 @@ class @Sql
         when 'V'      then return @V value
       throw new E.DBay_interpolation_format_unknown '^dbay/sql@3^', format
   _interpolation_pattern: /(?<opener>[$?])(?<format>.?):(?<name>\w*)/g
+
+

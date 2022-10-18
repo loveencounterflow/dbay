@@ -151,7 +151,7 @@ class @DBay extends   \
     super '...P', 'return this._me.do(...P)'
     @_me        = @bind @
     @_me.state  = guy.lft.freeze {}
-    @_me.sql    = new Sql()
+    @_me.sql    = new Sql @
     guy.props.hide @_me, 'rnd',  new Random { seed: cfg?.random_seed ? null, delta: cfg?.random_delta ? null, }
     @_$query_initialize?()
     @_$ctx_initialize?()
