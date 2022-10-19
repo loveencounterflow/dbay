@@ -36,7 +36,7 @@
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
-  - [SQLx: Function-like Macros for SQL](#sqlx-function-like-macros-for-sql)
+  - [Macros for SQL](#macros-for-sql)
   - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs)
     - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
   - [Note on Package Structure](#note-on-package-structure)
@@ -693,77 +693,59 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 
 ------------------------------------------------------------------------------------------------------------
 
-## SQLx: Function-like Macros for SQL
+## Macros for SQL
 
 Because User-Defined Functions have several shortcomings in SQLite (as discussed under [*Notes on User
-Defined Functions (UDFs)*](#notes-on-user-defined-functions-udfs), below), an alternative mechanism
-code-named 'SQLx' has been conceived to work around those issues. SQLx is presently in its pre-alpha stage
-so anything may change without notice.
-
-The working principle of SQLx is to enable users to declare more or less arbitrary character sequences and
-their replacements, together with a simple-minded parsing of formal parameters and actual arguments for
-UDF-like functionality. An example: imagine one has to use the expression ${a^b\over b}$ over and
-over in SQL queries. With SQLx, one can declare a macro like this:
+Defined Functions (UDFs)*](#notes-on-user-defined-functions-udfs), below), an alternative mechanism named
+[`dbay-sql-macros`](https://github.com/loveencounterflow/dbay-sql-macros) has been conceived to work around
+those issues. It has been integrated into DBay and is accessible via two methods, `declare()` and
+`resolve()`, under the `macros` key of a `db` instance. Furthermore, when constructing the `DBay` instance,
+one can pass in `{ macros: true, }` to get implicit macro resolution. An example:
 
 ```coffee
-db.declare SQL"""@secret_power( @a, @b ) = power( @a, @b ) / @b;"""
+{ DBay }          = require 'dbay'
+{ SQL  }          = DBay
+db                = new DBay { macros: true, }
+#.........................................................................................................
+### NOTE exact syntax subject to change; for now, this works: ###
+db.macros.declare SQL"""@secret_power( @a, @b ) = power( @a, @b ) / @b;"""
+#.........................................................................................................
+result  = db.all_rows SQL"""select @secret_power( 3, 2 ) as p;"""
+# [ { p: 4.5 } ]
 ```
 
-The left-hand side, `@secret_power( @a, @b )`, declares the name (`@secret_power`) and the parameters (`@a`
-and `@b`) for the macro; the right-hand side declares the parametrized 'body' of the macro, `power( @a, @b )
-/ @b` (where `power()` is a standard SQLite math function). In order to use the macro, write its name and
-the parentheses like in the declaration, substituting values or other expressions for the parameters:
+In the above, we have declared a function-like macro named `@secret_power()` that accepts two arguments,
+`@a` and `@b`. To the right of the equals sign we see `power( @a, @b ) / @b;` which is, except for the
+trailing semicolon, the 'body' of the macro, which is what the macro, when used in an SQL query, will
+'resolve' or 'expand' to, with values interpolated to replace the parameters in the body. Schematically and
+step by step:
 
-```coffee
-SQL"""select @secret_power( 3, 2 );"""
+```sql
+select @secret_power( 3, 2 ) as p; -- original query w/ macro
+--     |-------------------|       -- only this stretch of the query is affected
+select power( @a, @b ) / @b  as p; -- the query with the macro body inserted
+select power(  3, @b ) / @b  as p; -- the query with the macro body inserted
+select power(  3,  2 ) / 2   as p; -- the query with the macro body inserted
+--     |-------------------|
 ```
 
-The macro can then be 'resolved':
+Notes:
 
-```coffee
-db.resolve SQL"""select @secret_power( 3, 2 );"""
-```
+* The exact syntax for macro declarations is still under consideration and may change.
+* In particular, one wants to allow multiple statements to appear in macros.
+* As it stands, everything to the right hand side of the equals sign minus any trailing semicolon becomes
+  part of the body.
+* The underlying SQLite DB never gets to see the declarations, only the resolved SQL.
+* Therefore, the DB file remains valid for sufficiently compatible software like the SQLite Command Line
+  Tool.
+* Some effort has been put into parsing parameters and arguments and
+* Parameters and arguments must always match in length. Only macros with constant arities are currently
+  supported.
+* It is possible to declare and use macros without the parentheses.
+* A macro that has been declared with empty parentheses may be called with empty or without parentheses, and
+  vice versa.
 
-which returns the same string, with the macro name and the arguments replaced by the body of the macro and
-the values:
 
-```coffee
-'select power( 3, 2 ) / 2;'
-```
-
-No syntax checking is performed of any kind, the only requirement being that the parenthized arguments do
-not contain any parentheses themselves (a restriction that can hopefully be lifted soon) and that the
-resulting SQL must, of course, get accepted by the SQLite parser.
-
-Two more examples:
-
-```coffee
-db.declare SQL"""@max( @a, @b ) = case when @a > @b then @a else @b end;"""
-sqlx  = SQL"""select @max( 3, 2 ) as the_bigger_the_better;"""
-sql   = db.resolve sqlx
-```
-
-results in
-
-```coffee
-'select case when 3 > 2 then 3 else 2 end as the_bigger_the_better;'
-```
-
-and
-
-```coffee
-db.declare SQL"""@intnn() = integer not null;"""
-sqlx  = SQL"""
-  create table numbers (
-    n @intnn() primary key );"""
-```
-
-gives
-
-```coffee
-create table numbers (
-  n integer not null primary key );
-```
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -907,8 +889,6 @@ dbay`, both package managers work fine.*</del>
     maybe one could even continuously mirror a RAM DB on disk to get a near-synchronous copy, obliviating
     the necessity to explicitly call `db.save()`. See
     https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/threads.md
-  * **[–]** implementing **macros** so one could write eg `select * from foo( x ) as d;` to get `select *
-    from ( select a, b, c from blah order by 1 ) as d` (i.e. inline expansion)
   * **[–]** Observe that, seemingly, only *table-valued* UDFs hang while with shared-cache we already *can*
     issue `select`s from inside UDFs, so maybe there's a teeny, fixable difference between how both are
     implemented that leads to the undesirable behavior
@@ -982,18 +962,6 @@ dbay`, both package managers work fine.*</del>
 * **[–]** could the `SQL` string annotation / tagged literal function be syntactically extended to allow
   simpler interpolation of escaped names? Could we instantiate it with a dictionary of values (implement in
   [Guy](https://github.com/loveencounterflow/guy))
-* **[–]** implement 'pseudo-functions' / macros:
-  * no internal logic (for now), just function composition
-  * use common prefix e.g. `@` as in `@f := ( a, b ) -> g( a, @h( b ) );` (define function `f()` with two
-    parameters, calls `g()`, `@h()`, where `g()` is a built-in SQLite function and `@h()` is another macro)
-  * use re-writing such that definitions are removed / turned into comments, calls are resolved in-place.
-    Could even consider to implement user-defined datatypes as in `create table d ( name @nonempty_text,
-    email @email );` where data type annotations are replaced with their basic types (both `text` here) and
-    the statement is amended with `check` clauses.
-    * might want to split this out into a separate `dbay-sql` project
-    * consider to use https://github.com/Rich-Harris/code-red for parsing arguments part
-    * decide whether declarations made within an aborted transaction should be undone as well (probably:
-      yes)
 * **[–]** would it be possible to keep the application code in its own tables? one could then ship the
   application by sending a single DB file and the instruction to run it using a standard DBay installation
 
@@ -1025,6 +993,21 @@ dbay`, both package managers work fine.*</del>
 * **[+]** fix `build-sqlite3: Permission denied` bug
   * occurs when publishing with `pnpm version minor && pnpm publish --access public && git push`
   * does not occur when publishing with `npm version minor && npm publish --access public && git push`
+* **[+]** implement **macros** so one could write eg `select * from foo( x ) as d;` to get `select *
+  from ( select a, b, c from blah order by 1 ) as d` (i.e. inline expansion)
+  * done in separate project [`dbay-sql-macros`](https://github.com/loveencounterflow/dbay-sql-macros)
+  * **[+]** implement 'pseudo-functions' / macros:
+    * no internal logic (for now), just function composition
+    * use common prefix e.g. `@` as in `@f := ( a, b ) -> g( a, @h( b ) );` (define function `f()` with two
+      parameters, calls `g()`, `@h()`, where `g()` is a built-in SQLite function and `@h()` is another macro)
+    * use re-writing such that definitions are removed / turned into comments, calls are resolved in-place.
+      Could even consider to implement user-defined datatypes as in `create table d ( name @nonempty_text,
+      email @email );` where data type annotations are replaced with their basic types (both `text` here) and
+      the statement is amended with `check` clauses.
+      * might want to split this out into a separate `dbay-sql` project
+      * consider to use https://github.com/Rich-Harris/code-red for parsing arguments part
+      * decide whether declarations made within an aborted transaction should be undone as well (probably:
+        yes)
 
 
 
