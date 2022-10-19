@@ -37,7 +37,7 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   _query_run_or_execute: ( sql, P... ) ->
-    return @query sql, P... if P.length > 0
+    return @query   sql, P... if P.length > 0
     return @execute sql, P... if @_statements[ sql ] is @constructor.C.symbols.execute
     try
       statement = @_statements[ sql ] = @sqlt1.prepare sql
