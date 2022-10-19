@@ -66,6 +66,8 @@ class @DBay extends   \
         path:           null
         random_seed:    null
         random_delta:   null
+        #...................................................................................................
+        macros:         false
         # create_stdlib:  true
       #.....................................................................................................
       dbay_with_transaction_cfg:

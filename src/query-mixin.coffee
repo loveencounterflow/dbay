@@ -40,7 +40,7 @@ E                         = require './errors'
     return @query   sql, P... if P.length > 0
     return @execute sql, P... if @_statements[ sql ] is @constructor.C.symbols.execute
     try
-      statement = @_statements[ sql ] = @sqlt1.prepare sql
+      statement = @prepare sql
     catch error
       throw error unless ( error.name is 'RangeError' ) \
         and ( error.message is "The supplied SQL string contains more than one statement" )
@@ -50,17 +50,17 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   query: ( sql, P... ) ->
-    statement = if @types.isa.statement sql then sql else ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    statement = if @types.isa.statement sql then sql else @prepare sql
     return if statement.reader then ( statement.iterate P... ) else ( statement.run P... )
 
   #---------------------------------------------------------------------------------------------------------
   walk: ( sql, P... ) ->
-    statement = if @types.isa.statement sql then sql else ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    statement = if @types.isa.statement sql then sql else @prepare sql
     return statement.iterate P...
 
   #---------------------------------------------------------------------------------------------------------
   all_rows: ( sql, P... ) ->
-    statement = if @types.isa.statement sql then sql else ( @_statements[ sql ] ?= @sqlt1.prepare sql )
+    statement = if @types.isa.statement sql then sql else @prepare sql
     return statement.all P...
 
   #---------------------------------------------------------------------------------------------------------
@@ -112,6 +112,7 @@ E                         = require './errors'
 
   #---------------------------------------------------------------------------------------------------------
   prepare: ( sql ) ->
+    sql = @macros.resolve sql if @cfg.macros
     return ( @_statements[ sql ] ?= @sqlt1.prepare sql )
 
   #---------------------------------------------------------------------------------------------------------

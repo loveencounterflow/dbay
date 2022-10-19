@@ -39,6 +39,7 @@ intertype                 = new Intertype module.exports
   # "@isa.boolean x.create_stdlib":             ( x ) -> @isa.boolean x.create_stdlib
   "x.random_seed  may be set":                ( x ) -> true
   "x.random_delta may be set":                ( x ) -> true
+  "@isa.boolean x.macros":                    ( x ) -> @isa.boolean x.macros
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_with_transaction_cfg', tests:
