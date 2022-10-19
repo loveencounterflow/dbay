@@ -731,6 +731,8 @@ select power(  3,  2 ) / 2   as p; -- the query with the macro body inserted
 
 Notes:
 
+* The use of the `@` (at-sign) in the above is purely a convention to avoid name clashes with existing
+  SQLite keywords and identifiers (`@` is not allowed by SQLite in identifiers, so should be safe).
 * The exact syntax for macro declarations is still under consideration and may change.
 * In particular, one wants to allow multiple statements to appear in macros.
 * As it stands, everything to the right hand side of the equals sign minus any trailing semicolon becomes
@@ -749,7 +751,16 @@ Notes:
 * It is possible to declare and use macros without the parentheses.
 * A macro that has been declared with empty parentheses may be called with empty or without parentheses, and
   vice versa.
+* Macros are resolved recursively in way that allows to use macros in macro bodies and macro calls.
 
+```
+db.macros.declare SQL"""@add( @a, @b ) = ( @a + @b );"""
+db.macros.declare SQL"""@mul( @a, @b ) = ( @a * @b );"""
+#.........................................................................................................
+do ->
+  probe   = SQL"""select @add( @mul( @add( 1, 2 ), 3 ), @add( 4, @mul( 5, 6 ) ) ) as p;"""
+  matcher = 'select ( ( ( 1 + 2 ) * 3 ) + ( 4 + ( 5 * 6 ) ) ) as p;'
+```
 
 ------------------------------------------------------------------------------------------------------------
 
