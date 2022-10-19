@@ -738,13 +738,17 @@ Notes:
 * The underlying SQLite DB never gets to see the declarations, only the resolved SQL.
 * Therefore, the DB file remains valid for sufficiently compatible software like the SQLite Command Line
   Tool.
-* Some effort has been put into parsing parameters and arguments and
+* Some effort has been put into parsing parameters and arguments and parentheses pairs. As a happy result,
+  it is possible to put unpaired parentheses into string literals without confusing the mechanism, and to
+  nest function and macro calls, so this is legal and will resolve correctly: `select @secret_power( foo( x
+  ), @bar( y, z, ')' ) )`. However the
+  [`dbay-sql-lexer`](https://github.com/loveencounterflow/dbay-sql-lexer) is still in its incipient stage so
+  hiccups can not be ruled out.
 * Parameters and arguments must always match in length. Only macros with constant arities are currently
   supported.
 * It is possible to declare and use macros without the parentheses.
 * A macro that has been declared with empty parentheses may be called with empty or without parentheses, and
   vice versa.
-
 
 
 ------------------------------------------------------------------------------------------------------------
