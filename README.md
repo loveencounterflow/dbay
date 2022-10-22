@@ -734,8 +734,12 @@ For more details, head over to the [*documentation for
 * but the downside of connection-defined UDFs is that SQLite DBs created with UDFs will break when the
   environment changes (e.g. when openening a second connection to the same DB without recreating all UDFs or
   openening the DB with other tools such as the `sqlite3` command line tool); an abortive error will occur
-  as soon as any function is enountered (one may be able to perform some operations that do not cause a
-  function to be called)
+  as soon as any statement (such as selecting from a view whose definition includes a call to a UDF) is
+  encountered. While one may be able to perform some operations that do *not* cause a function to be called,
+  it is not a hallmark of a safe operations regime when things work sometimes without any warning only to
+  break under certain conditions. I'm not aware of a way to conveniently check an SQLite DB for the use or
+  lack of use of UDFs so apparently the best thing one can do is proofread the DDL statements and/or do
+  `select`s from each relation.
 
 * this means that a DB created with UDFs will not be amenable for *any* of the helpful tools that exist
   (like ER diagrammers and so on)
