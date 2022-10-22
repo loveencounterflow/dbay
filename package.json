@@ -32,7 +32,7 @@
   "dependencies": {
     "cnd": "9.2.2",
     "dayjs": "^1.11.1",
-    "dbay-sql-macros": "^0.0.2",
+    "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
     "guy": "4.0.0",
     "intertype": "7.7.0"
