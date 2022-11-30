@@ -5,7 +5,8 @@ specifiers:
   dayjs: ^1.11.1
   dbay-sql-macros: 0.1.0
   exit-hook: ^2.2.1
-  guy: 4.0.0
+  guy: 12.0.0
+  guy-legacy: npm:guy@4
   intertype: 7.7.0
 
 dependencies:
@@ -13,7 +14,8 @@ dependencies:
   dayjs: 1.11.1
   dbay-sql-macros: 0.1.0
   exit-hook: 2.2.1
-  guy: 4.0.0
+  guy: 12.0.0
+  guy-legacy: /guy/4.2.0
   intertype: 7.7.0
 
 packages:
@@ -109,8 +111,21 @@ packages:
       letsfreezethat: 3.1.0
     dev: false
 
-  /guy/4.0.0:
-    resolution: {integrity: sha512-unob1iMEmXrotWQYMeW/uOAJS4DXv0C5njlE1JboIwsc9wwd3goXN4ICdGxFw1x61WGyRH4lNWTRltj5o5xfBA==}
+  /guy/12.0.0:
+    resolution: {integrity: sha512-r/y6jCVEeg+QlXZaJEHW+Z5ByWyQivGzLMMDkErjbFRepVh0ssBSoVGj+Vn4NgmGhGlBjmNfAWhsifzHhl58gw==}
+    peerDependencies:
+      acorn: ^8.7.1
+      acorn-loose: ^8.3.0
+      acorn-walk: ^8.2.0
+      astring: ^1.8.3
+      tmp: ^0.2.1
+    dependencies:
+      intertype-legacy: 7.7.1
+      letsfreezethat: 3.1.0
+    dev: false
+
+  /guy/4.2.0:
+    resolution: {integrity: sha512-ppWljP+64o2qH0K1ia3Px9dBPftO4ILN23J9hLHQH+AcGfoBjGd2HDQGAc8rOx3RIyBiwObt8bFJiu0zXPtXmw==}
     dependencies:
       cnd: 9.2.2
       intertype: 7.6.7
