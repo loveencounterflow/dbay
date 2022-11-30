@@ -3,22 +3,9 @@
 'use strict'
 
 ############################################################################################################
-CND                       = require 'cnd'
-rpr                       = CND.rpr
-badge                     = 'DBAY/MIXIN/CTX'
-debug                     = CND.get_logger 'debug',     badge
-warn                      = CND.get_logger 'warn',      badge
-info                      = CND.get_logger 'info',      badge
-urge                      = CND.get_logger 'urge',      badge
-help                      = CND.get_logger 'help',      badge
-whisper                   = CND.get_logger 'whisper',   badge
-echo                      = CND.echo.bind CND
-#...........................................................................................................
-PATH                      = require 'path'
-FS                        = require 'fs'
 E                         = require './errors'
 SQL                       = String.raw
-guy                       = require 'guy'
+GUY                       = require 'guy'
 
 
 #===========================================================================================================
@@ -28,7 +15,7 @@ guy                       = require 'guy'
 
   #---------------------------------------------------------------------------------------------------------
   _$ctx_initialize: ->
-    @_me.state = guy.lft.lets @_me.state, ( d ) -> d.in_unsafe_mode = false
+    @_me.state = GUY.lft.lets @_me.state, ( d ) -> d.in_unsafe_mode = false
     return null
 
   #=========================================================================================================
@@ -59,7 +46,7 @@ guy                       = require 'guy'
   set_unsafe_mode: ( onoff ) ->
     @types.validate.boolean onoff
     @sqlt1.unsafeMode onoff
-    @state = guy.lft.lets @state, ( d ) -> d.in_unsafe_mode = onoff
+    @state = GUY.lft.lets @state, ( d ) -> d.in_unsafe_mode = onoff
     return null
 
 

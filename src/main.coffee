@@ -3,16 +3,20 @@
 
 
 ############################################################################################################
-CND                       = require 'cnd'
-rpr                       = CND.rpr
-badge                     = 'DBAY/MAIN'
-debug                     = CND.get_logger 'debug',     badge
-warn                      = CND.get_logger 'warn',      badge
-info                      = CND.get_logger 'info',      badge
-urge                      = CND.get_logger 'urge',      badge
-help                      = CND.get_logger 'help',      badge
-whisper                   = CND.get_logger 'whisper',   badge
-echo                      = CND.echo.bind CND
+GUY                       = require 'guy'
+{ alert
+  debug
+  help
+  info
+  plain
+  praise
+  urge
+  warn
+  whisper }               = GUY.trm.get_loggers 'DBAY'
+{ rpr
+  inspect
+  echo
+  log     }               = GUY.trm
 #...........................................................................................................
 PATH                      = require 'path'
 FS                        = require 'fs'
@@ -31,7 +35,7 @@ H                         = require './helpers'
 { DBay_udf              } = require './udf-mixin'
 { Sql                   } = require './sql'
 { DBay_sqlx }             = require 'dbay-sql-macros'
-
+GUY_LEGACY = require 'guy-legacy'
 
 #===========================================================================================================
 class @DBay extends   \
@@ -121,7 +125,7 @@ class @DBay extends   \
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->
     ### Produce a configuration object for `better-sqlite3` from `me.cfg`. ###
-    R                = guy.obj.pluck_with_fallback me.cfg, null, 'readonly', 'timeout'
+    R                = guy.props.pluck_with_fallback me.cfg, null, 'readonly', 'timeout'
     R.fileMustExist  = not me.cfg.create; delete me.cfg.create
     return R
 
@@ -144,8 +148,8 @@ class @DBay extends   \
     ### called from constructor via `guy.cfg.configure_with_types()` ###
     me.cfg        = @cast_constructor_cfg me
     me.sqlt_cfg   = @cast_sqlt_cfg        me
-    me.cfg        = guy.lft.freeze guy.obj.omit_nullish me.cfg
-    me.sqlt_cfg   = guy.lft.freeze guy.obj.omit_nullish me.sqlt_cfg
+    me.cfg        = guy.lft.freeze guy.props.omit_nullish me.cfg
+    me.sqlt_cfg   = guy.lft.freeze guy.props.omit_nullish me.sqlt_cfg
     me.types.validate.constructor_cfg me.cfg
     return null
 
@@ -163,7 +167,7 @@ class @DBay extends   \
     @_$sqlgen_initialize?()
     @_$udf_initialize?()
     @_$trash_initialize?()
-    guy.cfg.configure_with_types @_me, cfg, types
+    GUY_LEGACY.cfg.configure_with_types @_me, cfg, types
     #.......................................................................................................
     guy.props.hide @_me, '_dbs', {}
     guy.props.hide @_me, 'E', E

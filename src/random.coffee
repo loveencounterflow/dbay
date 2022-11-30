@@ -3,13 +3,24 @@
 
 
 ############################################################################################################
-CND                       = require 'cnd'
-rpr                       = CND.rpr
-badge                     = 'DBAY/MIXIN/RANDOM'
-debug                     = CND.get_logger 'debug',     badge
+GUY                       = require 'guy'
+{ alert
+  debug
+  help
+  info
+  plain
+  praise
+  urge
+  warn
+  whisper }               = GUY.trm.get_loggers 'DBAY/RANDOM'
+{ rpr
+  inspect
+  echo
+  log     }               = GUY.trm
 #...........................................................................................................
 guy                       = require 'guy'
 types                     = new ( require 'intertype' ).Intertype()
+CND                       = require 'cnd'
 
 
 #===========================================================================================================

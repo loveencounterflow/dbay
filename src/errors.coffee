@@ -2,16 +2,7 @@
 
 
 ############################################################################################################
-CND                       = require 'cnd'
-rpr                       = CND.rpr
-badge                     = 'DBAY/ERRORS'
-# debug                     = CND.get_logger 'debug',     badge
-# warn                      = CND.get_logger 'warn',      badge
-# info                      = CND.get_logger 'info',      badge
-# urge                      = CND.get_logger 'urge',      badge
-# help                      = CND.get_logger 'help',      badge
-# whisper                   = CND.get_logger 'whisper',   badge
-# echo                      = CND.echo.bind CND
+{ rpr }                   = ( require 'guy' ).trm
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -62,15 +53,15 @@ class @DBay_sqlite_too_many_dbs       extends @DBay_error
 class @DBay_sqlite_error              extends @DBay_error
   constructor: ( ref, error )       -> super ref, "#{error.code ? 'SQLite error'}: #{error.message}"
 class @DBay_no_arguments_allowed      extends @DBay_error
-  constructor: ( ref, name, arity ) -> super ref, "method #{name} doesn't take arguments, got #{arity}"
+  constructor: ( ref, name, arity ) -> super ref, "method #{rpr name} doesn't take arguments, got #{arity}"
 class @DBay_argument_not_allowed      extends @DBay_error
-  constructor: ( ref, name, value ) -> super ref, "argument #{name} not allowed, got #{rpr value}"
+  constructor: ( ref, name, value ) -> super ref, "argument #{rpr name} not allowed, got #{rpr value}"
 class @DBay_argument_missing          extends @DBay_error
-  constructor: ( ref, name )        -> super ref, "expected value for #{name}, got nothing"
+  constructor: ( ref, name )        -> super ref, "expected value for #{rpr name}, got nothing"
 class @DBay_wrong_type                extends @DBay_error
   constructor: ( ref, types, type ) -> super ref, "expected #{types}, got a #{type}"
 class @DBay_wrong_arity               extends @DBay_error
-  constructor: ( ref, name, min, max, found ) -> super ref, "#{name} expected between #{min} and #{max} arguments, got #{found}"
+  constructor: ( ref, name, min, max, found ) -> super ref, "#{rpr name} expected between #{min} and #{max} arguments, got #{found}"
 class @DBay_empty_csv                 extends @DBay_error
   constructor: ( ref, path )        -> super ref, "no CSV records found in file #{path}"
 class @DBay_interpolation_format_unknown extends @DBay_error

@@ -3,21 +3,24 @@
 
 
 ############################################################################################################
-CND                       = require 'cnd'
-rpr                       = CND.rpr
-badge                     = 'DBAY/MAIN'
-debug                     = CND.get_logger 'debug',     badge
-warn                      = CND.get_logger 'warn',      badge
-info                      = CND.get_logger 'info',      badge
-urge                      = CND.get_logger 'urge',      badge
-help                      = CND.get_logger 'help',      badge
-whisper                   = CND.get_logger 'whisper',   badge
-echo                      = CND.echo.bind CND
+GUY                       = require 'guy'
+{ alert
+  debug
+  help
+  info
+  plain
+  praise
+  urge
+  warn
+  whisper }               = GUY.trm.get_loggers 'DBAY/HELPERS'
+{ rpr
+  inspect
+  echo
+  log     }               = GUY.trm
 #...........................................................................................................
 PATH                      = require 'path'
 FS                        = require 'fs'
 shm_path                  = '/dev/shm'
-guy                       = require 'guy'
 
 
 #-----------------------------------------------------------------------------------------------------------
