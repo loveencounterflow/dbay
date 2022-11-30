@@ -20,7 +20,6 @@ GUY                       = require 'guy'
 #...........................................................................................................
 guy                       = require 'guy'
 types                     = new ( require 'intertype' ).Intertype()
-CND                       = require 'cnd'
 
 
 #===========================================================================================================
@@ -58,9 +57,9 @@ class @Random
     if @cfg.seed? or @cfg.delta?
       seed                = @cfg.seed  ? 12.34
       delta               = @cfg.delta ? 1
-      @get_random_integer = CND.get_rnd_int seed, delta
+      @get_random_integer = GUY.rnd.get_rnd_int seed, delta
     else
-      @get_random_integer = CND.random_integer.bind CND
+      @get_random_integer = GUY.rnd.random_integer.bind GUY.rnd
     return undefined
 
   #---------------------------------------------------------------------------------------------------------

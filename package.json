@@ -30,7 +30,6 @@
     ]
   },
   "dependencies": {
-    "cnd": "9.2.3",
     "dayjs": "1.11.6",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
