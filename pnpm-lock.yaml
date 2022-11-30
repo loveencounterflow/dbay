@@ -1,8 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
-  cnd: 9.2.2
-  dayjs: ^1.11.1
+  cnd: 9.2.3
+  dayjs: 1.11.6
   dbay-sql-macros: 0.1.0
   exit-hook: ^2.2.1
   guy: 12.0.0
@@ -10,8 +10,8 @@ specifiers:
   intertype: 7.7.0
 
 dependencies:
-  cnd: 9.2.2
-  dayjs: 1.11.1
+  cnd: 9.2.3
+  dayjs: 1.11.6
   dbay-sql-macros: 0.1.0
   exit-hook: 2.2.1
   guy: 12.0.0
@@ -40,13 +40,20 @@ packages:
       jsx-number-format: 0.1.5
     dev: false
 
+  /cnd/9.2.3:
+    resolution: {integrity: sha512-CdgrCS/KS2p5TvvtpjiG+sCdAkqCDBHcmUBKGGH8owlJ5/DMZAcbJ6PDJFMUOhL+y2jzdDVl0OeMUrh1Fd1LOQ==}
+    hasBin: true
+    dependencies:
+      jsx-number-format: 0.1.5
+    dev: false
+
   /core-js-pure/3.25.5:
     resolution: {integrity: sha512-oml3M22pHM+igfWHDfdLVq2ShWmjM2V4L+dQEBs0DWVIqEm9WHCwGAlZ6BmyBQGy5sFrJmcx+856D9lVKyGWYg==}
     requiresBuild: true
     dev: false
 
-  /dayjs/1.11.1:
-    resolution: {integrity: sha512-ER7EjqVAMkRRsxNCC5YqJ9d9VQYuWdGt7aiH2qA5R5wt8ZmWaP2dLUSIK6y/kVzLMlmh1Tvu5xUf4M/wdGJ5KA==}
+  /dayjs/1.11.6:
+    resolution: {integrity: sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==}
     dev: false
 
   /dbay-sql-lexer/1.0.0:
