@@ -195,13 +195,39 @@ class @DBay extends   \
     @_dbs[ schema ] = { path, temporary, }
     return null
 
+
   #=========================================================================================================
-  # PREPARED STATEMENTS
+  # SHADOW DB FOR CONCURRENT WRITES
   #---------------------------------------------------------------------------------------------------------
-  # _compile_sql: ->
-  #   sql =
-  #     _get_field_names: @prepare SQL"select name from #{schema_i}.pragma_table_info( $name );"
-  #     statement.raw true
+  with_shadow: ( db, handler ) ->
+    original_path = db.cfg.path
+    GUY.temp.with_shadow_file original_path, ({ path, }) =>
+      handler { db: ( new @constructor { path, } ), }
+      db.destroy()
+    return new @constructor { path: original_path, }
+
+  #---------------------------------------------------------------------------------------------------------
+  with_concurrent: ( cfg ) ->
+    return switch cfg.mode
+      when 'reader' then @with_concurrent_reader cfg
+      when 'shadow' then @with_concurrent_shadow cfg
+      else throw new E.DBay_internal_error '^dbay/main@1^', "mode #{rpr cfg.mode} not implement"
+
+  #---------------------------------------------------------------------------------------------------------
+  with_concurrent_reader: ( cfg ) ->
+    for d in @all_rows cfg.reader
+      cfg.writer @, d
+    return @
+
+  #---------------------------------------------------------------------------------------------------------
+  with_concurrent_shadow: ( cfg ) ->
+    return @with_shadow read_db = @, ({ db: write_db, }) ->
+      write_db ->
+        for d from read_db cfg.reader
+          cfg.writer write_db, d
+        return null
+      return null
+
 
   #=========================================================================================================
   # CLEANUP ON DEMAND, ON PROCESS EXIT
