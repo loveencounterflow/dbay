@@ -938,6 +938,7 @@ dbay`, both package managers work fine.*</del>
   [Guy](https://github.com/loveencounterflow/guy))
 * **[–]** would it be possible to keep the application code in its own tables? one could then ship the
   application by sending a single DB file and the instruction to run it using a standard DBay installation
+* **[–]** provide API for `pragma journal_mode`; make `wal` the default
 
 ## Is Done
 
