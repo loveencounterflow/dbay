@@ -33,7 +33,7 @@
     "dayjs": "1.11.6",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
-    "guy": "12.1.0",
+    "guy": "12.2.0",
     "guy-legacy": "npm:guy@4",
     "intertype": "7.7.0"
   }
