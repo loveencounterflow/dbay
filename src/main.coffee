@@ -72,6 +72,8 @@ class @DBay extends   \
         random_delta:   null
         #...................................................................................................
         macros:         false
+        journal_mode:   'wal'
+        # journal_mode:   'delete'
         # create_stdlib:  true
       #.....................................................................................................
       dbay_with_transaction_cfg:
@@ -141,6 +143,8 @@ class @DBay extends   \
       R.temporary  ?= true
       filename      = me.rnd.get_random_filename()
       R.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
+    R = guy.props.omit_nullish R ### TAINT should not be needed ###
+    R = { @C.defaults.constructor_cfg..., R..., }
     return R
 
   #---------------------------------------------------------------------------------------------------------
@@ -174,6 +178,7 @@ class @DBay extends   \
     @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
     unless @constructor._skip_sqlt
       guy.props.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
+      @set_journal_mode.call @_me, @_me.cfg.journal_mode
     guy.props.hide @_me, 'macros', new DBay_sqlx()
     @_compile_sql?()
     ### make `alt` an on-demand clone of present instance: ###
