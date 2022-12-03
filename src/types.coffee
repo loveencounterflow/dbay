@@ -29,6 +29,7 @@ intertype                 = new Intertype module.exports
   "x.random_seed  may be set":                ( x ) -> true
   "x.random_delta may be set":                ( x ) -> true
   "@isa.boolean x.macros":                    ( x ) -> @isa.boolean x.macros
+  "@isa.dbay_journal_mode x.journal_mode":    ( x ) -> @isa.dbay_journal_mode x.journal_mode
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'dbay_with_transaction_cfg', tests:
@@ -44,6 +45,11 @@ intertype                 = new Intertype module.exports
   "@isa.boolean x.temporary":             ( x ) -> @isa.boolean x.temporary
   # "@isa.boolean x.overwrite":             ( x ) -> @isa.boolean x.overwrite
   # "@isa.boolean x.create":                ( x ) -> @isa.boolean x.create
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'dbay_journal_mode', tests:
+  "x in [ 'delete', 'wal', 'truncate', 'persist', 'memory', 'wal', 'off', ]": \
+    ( x ) -> x in [ 'delete', 'wal', 'truncate', 'persist', 'memory', 'wal', 'off', ]
 
 
 #===========================================================================================================

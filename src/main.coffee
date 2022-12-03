@@ -202,39 +202,6 @@ class @DBay extends   \
 
 
   #=========================================================================================================
-  # SHADOW DB FOR CONCURRENT WRITES
-  #---------------------------------------------------------------------------------------------------------
-  with_shadow: ( db, handler ) ->
-    original_path = db.cfg.path
-    GUY.temp.with_shadow_file original_path, ({ path, }) =>
-      handler { db: ( new @constructor { path, } ), }
-      db.destroy()
-    return new @constructor { path: original_path, }
-
-  #---------------------------------------------------------------------------------------------------------
-  with_concurrent: ( cfg ) ->
-    return switch cfg.mode
-      when 'reader' then @with_concurrent_reader cfg
-      when 'shadow' then @with_concurrent_shadow cfg
-      else throw new E.DBay_internal_error '^dbay/main@1^', "mode #{rpr cfg.mode} not implement"
-
-  #---------------------------------------------------------------------------------------------------------
-  with_concurrent_reader: ( cfg ) ->
-    for d in @all_rows cfg.reader
-      cfg.writer @, d
-    return @
-
-  #---------------------------------------------------------------------------------------------------------
-  with_concurrent_shadow: ( cfg ) ->
-    return @with_shadow read_db = @, ({ db: write_db, }) ->
-      write_db ->
-        for d from read_db cfg.reader
-          cfg.writer write_db, d
-        return null
-      return null
-
-
-  #=========================================================================================================
   # CLEANUP ON DEMAND, ON PROCESS EXIT
   #---------------------------------------------------------------------------------------------------------
   destroy: ->
@@ -242,7 +209,12 @@ class @DBay extends   \
     in `@_dbs`. ###
     try @sqlt1?.close() catch error then warn '^dbay/main@1^', error.message
     for schema, d of @_dbs
-      H.unlink_file d.path if d.temporary
+      continue unless d.temporary
+      H.unlink_file d.path
+      ### NOTE for purpose of these temporary files, see https://www.sqlite.org/tempfiles.html ###
+      H.unlink_file "#{d.path}-shm"
+      H.unlink_file "#{d.path}-wal"
+      H.unlink_file "#{d.path}-journal"
     return null
 
 guy.props.hide @DBay, 'new_bsqlt3_connection', new_bsqlt3_connection
