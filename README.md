@@ -36,6 +36,7 @@
       - [Insert Statement Generation](#insert-statement-generation)
       - [Insert Statements with a `returning` Clause](#insert-statements-with-a-returning-clause)
     - [Random](#random)
+  - [Concurrent Writes](#concurrent-writes)
   - [Macros for SQL](#macros-for-sql)
   - [Notes on User Defined Functions (UDFs)](#notes-on-user-defined-functions-udfs)
     - [(Outline for a) Draft for a Stored Procedure Feature Request](#outline-for-a-draft-for-a-stored-procedure-feature-request)
@@ -690,6 +691,16 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
 ▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊▌▊
 
 
+
+------------------------------------------------------------------------------------------------------------
+
+## Concurrent Writes
+
+* **`with_deferred_write: ( f ) ->`**—will call the `f`unction as `f write`, where `write` may be used like
+  the `db` object. Each call to `write()` will put any arguments into a cache; typically, this will be calls
+  of the form `write my_prepared_statement, my_data`. When `f()` has finished, the items in cache will be
+  used to call the `db` object as in `db whatever... for whatever in buffer`. These repeated calls will
+  happen inside an implicit transaction in case no transaction is already open.
 
 ------------------------------------------------------------------------------------------------------------
 
