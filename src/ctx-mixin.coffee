@@ -124,37 +124,53 @@ GUY                       = require 'guy'
     return R
 
 
-  #=========================================================================================================
-  # SHADOW DB FOR CONCURRENT WRITES
-  #---------------------------------------------------------------------------------------------------------
-  with_shadow: ( db, handler ) ->
-    original_path = db.cfg.path
-    GUY.temp.with_shadow_file { path: original_path, all: true, }, ({ path, }) =>
-      handler { db: ( new @constructor { path, } ), }
-      db.destroy()
-    return new @constructor { path: original_path, }
+  # #=========================================================================================================
+  # # SHADOW DB FOR CONCURRENT WRITES
+  # #---------------------------------------------------------------------------------------------------------
+  # with_shadow: ( db, handler ) ->
+  #   throw new E.DBay_not_implemented '^dbay/ctx@7^', "with_shadow()"
+  #   original_path = db.cfg.path
+  #   bring_along   = [
+  #     "#{original_path}-shm"
+  #     "#{original_path}-wal"
+  #     "#{original_path}-journal" ]
+  #   GUY.temp.with_shadow_file { path: original_path, all: true, bring_along, }, ({ path, }) =>
+  #     handler { db: ( new @constructor { path, } ), }
+  #     db.destroy()
+  #   return new @constructor { path: original_path, }
+
+  # #---------------------------------------------------------------------------------------------------------
+  # with_concurrent: ( cfg ) ->
+  #   return switch cfg.mode
+  #     when 'reader' then @with_concurrent_reader cfg
+  #     when 'shadow' then @with_concurrent_shadow cfg
+  #     else throw new E.DBay_internal_error '^dbay/main@1^', "mode #{rpr cfg.mode} not implement"
+
+  # #---------------------------------------------------------------------------------------------------------
+  # with_concurrent_reader: ( cfg ) ->
+  #   for d in @all_rows cfg.reader
+  #     cfg.writer @, d
+  #   return @
+
+  # #---------------------------------------------------------------------------------------------------------
+  # with_concurrent_shadow: ( cfg ) ->
+  #   return @with_shadow read_db = @, ({ db: write_db, }) ->
+  #     write_db ->
+  #       for d from read_db cfg.reader
+  #         cfg.writer write_db, d
+  #       return null
+  #     return null
 
   #---------------------------------------------------------------------------------------------------------
-  with_concurrent: ( cfg ) ->
-    return switch cfg.mode
-      when 'reader' then @with_concurrent_reader cfg
-      when 'shadow' then @with_concurrent_shadow cfg
-      else throw new E.DBay_internal_error '^dbay/main@1^', "mode #{rpr cfg.mode} not implement"
-
-  #---------------------------------------------------------------------------------------------------------
-  with_concurrent_reader: ( cfg ) ->
-    for d in @all_rows cfg.reader
-      cfg.writer @, d
-    return @
-
-  #---------------------------------------------------------------------------------------------------------
-  with_concurrent_shadow: ( cfg ) ->
-    return @with_shadow read_db = @, ({ db: write_db, }) ->
-      write_db ->
-        for d from read_db cfg.reader
-          cfg.writer write_db, d
-        return null
-      return null
-
+  with_deferred_write: ( f ) ->
+    buffer  = []
+    write   = ( P... ) -> buffer.push P
+    f write
+    if @within_transaction
+      @ P... for P in buffer
+    else
+      @ ->
+        @ P... for P in buffer
+    return null
 
 
