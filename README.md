@@ -965,10 +965,6 @@ dbay`, both package managers work fine.*</del>
 * **[–]** would it be possible to keep the application code in its own tables? one could then ship the
   application by sending a single DB file and the instruction to run it using a standard DBay installation
 * **[–]** provide API for `pragma journal_mode`; make `wal` the default
-* **[–]** concurrent writes w/ WAL mode:
-  * **[–]** dbw = dbr?
-  * **[–]** generated inserts to `db.alt`
-  * **[–]** UDFs?
 
 ## Is Done
 
@@ -1013,6 +1009,10 @@ dbay`, both package managers work fine.*</del>
       * consider to use https://github.com/Rich-Harris/code-red for parsing arguments part
       * decide whether declarations made within an aborted transaction should be undone as well (probably:
         yes)
+* **[+]** concurrent writes w/ WAL mode:
+  * **[+]** <del>dbw = dbr?</del>
+  * **[+]** generated inserts to `db.alt`
+  * **[+]** UDFs?
 
 
 
