@@ -702,6 +702,21 @@ inserted; we here use `db.single_row()` to eschew the result iterator that would
   used to call the `db` object as in `db whatever... for whatever in buffer`. These repeated calls will
   happen inside an implicit transaction in case no transaction is already open.
 
+* **`db.alt`**—the `db.alt` property, when first retrieved, opens a second `better-sqlite3` connection to
+  the same database file. Using `pragma journal_mode = wal` (which is the default as of DBay v14.16), this
+  (or any other secondary) connection can be used for concurrent writes.
+
+* observe that `insert` statements generated with `db.prepare_insert()` are now implicitly bound to `db.alt`
+  to improve DBay's concurrency story.
+
+* Observe that rows inserted in the same transaction are not visible to the alternative connection until
+  those rows have been `commit`ted. Generally, one will want to insert data in one transaction, finish it,
+  and then `begin` a new (explicit or implicit) transaction in order to iterate over existing and possibly
+  inserting new data. It is obvious that one does not want this newly inserted data to be visible just yet
+  because that could cause an infinite loop (just like appending to an array while stepping over its
+  elements would create an infinite loop).
+
+
 ------------------------------------------------------------------------------------------------------------
 
 ## Macros for SQL
@@ -950,6 +965,10 @@ dbay`, both package managers work fine.*</del>
 * **[–]** would it be possible to keep the application code in its own tables? one could then ship the
   application by sending a single DB file and the instruction to run it using a standard DBay installation
 * **[–]** provide API for `pragma journal_mode`; make `wal` the default
+* **[–]** concurrent writes w/ WAL mode:
+  * **[–]** dbw = dbr?
+  * **[–]** generated inserts to `db.alt`
+  * **[–]** UDFs?
 
 ## Is Done
 

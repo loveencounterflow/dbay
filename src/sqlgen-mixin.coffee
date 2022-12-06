@@ -16,7 +16,7 @@ SQL                       = String.raw
   #   return undefined
 
   #---------------------------------------------------------------------------------------------------------
-  prepare_insert: ( cfg ) -> @prepare @create_insert cfg
+  prepare_insert: ( cfg ) -> @alt.prepare @create_insert cfg
   create_insert: ( cfg ) ->
     @types.validate.dbay_create_insert_cfg ( cfg = { @constructor.C.defaults.dbay_create_insert_cfg..., cfg..., } )
     { L, I, V, }  = @sql
