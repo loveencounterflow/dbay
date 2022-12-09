@@ -26,6 +26,8 @@ new_bsqlt3_connection     = require 'better-sqlite3'
 #...........................................................................................................
 E                         = require './errors'
 H                         = require './helpers'
+{ SQL                   } = H
+{ sql                   } = require './sql'
 { DBay_query            } = require './query-mixin'
 { DBay_ctx              } = require './ctx-mixin'
 { DBay_openclose        } = require './open-close-mixin'
@@ -33,12 +35,11 @@ H                         = require './helpers'
 { DBay_sqlgen           } = require './sqlgen-mixin'
 { Random                } = require './random'
 { DBay_udf              } = require './udf-mixin'
-{ Sql                   } = require './sql'
 { DBay_sqlx }             = require 'dbay-sql-macros'
 GUY_LEGACY = require 'guy-legacy'
 
 #===========================================================================================================
-class @DBay extends   \
+class DBay extends    \
   DBay_query          \
   DBay_ctx            \
   DBay_openclose      \
@@ -46,12 +47,6 @@ class @DBay extends   \
   DBay_sqlgen         \
   DBay_udf            \
   Function
-
-  #---------------------------------------------------------------------------------------------------------
-  ### This function is meant to be used to explicitly mark up SQL literals as in
-  constructs like `for row from db SQL"select * from ..."`. The markup can help text editors to provided
-  syntax hiliting and other language-specific features for embedded SQL strings. ###
-  @SQL: H.SQL
 
   #---------------------------------------------------------------------------------------------------------
   @C: guy.lft.freeze
@@ -162,7 +157,8 @@ class @DBay extends   \
     super '...P', 'return this._me.do(...P)'
     @_me        = @bind @
     @_me.state  = guy.lft.freeze {}
-    @_me.sql    = new Sql @
+    guy.props.hide @_me, 'SQL',  SQL
+    guy.props.hide @_me, 'sql',  sql
     guy.props.hide @_me, 'rnd',  new Random { seed: cfg?.random_seed ? null, delta: cfg?.random_delta ? null, }
     @_$query_initialize?()
     @_$ctx_initialize?()
@@ -217,6 +213,13 @@ class @DBay extends   \
       H.unlink_file "#{d.path}-journal"
     return null
 
-guy.props.hide @DBay, 'new_bsqlt3_connection', new_bsqlt3_connection
 
+############################################################################################################
+  ### This function is meant to be used to explicitly mark up SQL literals as in
+  constructs like `for row from db SQL"select * from ..."`. The markup can help text editors to provided
+  syntax hiliting and other language-specific features for embedded SQL strings. ###
+guy.props.hide DBay, 'SQL', SQL
+guy.props.hide DBay, 'sql', sql
+guy.props.hide DBay, 'new_bsqlt3_connection', new_bsqlt3_connection
+module.exports = { DBay, SQL, sql, }
 
