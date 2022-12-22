@@ -5,8 +5,7 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "coffee --map -o lib -c src",
-    "test": "echo see 'https://github.com/loveencounterflow/hengist/tree/master/dev/dbay'",
-    "preinstall": "./build-sqlite3"
+    "test": "echo see 'https://github.com/loveencounterflow/hengist/tree/master/dev/dbay'"
   },
   "repository": {
     "type": "git",
@@ -30,6 +29,7 @@
     ]
   },
   "dependencies": {
+    "better-sqlite3": "^8.0.1",
     "dayjs": "1.11.6",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
