@@ -1012,7 +1012,7 @@ dbay`, both package managers work fine.*</del>
         yes)
 * **[+]** concurrent writes w/ WAL mode:
   * **[+]** <del>dbw = dbr?</del>
-  * **[+]** generated inserts to `db.alt`
+  * **[+]** <del>generated inserts to `db.alt`</del>
   * **[+]** UDFs?
 
 
