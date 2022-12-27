@@ -43,7 +43,8 @@ GUY                       = require 'guy'
       directOnly
       deterministic
       varargs }     = cfg
-    @sqlt1.function name, { deterministic, varargs, directOnly, }, call
+    @sqlt1.function     name, { deterministic, varargs, directOnly, }, call
+    @alt.sqlt1.function name, { deterministic, varargs, directOnly, }, call
     @_register_udf 'single_valued', cfg
     return null
 
@@ -57,7 +58,8 @@ GUY                       = require 'guy'
       directOnly
       deterministic
       varargs }     = cfg
-    @sqlt1.aggregate name, { start, step, result, deterministic, varargs, directOnly, }
+    @sqlt1.aggregate      name, { start, step, result, deterministic, varargs, directOnly, }
+    @alt.sqlt1.aggregate  name, { start, step, result, deterministic, varargs, directOnly, }
     @_register_udf 'aggregate', cfg
     return null
 
@@ -72,7 +74,8 @@ GUY                       = require 'guy'
       directOnly
       deterministic
       varargs }     = cfg
-    @sqlt1.aggregate name, { start, step, inverse, result, deterministic, varargs, directOnly, }
+    @sqlt1.aggregate      name, { start, step, inverse, result, deterministic, varargs, directOnly, }
+    @alt.sqlt1.aggregate  name, { start, step, inverse, result, deterministic, varargs, directOnly, }
     @_register_udf 'window', cfg
     return null
 
@@ -86,7 +89,8 @@ GUY                       = require 'guy'
       directOnly
       deterministic
       varargs }     = cfg
-    @sqlt1.table name, { parameters, columns, rows, deterministic, varargs, directOnly, }
+    @sqlt1.table      name, { parameters, columns, rows, deterministic, varargs, directOnly, }
+    @alt.sqlt1.table  name, { parameters, columns, rows, deterministic, varargs, directOnly, }
     @_register_udf 'table_function', cfg
     return null
 
@@ -94,7 +98,8 @@ GUY                       = require 'guy'
   create_virtual_table: ( cfg ) ->
     @types.validate.dbay_create_virtual_table_cfg ( cfg = { @constructor.C.defaults.dbay_create_virtual_table_cfg..., cfg..., } )
     { name, create, } = cfg
-    @sqlt1.table name, create
+    @sqlt1.table      name, create
+    @alt.sqlt1.table  name, create
     @_register_udf 'virtual_table', cfg
     return null
 
