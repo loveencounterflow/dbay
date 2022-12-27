@@ -1014,6 +1014,8 @@ dbay`, both package managers work fine.*</del>
   * **[+]** <del>dbw = dbr?</del>
   * **[+]** <del>generated inserts to `db.alt`</del>
   * **[+]** UDFs?
+* **[+]** All UDFs are now created for both the primary (`db.sqlt1`) and secondary (`db.alt.sqlt1`)
+  connections to avoid surprising messages like `no such table: f` when doing concurrent writes.
 
 
 
