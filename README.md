@@ -966,6 +966,9 @@ dbay`, both package managers work fine.*</del>
   application by sending a single DB file and the instruction to run it using a standard DBay installation
 * **[–]** provide API for `pragma journal_mode`; make `wal` the default
 * **[–]** use `GUY.datetime` for `dt` features in `stdlib`
+* **[–]** see whether we can support [`libSQL`](https://libsql.org)
+  * **[–]** [user-defined functions in
+    WASM](https://blog.chiselstrike.com/webassembly-functions-for-your-sqlite-compatible-database-7e1ad95a2aa7)
 
 ## Is Done
 
