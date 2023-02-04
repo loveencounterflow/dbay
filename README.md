@@ -969,6 +969,8 @@ dbay`, both package managers work fine.*</del>
 * **[–]** see whether we can support [`libSQL`](https://libsql.org)
   * **[–]** [user-defined functions in
     WASM](https://blog.chiselstrike.com/webassembly-functions-for-your-sqlite-compatible-database-7e1ad95a2aa7)
+* **[–]** review [*BEGIN CONCURRENT allows multiple
+  writers*](https://www.sqlite.org/cgi/src/doc/begin-concurrent/doc/begin_concurrent.md)
 
 ## Is Done
 
