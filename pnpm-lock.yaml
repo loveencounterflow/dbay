@@ -1,20 +1,20 @@
 lockfileVersion: 5.4
 
 specifiers:
-  better-sqlite3: ^8.0.1
-  dayjs: 1.11.6
+  better-sqlite3: ^8.1.0
+  dayjs: 1.11.7
   dbay-sql-macros: 0.1.0
   exit-hook: ^2.2.1
-  guy: 12.3.0
+  guy: 13.1.0
   guy-legacy: npm:guy@4
   intertype: 7.7.0
 
 dependencies:
-  better-sqlite3: 8.0.1
-  dayjs: 1.11.6
+  better-sqlite3: 8.1.0
+  dayjs: 1.11.7
   dbay-sql-macros: 0.1.0
   exit-hook: 2.2.1
-  guy: 12.3.0
+  guy: 13.1.0_dayjs@1.11.7
   guy-legacy: /guy/4.2.0
   intertype: 7.7.0
 
@@ -37,8 +37,8 @@ packages:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
     dev: false
 
-  /better-sqlite3/8.0.1:
-    resolution: {integrity: sha512-JhTZjpyapA1icCEjIZB4TSSgkGdFgpWZA2Wszg7Cf4JwJwKQmbvuNnJBeR+EYG/Z29OXvR4G//Rbg31BW/Z7Yg==}
+  /better-sqlite3/8.1.0:
+    resolution: {integrity: sha512-p1m09H+Oi8R9TPj810pdNswMFuVgRNgCJEWypp6jlkOgSwMIrNyuj3hW78xEuBRGok5RzeaUW8aBtTWF3l/TQA==}
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -82,8 +82,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /dayjs/1.11.6:
-    resolution: {integrity: sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==}
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
     dev: false
 
   /dbay-sql-lexer/1.1.0:
@@ -188,15 +188,17 @@ packages:
       letsfreezethat: 3.1.0
     dev: false
 
-  /guy/12.3.0:
-    resolution: {integrity: sha512-8SZ9mXvyRxzz1/7DJHwPzfO434YRtqiRnJhZnGre07u9H6beRJZ3nArp1gqJX2wSB6RQnm+xE6kZGGYiVyw15g==}
+  /guy/13.1.0_dayjs@1.11.7:
+    resolution: {integrity: sha512-AkkQXfzP5S1cbVF0cPmoZxeHJgNmLRIEZdZhMzj0i0y5mqV8BpSKh5JuKPfsQOdA42qtlRXPs0OR3hf+Q3dy6Q==}
     peerDependencies:
       acorn: ^8.7.1
       acorn-loose: ^8.3.0
       acorn-walk: ^8.2.0
       astring: ^1.8.3
+      dayjs: ^1.11.7
       tmp: ^0.2.1
     dependencies:
+      dayjs: 1.11.7
       intertype-legacy: 7.7.1
       letsfreezethat: 3.1.0
     dev: false

@@ -29,11 +29,11 @@
     ]
   },
   "dependencies": {
-    "better-sqlite3": "^8.0.1",
-    "dayjs": "1.11.6",
+    "better-sqlite3": "^8.1.0",
+    "dayjs": "1.11.7",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
-    "guy": "12.3.0",
+    "guy": "13.1.0",
     "guy-legacy": "npm:guy@4",
     "intertype": "7.7.0"
   }
