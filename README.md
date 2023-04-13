@@ -971,9 +971,13 @@ dbay`, both package managers work fine.*</del>
     WASM](https://blog.chiselstrike.com/webassembly-functions-for-your-sqlite-compatible-database-7e1ad95a2aa7)
 * **[–]** review [*BEGIN CONCURRENT allows multiple
   writers*](https://www.sqlite.org/cgi/src/doc/begin-concurrent/doc/begin_concurrent.md)
-* **[–]** review [*SQLite Optimizations for Ultra
-  High-Performance*](https://www.powersync.co/blog/sqlite-optimizations-for-ultra-high-performance),
-  [HN](https://news.ycombinator.com/item?id=35439749), adjust default settings accordingly
+* **[–]** review the below, adjust default settings accordingly:
+  * **[–]** [*SQLite Optimizations for Ultra
+    High-Performance*](https://www.powersync.co/blog/sqlite-optimizations-for-ultra-high-performance),
+    [HN](https://news.ycombinator.com/item?id=35439749), adjust default settings accordingly
+  * **[–]** [*SQLite performance tuning: concurrent reads, multiple GBs and 100k
+    SELECTs/s*](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/),
+    [HN](https://news.ycombinator.com/item?id=35547819)
 
 ## Is Done
 
