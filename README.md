@@ -978,6 +978,7 @@ dbay`, both package managers work fine.*</del>
   * **[–]** [*SQLite performance tuning: concurrent reads, multiple GBs and 100k
     SELECTs/s*](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/),
     [HN](https://news.ycombinator.com/item?id=35547819)
+* **[–]** see whether could support [`libSQL`](https://libsql.org/), as described in [*WebAssembly functions for your SQLite-compatible database*](https://blog.turso.tech/webassembly-functions-for-your-sqlite-compatible-database-7e1ad95a2aa7)
 
 ## Is Done
 
