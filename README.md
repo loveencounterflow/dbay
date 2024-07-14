@@ -978,7 +978,16 @@ dbay`, both package managers work fine.*</del>
   * **[–]** [*SQLite performance tuning: concurrent reads, multiple GBs and 100k
     SELECTs/s*](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/),
     [HN](https://news.ycombinator.com/item?id=35547819)
-* **[–]** see whether could support [`libSQL`](https://libsql.org/), as described in [*WebAssembly functions for your SQLite-compatible database*](https://blog.turso.tech/webassembly-functions-for-your-sqlite-compatible-database-7e1ad95a2aa7)
+* **[–]** see whether could support [`libSQL`](https://libsql.org/), as described in [*WebAssembly functions
+  for your SQLite-compatible
+  database*](https://blog.turso.tech/webassembly-functions-for-your-sqlite-compatible-database-7e1ad95a2aa7)
+* **[–]** ensure reasonable defaults:
+  * `pragma journal_mode=WAL;`: always use WAL mode
+  * always use `IMMEDIATE` transactions (needed so `busy_timeout` is always honored)
+  * `pragma busy_timeout = 60000;` (1min waiting time for writers if a writer is busy)
+  * see https://kerkour.com/sqlite-for-servers#use-immediate-transactions,
+    https://lobste.rs/s/fxkk7v/why_does_sqlite_production_have_such_bad,
+    https://til.simonwillison.net/sqlite/enabling-wal-mode
 
 ## Is Done
 
