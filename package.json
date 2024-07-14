@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "better-sqlite3": "^11.0.0",
+    "better-sqlite3": "^11.1.2",
     "dayjs": "1.11.11",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
