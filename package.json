@@ -23,11 +23,6 @@
     "url": "https://github.com/loveencounterflow/dbay/issues"
   },
   "homepage": "https://github.com/loveencounterflow/dbay#readme",
-  "publishConfig": {
-    "executableFiles": [
-      "build-sqlite3"
-    ]
-  },
   "dependencies": {
     "better-sqlite3": "^11.1.2",
     "dayjs": "1.11.11",
