@@ -988,6 +988,12 @@ dbay`, both package managers work fine.*</del>
   * see https://kerkour.com/sqlite-for-servers#use-immediate-transactions,
     https://lobste.rs/s/fxkk7v/why_does_sqlite_production_have_such_bad,
     https://til.simonwillison.net/sqlite/enabling-wal-mode
+* **[–]** improve the rather frequent error message `TypeError: SQLite3 can only bind numbers, strings,
+  bigints, buffers, and null`; for one thing, the usage of the ver 'to bind' in this message is serious
+  nerdspeak and not intelligible to people outside of a small circle; also, the offending value should be
+  quoted and its type be given
+* **[–]** improve syntax errors by at least quoting the affected SQL source (and consider to use an SQL
+  parser, eg `cargo install sqlparser`)
 
 ## Is Done
 
