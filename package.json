@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/loveencounterflow/dbay#readme",
   "dependencies": {
-    "better-sqlite3": "^11.1.2",
+    "better-sqlite3": "^11.6.0",
     "dayjs": "1.11.11",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
