@@ -678,7 +678,9 @@ Generally, the `returning` clause must be defined by a non-empty string that is 
 after `returning` and the end of the statement. A star `*` will return the entire row that has been
 inserted; we here use `db.single_row()` to eschew the result iterator that would be returned by default.
 
-
+> [!WARNING]
+> When doing concurrent updates e.g. using the `{ on_conflict: true, }` option, users are advised
+> to **not use `{ returning: '*' }`** as this has been observed to cause 'connection busy' errors.
 
 
 ------------------------------------------------------------------------------------------------------------
