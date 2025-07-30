@@ -28,7 +28,7 @@
     "dayjs": "1.11.13",
     "exit-hook": "^2.2.1",
     "guy": "14.2.0",
-    "intertype": "7.7.0",
+    "intertype": "7.7.1",
     "letsfreezethat": "^3.1.0"
   }
 }
