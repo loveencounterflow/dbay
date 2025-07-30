@@ -35,7 +35,6 @@ H                         = require './helpers'
 { DBay_sqlgen           } = require './sqlgen-mixin'
 { Random                } = require './random'
 { DBay_udf              } = require './udf-mixin'
-GUY_LEGACY = require 'guy-legacy'
 LFT                       = require 'letsfreezethat'
 
 
@@ -167,7 +166,7 @@ class DBay extends    \
     @_$sqlgen_initialize?()
     @_$udf_initialize?()
     @_$trash_initialize?()
-    GUY_LEGACY.cfg.configure_with_types @_me, cfg, types
+    H.configure_with_types @_me, cfg, types
     #.......................................................................................................
     H.hide @_me, '_dbs', {}
     H.hide @_me, 'E', E
