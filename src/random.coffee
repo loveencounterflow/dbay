@@ -20,6 +20,7 @@ GUY                       = require 'guy'
 #...........................................................................................................
 guy                       = require 'guy'
 types                     = new ( require 'intertype' ).Intertype()
+LFT                       = require 'letsfreezethat'
 
 
 #===========================================================================================================
@@ -43,7 +44,7 @@ types.declare 'constructor_cfg', tests:
 class @Random
 
   #---------------------------------------------------------------------------------------------------------
-  @C: guy.lft.freeze
+  @C: LFT.freeze
     defaults:
       #.....................................................................................................
       constructor_cfg:
@@ -52,7 +53,7 @@ class @Random
 
   #=========================================================================================================
   constructor: ( cfg ) ->
-    @cfg = guy.lft.freeze { @constructor.C.defaults.constructor_cfg..., cfg..., }
+    @cfg = LFT.freeze { @constructor.C.defaults.constructor_cfg..., cfg..., }
     types.validate.constructor_cfg @cfg
     if @cfg.seed? or @cfg.delta?
       seed                = @cfg.seed  ? 12.34

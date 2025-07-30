@@ -6,6 +6,7 @@
 E                         = require './errors'
 SQL                       = String.raw
 GUY                       = require 'guy'
+LFT                       = require 'letsfreezethat'
 
 
 #===========================================================================================================
@@ -15,7 +16,7 @@ GUY                       = require 'guy'
 
   #---------------------------------------------------------------------------------------------------------
   _$ctx_initialize: ->
-    @_me.state = GUY.lft.lets @_me.state, ( d ) -> d.in_unsafe_mode = false
+    @_me.state = LFT.lets @_me.state, ( d ) -> d.in_unsafe_mode = false
     return null
 
   #=========================================================================================================
@@ -57,7 +58,7 @@ GUY                       = require 'guy'
   set_unsafe_mode: ( onoff ) ->
     @types.validate.boolean onoff
     @sqlt1.unsafeMode onoff
-    @state = GUY.lft.lets @state, ( d ) -> d.in_unsafe_mode = onoff
+    @state = LFT.lets @state, ( d ) -> d.in_unsafe_mode = onoff
     return null
 
 

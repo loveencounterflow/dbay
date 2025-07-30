@@ -18,6 +18,7 @@ GUY                       = require 'guy'
   echo
   log     }               = GUY.trm
 E                         = require './errors'
+H                         = require './helpers'
 #-----------------------------------------------------------------------------------------------------------
 GUY                       = require 'guy'
 ### https://day.js.org ###
@@ -47,9 +48,9 @@ walk_split_parts = ( text, splitter, omit_empty ) ->
 
   #---------------------------------------------------------------------------------------------------------
   _$stdlib_initialize: ->
-    GUY.props.hide @_me, '_dayjs',                              dayjs
-    GUY.props.hide @_me, '_dt_dbay_timestamp_input_template',   'YYYYMMDD-HHmmssZ'
-    GUY.props.hide @_me, '_dt_dbay_timestamp_output_template',  'YYYYMMDD-HHmmss[Z]'
+    H.hide @_me, '_dayjs',                              dayjs
+    H.hide @_me, '_dt_dbay_timestamp_input_template',   'YYYYMMDD-HHmmssZ'
+    H.hide @_me, '_dt_dbay_timestamp_output_template',  'YYYYMMDD-HHmmss[Z]'
     @_me._stdlib_created = false
     return null
 

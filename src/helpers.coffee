@@ -57,3 +57,46 @@ shm_path                  = '/dev/shm'
     R += expression.toString() + parts[ idx + 1 ]
   return R
 
+#-----------------------------------------------------------------------------------------------------------
+@omit_nullish = ( d ) ->
+  R       = {}
+  R[ k ]  = v for k, v of d when v?
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@def  = def   = Object.defineProperty
+@hide = hide  = ( object, name, value ) => Object.defineProperty object, name,
+    enumerable:   false
+    writable:     true
+    configurable: true
+    value:        value
+
+#-----------------------------------------------------------------------------------------------------------
+@_pick_with_fallback = ( d, fallback, keys... ) ->
+  R     = {}
+  keys  = keys.flat Infinity
+  for key in keys
+    R[ key ] = if ( value = d[ key ] ) is undefined then fallback else value
+  return [ R, keys, ]
+
+#-----------------------------------------------------------------------------------------------------------
+@pick_with_fallback = ( d, fallback, keys... ) -> ( @_pick_with_fallback d, fallback, keys )[ 0 ]
+
+#-----------------------------------------------------------------------------------------------------------
+@pluck_with_fallback = ( d, fallback, keys... ) ->
+  [ R, keys, ] = @_pick_with_fallback d, fallback, keys...
+  delete d[ key ] for key in keys
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@def_oneoff = def_oneoff = ( object, name, cfg, method ) =>
+  get = ->
+    R = method.apply object
+    delete cfg.get
+    def object, name,
+      configurable: ( cfg.configurable  ? true )
+      enumerable:   ( cfg.enumerable    ? true )
+      value:        R
+    return R
+  def object, name, { enumerable: true, configurable: true, get, }
+  return null

@@ -37,6 +37,8 @@ H                         = require './helpers'
 { DBay_udf              } = require './udf-mixin'
 { DBay_sqlx }             = require 'dbay-sql-macros'
 GUY_LEGACY = require 'guy-legacy'
+LFT                       = require 'letsfreezethat'
+
 
 #===========================================================================================================
 class DBay extends    \
@@ -49,7 +51,7 @@ class DBay extends    \
   Function
 
   #---------------------------------------------------------------------------------------------------------
-  @C: guy.lft.freeze
+  @C: LFT.freeze
     autolocation: H.autolocation
     symbols:
       execute: Symbol 'execute'
@@ -122,7 +124,7 @@ class DBay extends    \
   #---------------------------------------------------------------------------------------------------------
   @cast_sqlt_cfg: ( me ) ->
     ### Produce a configuration object for `better-sqlite3` from `me.cfg`. ###
-    R                = guy.props.pluck_with_fallback me.cfg, null, 'readonly', 'timeout'
+    R                = H.pluck_with_fallback me.cfg, null, 'readonly', 'timeout'
     R.fileMustExist  = not me.cfg.create; delete me.cfg.create
     return R
 
@@ -138,7 +140,7 @@ class DBay extends    \
       R.temporary  ?= true
       filename      = me.rnd.get_random_filename()
       R.path        = PATH.resolve PATH.join clasz.C.autolocation, filename
-    R = guy.props.omit_nullish R ### TAINT should not be needed ###
+    R = H.omit_nullish R ### TAINT should not be needed ###
     R = { @C.defaults.constructor_cfg..., R..., }
     return R
 
@@ -147,8 +149,8 @@ class DBay extends    \
     ### called from constructor via `guy.cfg.configure_with_types()` ###
     me.cfg        = @cast_constructor_cfg me
     me.sqlt_cfg   = @cast_sqlt_cfg        me
-    me.cfg        = guy.lft.freeze guy.props.omit_nullish me.cfg
-    me.sqlt_cfg   = guy.lft.freeze guy.props.omit_nullish me.sqlt_cfg
+    me.cfg        = LFT.freeze H.omit_nullish me.cfg
+    me.sqlt_cfg   = LFT.freeze H.omit_nullish me.sqlt_cfg
     me.types.validate.constructor_cfg me.cfg
     return null
 
@@ -156,10 +158,10 @@ class DBay extends    \
   constructor: ( cfg ) ->
     super '...P', 'return this._me.do(...P)'
     @_me        = @bind @
-    @_me.state  = guy.lft.freeze {}
-    guy.props.hide @_me, 'SQL',  SQL
-    guy.props.hide @_me, 'sql',  sql
-    guy.props.hide @_me, 'rnd',  new Random { seed: cfg?.random_seed ? null, delta: cfg?.random_delta ? null, }
+    @_me.state  = LFT.freeze {}
+    H.hide @_me, 'SQL',  SQL
+    H.hide @_me, 'sql',  sql
+    H.hide @_me, 'rnd',  new Random { seed: cfg?.random_seed ? null, delta: cfg?.random_delta ? null, }
     @_$query_initialize?()
     @_$ctx_initialize?()
     @_$openclose_initialize?()
@@ -169,16 +171,16 @@ class DBay extends    \
     @_$trash_initialize?()
     GUY_LEGACY.cfg.configure_with_types @_me, cfg, types
     #.......................................................................................................
-    guy.props.hide @_me, '_dbs', {}
-    guy.props.hide @_me, 'E', E
+    H.hide @_me, '_dbs', {}
+    H.hide @_me, 'E', E
     @_me._register_schema 'main', @_me.cfg.path, @_me.cfg.temporary
     unless @constructor._skip_sqlt
-      guy.props.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
+      H.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
       @set_journal_mode.call @_me, @_me.cfg.journal_mode
-    guy.props.hide @_me, 'macros', new DBay_sqlx()
+    H.hide @_me, 'macros', new DBay_sqlx()
     @_compile_sql?()
     ### make `alt` an on-demand clone of present instance: ###
-    guy.props.def_oneoff @_me, 'alt', { enumerable: false, }, => new @constructor @_me.cfg
+    H.def_oneoff @_me, 'alt', { enumerable: false, }, => new @constructor @_me.cfg
     # @create_stdlib() if @_me.cfg.create_stdlib
     # @_create_sql_functions()
     # @_create_db_structure()
@@ -218,8 +220,8 @@ class DBay extends    \
   ### This function is meant to be used to explicitly mark up SQL literals as in
   constructs like `for row from db SQL"select * from ..."`. The markup can help text editors to provided
   syntax hiliting and other language-specific features for embedded SQL strings. ###
-guy.props.hide DBay, 'SQL', SQL
-guy.props.hide DBay, 'sql', sql
-guy.props.hide DBay, 'new_bsqlt3_connection', new_bsqlt3_connection
+H.hide DBay, 'SQL', SQL
+H.hide DBay, 'sql', sql
+H.hide DBay, 'new_bsqlt3_connection', new_bsqlt3_connection
 module.exports = { DBay, SQL, sql, }
 
