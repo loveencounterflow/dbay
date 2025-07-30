@@ -24,12 +24,13 @@
   },
   "homepage": "https://github.com/loveencounterflow/dbay#readme",
   "dependencies": {
-    "better-sqlite3": "^11.6.0",
-    "dayjs": "1.11.11",
+    "better-sqlite3": "^12.2.0",
+    "dayjs": "1.11.13",
     "dbay-sql-macros": "0.1.0",
     "exit-hook": "^2.2.1",
-    "guy": "13.7.2",
+    "guy": "14.2.0",
     "guy-legacy": "npm:guy@4",
-    "intertype": "7.7.0"
+    "intertype": "7.7.0",
+    "letsfreezethat": "^3.1.0"
   }
 }
