@@ -35,7 +35,6 @@ H                         = require './helpers'
 { DBay_sqlgen           } = require './sqlgen-mixin'
 { Random                } = require './random'
 { DBay_udf              } = require './udf-mixin'
-{ DBay_sqlx }             = require 'dbay-sql-macros'
 GUY_LEGACY = require 'guy-legacy'
 LFT                       = require 'letsfreezethat'
 
@@ -68,7 +67,6 @@ class DBay extends    \
         random_seed:    null
         random_delta:   null
         #...................................................................................................
-        macros:         false
         journal_mode:   'wal'
         # journal_mode:   'delete'
         # create_stdlib:  true
@@ -177,7 +175,6 @@ class DBay extends    \
     unless @constructor._skip_sqlt
       H.hide @_me, 'sqlt1', @_me._new_bsqlt3_connection()
       @set_journal_mode.call @_me, @_me.cfg.journal_mode
-    H.hide @_me, 'macros', new DBay_sqlx()
     @_compile_sql?()
     ### make `alt` an on-demand clone of present instance: ###
     H.def_oneoff @_me, 'alt', { enumerable: false, }, => new @constructor @_me.cfg
