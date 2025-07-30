@@ -20,9 +20,6 @@ importers:
       guy:
         specifier: 14.2.0
         version: 14.2.0
-      guy-legacy:
-        specifier: npm:guy@4
-        version: guy@4.2.0
       intertype:
         specifier: 7.7.0
         version: 7.7.0
@@ -50,10 +47,6 @@ packages:
 
   chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
-
-  cnd@9.2.2:
-    resolution: {integrity: sha512-F+/H+7luk4fZkvN0+MT0I2nwn80YM/EtfMttNUFxENR50XJH4g0KgQevzeyEJ8B6t6l8Tb4Xti6QAksa8DmePA==}
-    hasBin: true
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
@@ -93,9 +86,6 @@ packages:
   guy@14.2.0:
     resolution: {integrity: sha512-3b3TgmxfspcLULdJ4oOw8uD6hNnVJ4aFJnzoWSHigil+y1UGb3/otrrZcPDQaiL5LRzaJsRi/6AorNOf/F4VtA==}
 
-  guy@4.2.0:
-    resolution: {integrity: sha512-ppWljP+64o2qH0K1ia3Px9dBPftO4ILN23J9hLHQH+AcGfoBjGd2HDQGAc8rOx3RIyBiwObt8bFJiu0zXPtXmw==}
-
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -108,14 +98,8 @@ packages:
   intertype-legacy@7.7.1:
     resolution: {integrity: sha512-Bj3k9bCu8vA6JLIvnCrJXOdkecgY5wtCmORclJ87uq22N53swREHT5bezSeK5TwcxgSJEDg2wEfcn4kNr9Qv8A==}
 
-  intertype@7.6.7:
-    resolution: {integrity: sha512-vBgYabqxX3fLa9f0Z3QeXgYszadAGdAHXdLcdQc5ZxZSG5CmbJCdYcudZLYtgmNo8epQag8zzyg7wwx+OD5J8g==}
-
   intertype@7.7.0:
     resolution: {integrity: sha512-Sv923oXpq9In8/CuxP5KAKc3FIETOEl23ltwSfLOnn/8V8A5pDRlxWo0vhaA6p7WybRMgeZXsE4Etw98tWUMPA==}
-
-  jsx-number-format@0.1.5:
-    resolution: {integrity: sha512-eS1SvW5Lm+UQOrpxqtTF6NgPDupYlCV1GXJr+f/1yp+nwQH/4qW6XarwCcdphQjNHrJFC4ko2MgRyRDS/ypqZw==}
 
   letsfreezethat@3.1.0:
     resolution: {integrity: sha512-jJ1nvvQi6unW0WifjNPMIb64Byom0EXzSKWFYA++EpyjK3qv1J2pqeSoEJ61tGJoNG0GoNjPoeLYhxW16riZaA==}
@@ -222,10 +206,6 @@ snapshots:
 
   chownr@1.1.4: {}
 
-  cnd@9.2.2:
-    dependencies:
-      jsx-number-format: 0.1.5
-
   dayjs@1.11.13: {}
 
   decompress-response@6.0.0:
@@ -254,12 +234,6 @@ snapshots:
     dependencies:
       intertype-legacy: 7.7.1
 
-  guy@4.2.0:
-    dependencies:
-      cnd: 9.2.2
-      intertype: 7.6.7
-      letsfreezethat: 3.1.0
-
   ieee754@1.2.1: {}
 
   inherits@2.0.4: {}
@@ -270,15 +244,9 @@ snapshots:
     dependencies:
       multimix: 5.0.0
 
-  intertype@7.6.7:
-    dependencies:
-      multimix: 5.0.0
-
   intertype@7.7.0:
     dependencies:
       multimix: 5.0.0
-
-  jsx-number-format@0.1.5: {}
 
   letsfreezethat@3.1.0: {}
 
