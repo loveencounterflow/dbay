@@ -679,8 +679,10 @@ after `returning` and the end of the statement. A star `*` will return the entir
 inserted; we here use `db.single_row()` to eschew the result iterator that would be returned by default.
 
 > [!WARNING]
-> When doing concurrent updates e.g. using the `{ on_conflict: true, }` option, users are advised
-> to **not use `{ returning: '*' }`** as this has been observed to cause 'connection busy' errors.
+>
+> Observe that insert and update statements with a `returning` clause are categorically different from those
+> without one as the `returning` clause causes SQLite to return a row iterator. This iterator, when not
+> exhausted, will likely cause a 'connection busy' error when the next insert or update is attempted.
 
 
 ------------------------------------------------------------------------------------------------------------
